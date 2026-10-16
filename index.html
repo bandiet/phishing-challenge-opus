@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Phishing Challenge</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app" class="app" data-screen="laden">
+
+  <div class="bg" aria-hidden="true">
+    <svg class="bg-flaechen" viewBox="0 0 1650 928" preserveAspectRatio="xMidYMid slice">
+      <polygon class="f1" points="0,157 1080,66 1230,416 345,928 0,928"/>
+      <polygon class="f2" points="250,0 1650,375 1650,928 235,928 0,230 0,0"/>
+      <polygon class="f3" points="1095,55 1430,33 1430,928 1040,928"/>
+    </svg>
+    <div class="bg-glow g1"></div>
+    <div class="bg-glow g2"></div>
+    <div class="bg-funken"></div>
+  </div>
+
+  <header class="hud" id="hud">
+    <div class="hud-pille hud-marke">
+      <img class="hud-logo" src="assets/hacker-face.png" alt="">
+      <span id="hud-titel"></span>
+    </div>
+    <div class="hud-rechts">
+      <div class="serie-box">
+        <div class="serie" id="serie" hidden>
+          <svg class="flamme" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="fl" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF4D1F"/><stop offset=".6" stop-color="#FF9A1F"/><stop offset="1" stop-color="#FFD84D"/></linearGradient></defs>
+            <path d="M12 2.5c.7 3.2 3.4 4.9 4.6 7.6 1.6 3.6-.4 9.4-4.6 9.4S5.6 16.2 6.6 12.6c.5-1.9 1.9-3 2.4-4.6.5 1.4.9 2.4 2 3 .2-2.9 0-5.7 1-8.5Z" fill="url(#fl)"/>
+            <path d="M12 19.5c-1.9 0-3-1.5-2.6-3.3.3-1.2 1.3-1.9 1.6-3 .8 1 2 1.6 2.6 2.9.7 1.6-.2 3.4-1.6 3.4Z" fill="#FFF3B0"/></svg>
+          <span class="serie-text"><b id="serie-zahl">0</b><small id="serie-label"></small></span>
+        </div>
+        <div class="serie-blase" id="serie-blase" role="status"></div>
+      </div>
+      <div class="hud-pille hud-fortschritt" id="hud-fortschritt" hidden>
+        <span class="hud-level" id="hud-level"></span>
+        <span class="hud-frage"><span id="hud-frage"></span><span class="hud-segmente" id="hud-segmente"></span></span>
+      </div>
+      <button class="icon-btn" id="ton" type="button">
+        <svg class="ico ton-an" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M16 8.5a5 5 0 0 1 0 7M18.8 6a8.5 8.5 0 0 1 0 12"/></svg>
+        <svg class="ico ton-aus" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="m17 9.5 5 5m0-5-5 5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="buehne" id="buehne"></main>
+
+  <div class="hacker" id="hacker" aria-hidden="true">
+    <div class="hacker-blase" id="hacker-blase"></div>
+    <img src="assets/hacker.png" alt="">
+  </div>
+
+  <div class="konfetti" id="konfetti" aria-hidden="true"></div>
+  <div class="tooltip" id="tooltip" role="status"></div>
+  <div class="sr" id="sr" aria-live="assertive"></div>
+</div>
+
+<script src="js/inhalt.de.js"></script>
+<script src="js/domains.js"></script>
+<script src="js/klang.js"></script>
+<script src="js/lms.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

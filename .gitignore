@@ -1,0 +1,7 @@
+.DS_Store
+dist/*.zip
+dist/artifact/
+dist/de/
+dist/en/
+dist/fr/
+dist/it/

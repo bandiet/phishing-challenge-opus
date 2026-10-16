@@ -1,0 +1,10 @@
+// Cloudflare Workers: statische Website ohne Servercode.
+// Alles in dist/site (gebaut von tools/bouw.py) geht unverändert online.
+// "name" muss dem Namen des Workers im Cloudflare-Dashboard entsprechen.
+{
+  "name": "phishing-challenge-opus",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist/site"
+  }
+}
