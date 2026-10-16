@@ -1,9 +1,16 @@
 /* ------------------------------------------------------------------
    Täusch-Domains – aus jeder Firmendomain die typischen Fälschungen
    bauen, so wie Angreifer es tun. Beispiel nordwerk.de:
-     doppel  nordwerrk.de     ein Buchstabe doppelt
-     tausch  nordewrk.de      zwei Nachbarn vertauscht
-     glyph   nordvverk.de     Zeichen, die gleich aussehen (rn/m, vv/w, cl/d, I/l, 0/o)
+     doppel  nordwerrk.de     ein (schmaler) Buchstabe doppelt
+     tausch  der unauffälligste Kniff, der passt – in dieser Reihenfolge:
+             Doppelbuchstabe weglassen (scheer → scher), Bindestrich
+             verdoppeln (a-b → a--b), „ie“/„ei“ drehen, ähnlich aussehende
+             Nachbarn tauschen (rn/ur/il …), sonst zwei Nachbarn tauschen
+     glyph   nordvverk.de     Zeichen, die gleich aussehen (rn/m, vv/w, cl/d, I/l, g/q, lc/k, 0/o);
+             passt keins, ein anderer feiner Kniff als bei „tausch“
+   Am schwersten zu sehen sind laut Typosquatting-Werkzeugen (dnstwist) und
+   Sicherheitsfirmen Doppelgänger-Zeichen und fehlende Doppelbuchstaben;
+   zwei vertauschte Buchstaben fallen am ehesten auf.
      weg     norwerk.de       ein Buchstabe fehlt
      zusatz  nordwerk-it.de   offiziell klingender Zusatz
      tld     nordwerk.com     andere Endung
@@ -75,7 +82,33 @@
     return { neu: n.slice(0, i) + n[i - 1] + n.slice(i), mark: n.slice(0, i) + '[' + n[i - 1] + ']' + n.slice(i) };
   }
 
+  // Feine Fälschungen, die unauffälligste zuerst (je { neu, mark })
+  function feineKniffe(n) {
+    const r = [];
+    // 1) von einem Doppelbuchstaben einen weglassen: scheer → scher
+    for (const i of vonDerMitte(n.length)) {
+      if (istBuchstabe(n[i]) && n[i] === n[i - 1]) r.push({ neu: n.slice(0, i) + n.slice(i + 1), mark: n.slice(0, i) + '[·]' + n.slice(i + 1) });
+    }
+    // 2) Bindestrich verdoppeln: scheer-group → scheer--group
+    const b = n.indexOf('-');
+    if (b > 0) r.push({ neu: n.slice(0, b) + '--' + n.slice(b + 1), mark: n.slice(0, b) + '[--]' + n.slice(b + 1) });
+    // 3) „ie“ ↔ „ei“
+    for (const [a, z] of [['ie', 'ei'], ['ei', 'ie']]) {
+      const i = n.indexOf(a, 1);
+      if (i > 0) r.push({ neu: n.slice(0, i) + z + n.slice(i + 2), mark: n.slice(0, i) + '[' + z + ']' + n.slice(i + 2) });
+    }
+    // 4) Nachbarn tauschen, die ähnlich aussehen (r n m u v w i l)
+    const aehnlich = 'rnmuvwil';
+    for (const i of vonDerMitte(n.length - 1)) {
+      const a = n[i], c = n[i + 1];
+      if (i > 0 && a !== c && aehnlich.includes(a) && aehnlich.includes(c)) r.push({ neu: n.slice(0, i) + c + a + n.slice(i + 2), mark: n.slice(0, i) + '[' + c + a + ']' + n.slice(i + 2) });
+    }
+    return r;
+  }
+
   function tausch(n) {
+    const fein = feineKniffe(n);
+    if (fein.length) return fein[0];
     for (const i of vonDerMitte(n.length - 1)) {
       const a = n[i], b = n[i + 1];
       if (istBuchstabe(a) && istBuchstabe(b) && a !== b) return { neu: n.slice(0, i) + b + a + n.slice(i + 2), mark: n.slice(0, i) + '[' + b + a + ']' + n.slice(i + 2) };
@@ -98,17 +131,21 @@
     { aus: 'rn', ein: 'm', info: '„m“ statt „rn“' },
     { aus: 'd', ein: 'cl', info: '„cl“ statt „d“' },
     { aus: 'l', ein: 'I', info: 'großes „I“ statt kleinem „l“' },
-    { aus: 'o', ein: '0', info: 'eine Null statt „o“' },
-    { aus: 'i', ein: 'l', info: 'kleines „l“ statt „i“' }
+    { aus: 'i', ein: 'l', info: 'kleines „l“ statt „i“' },
+    { aus: 'g', ein: 'q', info: '„q“ statt „g“' },
+    { aus: 'k', ein: 'lc', info: '„lc“ statt „k“' },
+    { aus: 'o', ein: '0', info: 'eine Null statt „o“' }
   ];
-  function glyph(n) {
+  // ausser: eine Fälschung, die schon vergeben ist (glyph soll anders aussehen als tausch)
+  function glyph(n, ausser) {
     for (const g of GLYPHEN) {
       let i = n.indexOf(g.aus, 1);
       if (i < 0) i = n.indexOf(g.aus);
       if (i >= 0) return { neu: n.slice(0, i) + g.ein + n.slice(i + g.aus.length), mark: n.slice(0, i) + '[' + g.ein + ']' + n.slice(i + g.aus.length), info: g.info };
     }
-    const d = doppel(n);
-    return Object.assign(d, { info: 'ein Buchstabe zu viel' });
+    const fein = feineKniffe(n).find(k => k.neu !== ausser);
+    if (fein) return Object.assign(fein, { info: 'kaum sichtbar verändert' });
+    return { neu: n, mark: n, info: 'andere Endung', andereEndung: true };   // wie bei echtem CEO-Betrug: gleicher Name, andere Endung
   }
 
   function andereTld(tld) {
@@ -119,12 +156,12 @@
   function faelschungen(domain, zusatz) {
     const { name, tld } = teile(domain);
     const mit = x => x + '.' + tld;
-    const d = doppel(name), t = tausch(name), g = glyph(name), w = weg(name);
+    const t = tausch(name), g = glyph(name, t.neu), w = weg(name), d = doppel(name);
     const z = zusatz || '-it', at = andereTld(tld);
     return {
       fake_doppel: mit(d.neu), fake_doppel_m: mit(d.mark),
       fake_tausch: mit(t.neu), fake_tausch_m: mit(t.mark),
-      fake_glyph: mit(g.neu), fake_glyph_m: mit(g.mark), glyph_info: g.info,
+      fake_glyph: g.andereEndung ? name + '.' + at : mit(g.neu), fake_glyph_m: g.andereEndung ? name + '.[' + at + ']' : mit(g.mark), glyph_info: g.info,
       fake_weg: mit(w.neu), fake_weg_m: mit(w.mark),
       fake_zusatz: name + z + '.' + tld, fake_zusatz_m: name + '[' + z + '].' + tld,
       fake_tld: name + '.' + at, fake_tld_m: name + '.[' + at + ']'

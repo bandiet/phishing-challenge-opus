@@ -100,6 +100,15 @@
       <g class="j-pupillen"><circle cx="15.6" cy="32.6" r="1.7" fill="#1B0F4D"/><circle cx="26" cy="32.6" r="1.7" fill="#1B0F4D"/></g></g>
     <path d="M16.6 38.6q3.6 2.8 7.2 0" fill="none" stroke="#1B0F4D" stroke-width="1.8" stroke-linecap="round"/></svg>`;
 
+  // Die Serie-Flamme als Figur (springt aus ihrem Kreis, wenn sie etwas sagt)
+  const FLAMME_SVG = `<svg class="flamme-svg" viewBox="0 0 40 48" aria-hidden="true"><defs><linearGradient id="flg" x1="0" y1="1" x2=".2" y2="0"><stop offset="0" stop-color="#FF3D1F"/><stop offset=".55" stop-color="#FF9A1F"/><stop offset="1" stop-color="#FFE14D"/></linearGradient></defs>
+    <path class="f-koerper" d="M20 46.5c-9.4 0-15.2-6.4-15.2-14.3 0-6.4 3.7-10.3 6.8-13.8 1.1 2.7 2.6 4.1 4.4 4.9-.7-6.2 1.9-12.6 7.6-19.3.3 6 3.8 9.3 6.9 12.9 2.6 3.1 4.7 6.6 4.7 11.4 0 9.6-5.8 18.2-15.2 18.2Z" fill="url(#flg)"/>
+    <path d="M20 44c-5.5 0-9.2-3.7-9.2-8.6 0-3.5 2-5.8 3.9-7.6.8 1.5 1.8 2.3 3 2.7.1-3.2 1.6-6 4-8.6.6 3 2.4 4.8 4 6.6 1.6 1.8 3.1 3.9 3.1 7 0 4.8-3.4 8.5-8.8 8.5Z" fill="#FFF3B0" opacity=".55"/>
+    <g class="j-augen"><ellipse cx="15" cy="32" rx="3.1" ry="3.6" fill="#fff"/><ellipse cx="25.4" cy="32" rx="3.1" ry="3.6" fill="#fff"/>
+      <g class="j-pupillen"><circle cx="15.6" cy="32.6" r="1.7" fill="#4A1300"/><circle cx="26" cy="32.6" r="1.7" fill="#4A1300"/></g></g>
+    <path class="f-mund-froh" d="M15.8 38.2q4.4 3.6 8.8 0" fill="none" stroke="#4A1300" stroke-width="1.9" stroke-linecap="round"/>
+    <path class="f-mund-traurig" d="M16.6 40.4q3.6-2.6 7.2 0" fill="none" stroke="#4A1300" stroke-width="1.9" stroke-linecap="round"/></svg>`;
+
   /* ================= Profil & Platzhalter ================= */
   function setzeProfil(p) {
     const w = D.profil(p || {}, I);
@@ -184,80 +193,120 @@
       p.className = e === 1 ? 'ja' : e === 0 ? 'nein' : i === S.nr && app.dataset.screen === 'nachricht' ? 'jetzt' : '';
     });
   }
-  // Sprechblase links neben Serie/Joker (schmal: unter der Leiste). Meldungen laufen
-  // nacheinander, damit Serie und Joker nicht gleichzeitig reden.
-  const hudBlase = (() => {
-    const bl = $('#hud-blase'), schlange = [];
-    let t = 0, laeuft = false;
+  // Sprecher: Flamme (Serie) oder Joker springen aus ihrem Kreis heraus, stellen sich
+  // unter die Leiste und sagen kurz etwas. Meldungen laufen nacheinander.
+  const sprecher = (() => {
+    const box = $('#hud-sprecher'), figur = $('.hs-figur', box), blase = $('.hs-blase', box), schlange = [];
+    let t = 0, laeuft = false, chip = null;
+    function zurueck() {
+      box.classList.remove('an'); box.classList.add('geht');
+      t = setTimeout(() => {
+        box.classList.remove('geht');
+        if (chip) chip.classList.remove('raus');
+        t = setTimeout(naechste, T(220));
+      }, T(380));
+    }
     function naechste() {
       const x = schlange.shift();
       if (!x) { laeuft = false; return; }
       laeuft = true;
-      bl.textContent = x.text;
-      bl.dataset.art = x.art;
-      bl.classList.remove('an'); void bl.offsetWidth; bl.classList.add('an');
+      chip = x.art === 'joker' ? $('#joker') : $('#serie');
+      const hr = $('.hud-rechts').getBoundingClientRect(), cr = chip.getBoundingClientRect();
+      const mitte = x.art === 'joker' ? cr.left + cr.width / 2 : cr.left + 22;
+      box.style.right = Math.max(4, hr.right - mitte - 30) + 'px';
+      figur.innerHTML = x.art === 'joker' ? JOKER_SVG : FLAMME_SVG;
+      box.dataset.art = x.art;
+      box.classList.toggle('traurig', !!x.traurig);
+      blase.textContent = x.text;
+      box.classList.remove('geht', 'an'); void box.offsetWidth; box.classList.add('an');
+      chip.classList.add('raus');
       if (x.ton) x.ton();
       clearTimeout(t);
-      t = setTimeout(() => { bl.classList.remove('an'); t = setTimeout(naechste, T(260)); }, T(x.dauer || 2800));
+      t = setTimeout(zurueck, T(x.dauer || 3400));
     }
     return {
-      sag(text, art, dauer, ton) { schlange.push({ text, art, dauer, ton }); if (!laeuft) naechste(); },
-      weg() { schlange.length = 0; clearTimeout(t); laeuft = false; bl.classList.remove('an'); }
+      sag(art, text, dauer, o) { o = o || {}; schlange.push({ art, text, dauer, ton: o.ton, traurig: o.traurig }); if (!laeuft) naechste(); },
+      weg() {
+        schlange.length = 0; clearTimeout(t); laeuft = false;
+        box.classList.remove('an', 'geht');
+        $$('.hud-rechts .raus').forEach(c => c.classList.remove('raus'));
+      },
+      redet: () => laeuft
     };
   })();
   const zufall = l => l[Math.floor(Math.random() * l.length)];
 
-  // Serie (Streak) oben rechts: Flamme mit Zahl; beim ersten Mal kurz erklärt
+  // Chips (Serie, Joker) gleiten auf und zu statt zu springen
+  const chipBox = (el, an) => el.closest('.chip-box').classList.toggle('zu', !an);
+
+  // Serie (Streak) oben rechts: nur die Anzeige; was die Flamme sagt, entscheidet serieMeldung()
   function serieAnzeigen(neu, verloren) {
     const el = $('#serie');
-    const war = !el.hidden;
-    el.hidden = S.serie < 2 && !(verloren && war);
+    const war = !el.closest('.chip-box').classList.contains('zu');
     $('#serie-zahl').textContent = S.serie;
     el.title = f(U.serie.titel, { n: S.serie });
     el.classList.toggle('gross', S.serie >= 4);
-    el.classList.toggle('aus', !!verloren);
     if (verloren && war) {
-      hudBlase.sag(U.serie.verloren, 'serie', 2600);
-      setTimeout(() => { el.hidden = S.serie < 2; el.classList.remove('aus'); }, T(1600));
+      el.classList.add('aus');
+      setTimeout(() => { el.classList.remove('aus'); chipBox(el, S.serie >= 2); }, T(1800));
       return;
     }
-    if (!neu || S.serie < 2) return;
-    el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
-    let text = '';
-    if (!(S.erklaert & ERKL.serie)) { text = U.serie.erklaerung; S.erklaert |= ERKL.serie; speichere(); }
-    else if (S.serie === 2) text = zufall(U.serie.zwei);
-    else if (S.serie >= 4 && S.serie % 2 === 0) text = f(zufall(U.serie.vier), { n: S.serie });
-    if (!text) { K.zaehler(); return; }
-    hudBlase.sag(text, 'serie', text === U.serie.erklaerung ? 4200 : 2600, K.serie);
+    el.classList.remove('aus');
+    chipBox(el, S.serie >= 2);
+    if (neu && S.serie >= 2) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+  }
+  // Was sagt die Flamme zu dieser Antwort? (null = nichts)
+  function serieMeldung(neu, verloren) {
+    if (verloren) return { text: U.serie.verloren, dauer: 3800, traurig: true };
+    if (!neu || S.serie < 2) return null;
+    if (!(S.erklaert & ERKL.serie)) return { text: U.serie.erklaerung, dauer: 5200, erkl: true };
+    if (S.serie === 2) return { text: zufall(U.serie.zwei), dauer: 3200 };
+    if (S.serie >= 4 && S.serie % 2 === 0) return { text: f(zufall(U.serie.vier), { n: S.serie }), dauer: 3200 };
+    return null;
+  }
+  function flammeSagt(meld) {
+    if (meld.erkl) { S.erklaert |= ERKL.serie; speichere(); }
+    sprecher.sag('serie', meld.text, meld.dauer, { ton: meld.traurig ? null : K.serie, traurig: meld.traurig });
+  }
+  // Klick auf die Serie: wie weit ist es bis zum nächsten Joker?
+  function serieInfo() {
+    sprecher.weg();
+    const ziel = naechsterJoker(S.serie), n = ziel - S.serie;
+    const text = S.joker >= (E.jokerMax || 9) ? f(U.serie.jokerVoll, { n: S.joker })
+      : n === 1 ? U.serie.bisJokerEins : f(U.serie.bisJoker, { n });
+    sprecher.sag('serie', text, 3600, { ton: K.tipp });
   }
 
   // Joker: für eine Serie verdient (einstellungen.jokerBei), ein Klick zeigt einen Tipp
-  const JB = E.jokerBei || [3, 5, 7];
-  const jokerFaellig = n => JB.includes(n) || n > JB[JB.length - 1];
+  const JB = E.jokerBei || [3, 6, 8, 10, 12, 14];
+  const JL = JB[JB.length - 1];
+  const jokerFaellig = n => JB.includes(n) || (n > JL && (n - JL) % 2 === 0);
+  const naechsterJoker = n => { for (let k = n + 1; k < n + 40; k++) if (jokerFaellig(k)) return k; return 0; };
   function jokerAnzeigen(neu) {
     const el = $('#joker');
-    el.hidden = S.joker < 1 && !(S.erklaert & ERKL.joker);
+    chipBox(el, S.joker > 0 || !!(S.erklaert & ERKL.joker));
     el.classList.toggle('leer', S.joker < 1);
     $('#joker-zahl').textContent = S.joker;
     const titel = f(U.joker.titel, { n: S.joker });
     el.title = titel; el.setAttribute('aria-label', titel);
     if (!neu) return;
     el.classList.remove('kommt'); void el.offsetWidth; el.classList.add('kommt');
-    if (!(S.erklaert & ERKL.joker)) { S.erklaert |= ERKL.joker; speichere(); hudBlase.sag(U.joker.erster, 'joker', 4600, K.joker); }
-    else hudBlase.sag(zufall(U.joker.neu), 'joker', 2400, K.joker);
+    if (!(S.erklaert & ERKL.joker)) { S.erklaert |= ERKL.joker; speichere(); sprecher.sag('joker', U.joker.erster, 5600, { ton: K.joker }); }
+    else sprecher.sag('joker', zufall(U.joker.neu), 3400, { ton: K.joker });
   }
   function jokerEinsetzen() {
     const na = NA;
     const el = $('#joker');
     el.classList.remove('wackelt'); void el.offsetWidth;
-    if (!na || na.phase !== 'antwort') { el.classList.add('wackelt'); hudBlase.weg(); hudBlase.sag(U.joker.spaeter, 'joker', 2800); K.tipp(); return; }
-    if (na.joker) { el.classList.add('wackelt'); hudBlase.weg(); hudBlase.sag(U.joker.schon, 'joker', 2400); K.tipp(); return; }
-    if (S.joker < 1) { el.classList.add('wackelt'); hudBlase.weg(); hudBlase.sag(U.joker.leer, 'joker', 3000); K.tipp(); return; }
+    const sag = (text, dauer) => { el.classList.add('wackelt'); sprecher.weg(); sprecher.sag('joker', text, dauer, { ton: K.tipp }); };
+    if (!na || na.phase !== 'antwort') return sag(U.joker.spaeter, 3800);
+    if (na.joker) return sag(U.joker.schon, 3400);
+    if (S.joker < 1) return sag(U.joker.leer, 4000);
     const tipp = na.m.joker;
     if (!tipp) return;
     S.joker--; na.joker = true;
     speichere();
-    hudBlase.weg();
+    sprecher.weg();
     el.classList.add('hilft');
     setTimeout(() => el.classList.remove('hilft'), T(900));
     jokerAnzeigen();
@@ -543,7 +592,7 @@
     const id = 'spotmaske' + (++spotNr);
     const lay = bau(`<div class="spot" aria-hidden="true"><svg class="spot-dunkel"><defs><mask id="${id}" maskUnits="userSpaceOnUse">` +
       `<rect x="0" y="0" width="100%" height="100%" fill="#fff"/><path class="loch" fill="#000"/></mask></defs>` +
-      `<g class="spot-alle"></g><rect class="spot-flaeche" x="0" y="0" width="100%" height="100%" mask="url(#${id})"/><path class="spot-rahmen"/></svg></div>`);
+      `<g class="spot-alle" mask="url(#${id})"></g><rect class="spot-flaeche" x="0" y="0" width="100%" height="100%" mask="url(#${id})"/><path class="spot-rahmen"/></svg></div>`);
     host.appendChild(lay);
     const alle = $('.spot-alle', lay);
     const duenn = liste.map(x => {
@@ -685,12 +734,13 @@
     if (m) { proto = m[1]; host = m[2]; rest = m[3]; }
     const dom = domainVon(host), vor = host.slice(0, host.length - dom.length);
     if (rest.length > 34) rest = rest.slice(0, 32) + '…';
+    const um = t => Array.from(t, c => esc(c) + ('/.-?=&'.includes(c) ? '<wbr>' : '')).join('');   // Umbruch lieber nach / . - als mitten im Wort
     return `<p class="url-chip"><span class="chip-label">${esc(U.linkZiel)}</span>` +
-      `<code><span class="u-dim">${esc(proto + vor)}</span><b class="u-dom">${esc(dom)}</b><span class="u-dim">${esc(rest)}</span></code>` +
+      `<code><span class="u-dim">${um(proto + vor)}</span><b class="u-dom">${um(dom)}</b><span class="u-dim">${um(rest)}</span></code>` +
       `<span class="chip-fuss">↑ ${esc(U.echteDomain)}</span></p>`;
   }
   function klartext(k) {
-    return `<p class="url-chip"><span class="chip-label">${esc(U.klartext)}</span><code>${f(k).replace(/\[(.+?)\]/g, '<b class="u-dom">$1</b>')}</code></p>`;
+    return `<p class="url-chip"><span class="chip-label">${esc(U.klartext)}</span><code>${f(k).replace(/\[(.+?)\]/g, '<b class="u-dom">$1</b>').replace(/([/@.](?![^<]*>))/g, '$1<wbr>')}</code></p>`;
   }
 
   /* ================= Start ================= */
@@ -768,8 +818,8 @@
     const ICONS = { lupe: 'assets/icon-lupe.png', entscheid: 'assets/icon-entscheid.png' };
     const icon = k => k === 'postfach' ? BILD.postfach : `<img src="${ICONS[k]}" alt="">`;
     const el = bau(`<section class="s-briefing zentriert"><div class="inhalt briefing">
-      <div class="b-karten">${b.karten.map((k, i) => `<article class="b-karte karte" style="--i:${i}">
-        <div class="b-icon">${icon(k.icon)}</div><h2>${esc(k.titel)}</h2><p>${esc(k.text)}</p></article>`).join('')}</div>
+      <div class="b-karten">${b.karten.map((k, i) => `<article class="b-karte" style="--i:${i}"><div class="b-innen karte">
+        <div class="b-icon">${icon(k.icon)}</div><h2>${esc(k.titel)}</h2><p>${esc(k.text)}</p></div></article>`).join('')}</div>
       <button class="btn btn-gross btn-mint" id="b-los" type="button">${esc(b.los)} ${ICO.pfeil}</button>
     </div></section>`);
     wechsel(el, 'briefing');
@@ -925,6 +975,7 @@
 
   /* ================= Nachricht ================= */
   let NA = null;   // aktuelle Nachricht (Antwortphase)
+  let letzterSprecher = '';   // Hacker und Flamme wechseln sich ab
   let FB = null;   // Feedback (Hinweisphase)
 
   function zeigeNachricht() {
@@ -1033,7 +1084,7 @@
     if (E.interaktionenMelden && !testModus) LMS.interaktion(m.id, sagtPhishing ? 'phishing' : 'echt', m.phishing ? 'phishing' : 'echt', richtig);
 
     tooltip.aus();
-    hudBlase.weg();
+    sprecher.weg();
     const knopf = $(`.antwort[data-antwort="${sagtPhishing ? 'phishing' : 'echt'}"]`, na.el);
     knopf.classList.add('gewaehlt');
     na.el.classList.add('beantwortet');
@@ -1086,21 +1137,33 @@
     if (skip) skip.addEventListener('click', () => { K.klick(); naechste(); });
     setTimeout(() => { if (FB === fb) $('.btn-weiter', seite).focus({ preventScroll: true }); }, T(500));
 
-    // nacheinander: Stempel → Serie → Joker → Hacker
+    // nacheinander: Stempel → Serie-Zahl → EINE Figur (Joker, Flamme oder Hacker – oder keine)
+    const neu = S.serie > alteSerie, verloren = !richtig && alteSerie >= 2;
+    const meld = serieMeldung(neu, verloren);
+    let wer = 'keiner';
+    if (jokerNeu) wer = 'joker';
+    else if (m.phishing && !richtig) wer = 'hacker';                       // reingefallen: der Hacker freut sich
+    else if (meld && (meld.erkl || meld.traurig)) wer = 'flamme';           // Erklärung / Serie vorbei
+    else if (m.phishing) wer = meld ? (letzterSprecher === 'hacker' ? 'flamme' : 'hacker') : (letzterSprecher === 'hacker' ? 'keiner' : 'hacker');
+    else if (meld) wer = 'flamme';
+    if (wer !== 'keiner') letzterSprecher = wer;
     const spaeter = (ms, fn) => setTimeout(() => { if (FB === fb) fn(); }, T(ms));
     spaeter(260, () => { if (fb.stufe === 1) stempel(na, m.phishing); });
-    spaeter(1000, () => serieAnzeigen(S.serie > alteSerie, !richtig && alteSerie >= 2));
-    if (jokerNeu) spaeter(1500, () => jokerAnzeigen(true));
-    if (m.phishing) spaeter(jokerNeu ? 2100 : 1700, () => hacker.zeige(richtig ? 'durchschaut' : 'erwischt'));
+    spaeter(1000, () => { serieAnzeigen(neu, verloren); if (wer !== 'flamme' && wer !== 'joker' && neu && S.serie >= 2) K.zaehler(); });
+    if (wer === 'joker') spaeter(1300, () => jokerAnzeigen(true));
+    if (wer === 'flamme') spaeter(1300, () => flammeSagt(meld));
+    if (wer === 'hacker') spaeter(1500, () => hacker.zeige(richtig ? 'durchschaut' : 'erwischt'));
   }
 
-  // kleiner Stempel oben rechts an der Nachricht
+  // kleiner Stempel innen oben rechts auf der Nachricht – immer ganz im sichtbaren Teil der Spalte
   function stempel(na, phishing) {
-    const r = $('.m-rahmen', na.el), g = na.g;
-    if (!r || !g) return;
+    const r = $('.m-rahmen', na.el), g = na.g, sp = $('.m-spalte', na.el);
+    if (!r || !g || !sp) return;
     const st = bau(`<div class="stempel ${phishing ? 'st-phishing' : 'st-echt'}" aria-hidden="true">${phishing ? ICO.schildWarn : ICO.schildCheck}<span>${esc(phishing ? U.stempel.phishing : U.stempel.echt)}</span></div>`);
-    st.style.left = (g.offsetLeft + g.offsetWidth) + 'px';
-    st.style.top = g.offsetTop + 'px';
+    const rr = r.getBoundingClientRect(), gr = g.getBoundingClientRect(), sr = sp.getBoundingClientRect();
+    const k = r.offsetWidth / (rr.width || 1);
+    st.style.left = ((Math.min(gr.right, sr.right) - 14 - rr.left) * k) + 'px';
+    st.style.top = ((Math.max(gr.top, sr.top) + 12 - rr.top) * k) + 'px';
     r.appendChild(st);
     na.stempel = st;
     K.stempel();
@@ -1190,7 +1253,17 @@
         if (kr.top - d < lr.top + 8) d = kr.top - lr.top - 8;
         if (d) pk.scrollBy({ top: d, behavior: ruhig ? 'auto' : 'smooth' });
       }, T(380));
-    } else $('.h-liste', fb.seite).scrollTop = 0;
+    } else {
+      // mobil: nach unten bis zum Knopf scrollen – außer der aktive Hinweis würde oben verschwinden,
+      // dann so weit, dass er ganz oben im Blatt steht
+      setTimeout(() => {
+        const pk = $('.panel-karte', fb.na.el);
+        if (!pk || FB !== fb) return;
+        const kr = x.karte.getBoundingClientRect(), pr = pk.getBoundingClientRect();
+        const ganzUnten = pk.scrollHeight - pk.clientHeight, karteOben = pk.scrollTop + kr.top - pr.top - 10;
+        pk.scrollTo({ top: Math.max(0, Math.min(ganzUnten, karteOben)), behavior: ruhig ? 'auto' : 'smooth' });
+      }, T(470));
+    }
     if (!still) K.tipp();
     ansage(f(U.hinweisZaehler, { n: i + 1, gesamt: n }) + '. ' + (U.hinweisArt[x.h.art] || '') + ': ' + x.karte.textContent.replace(/\s+/g, ' ').trim());
   }
@@ -1244,13 +1317,39 @@
   }
 
   /* ================= Level-Auswertung ================= */
+  // Abzeichen je Level als kleine Illustration: 1 Haken mit Mail-Köder, 2 Lupe über einem Link,
+  // 3 Stern-Schild. Freigeschaltet: Farbe, Strahlen, Glanz, Funken und eine eigene Bewegung.
   function abzeichen(i, an) {
-    const c = [['#5CFFD2', '#0BB58E'], ['#B9A8FF', '#6D4AE6'], ['#FF8DB3', '#E11D74']][i % 3];
-    return `<svg class="badge-svg${an ? ' an' : ''}" viewBox="0 0 64 72" aria-hidden="true">
-      <defs><linearGradient id="bv${i}" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></linearGradient></defs>
-      <path d="M32 3 58 13v20c0 17-11 29-26 36C17 62 6 50 6 33V13L32 3Z" fill="${an ? `url(#bv${i})` : 'rgba(255,255,255,.06)'}" stroke="${an ? 'rgba(255,255,255,.55)' : 'rgba(255,255,255,.18)'}" stroke-width="2"/>
-      <path d="M32 9 52 17v16c0 13-8 23-20 29" fill="none" stroke="rgba(255,255,255,${an ? '.35' : '.06'})" stroke-width="2" stroke-linecap="round"/>
-      <text x="32" y="45" text-anchor="middle" font-size="24" font-weight="800" fill="${an ? '#160B3A' : 'rgba(255,255,255,.3)'}" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">${i + 1}</text></svg>`;
+    const F = [['#7DFFE0', '#0BB58E', '#0A7F64'], ['#C9BBFF', '#6D4AE6', '#4527B8'], ['#FFE27A', '#FF6FA4', '#B8125A']][i % 3];
+    const SCHILD = 'M50 6 88 20v32c0 26-16 44-38 54-22-10-38-28-38-54V20Z';
+    const motiv = [
+      // Haken mit Briefumschlag als Köder
+      `<g class="bz-motiv bz-m1"><path d="M50 14v22" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".85"/>
+        <rect x="36" y="38" width="28" height="20" rx="3.5" fill="#fff"/><path d="m37.5 40 12.5 9 12.5-9" fill="none" stroke="${F[2]}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M50 30v10c0 5 6 6 7 1" fill="none" stroke="#1B1257" stroke-width="3" stroke-linecap="round"/>
+        <circle class="bz-blase" cx="62" cy="64" r="2" fill="#fff" opacity=".7"/><circle class="bz-blase b2" cx="40" cy="66" r="1.5" fill="#fff" opacity=".6"/></g>`,
+      // Lupe über einem Kettenglied
+      `<g class="bz-motiv bz-m2"><g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".55"><rect x="32" y="40" width="16" height="9" rx="4.5"/><rect x="44" y="45" width="16" height="9" rx="4.5"/></g>
+        <g class="bz-lupe"><circle cx="46" cy="44" r="12" fill="rgba(255,255,255,.28)" stroke="#fff" stroke-width="4.5"/><path d="m55 53 9 9" stroke="#1B1257" stroke-width="7" stroke-linecap="round"/>
+        <path d="M40 39a7 7 0 0 1 6-4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></g></g>`,
+      // Stern mit Haken
+      `<g class="bz-motiv bz-m3"><path d="m50 25 6.6 13.4 14.8 2.2-10.7 10.4 2.5 14.7L50 58.8l-13.2 6.9 2.5-14.7-10.7-10.4 14.8-2.2Z" fill="#fff"/>
+        <path d="m43.5 46 4.6 4.6 8.5-9" fill="none" stroke="${F[2]}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></g>`
+    ][i % 3];
+    const nS = (i % 3) + 1;
+    const sterne = Array.from({ length: nS }, (_, k) => `<path d="M${50 + (k - (nS - 1) / 2) * 11} 84.5l1.6 3.3 3.6.5-2.6 2.5.6 3.6-3.2-1.7-3.2 1.7.6-3.6-2.6-2.5 3.6-.5Z" fill="#FFE27A"/>`).join('');
+    if (!an) return `<svg class="badge-svg" viewBox="0 0 100 112" aria-hidden="true"><path d="${SCHILD}" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.2)" stroke-width="2.5"/>
+      <g opacity=".22">${motiv}</g><g fill="none" stroke="rgba(255,255,255,.45)" stroke-width="3" stroke-linecap="round"><rect x="41" y="72" width="18" height="14" rx="3" fill="rgba(255,255,255,.12)"/><path d="M45 72v-4a5 5 0 0 1 10 0v4"/></g></svg>`;
+    return `<svg class="badge-svg an" viewBox="0 0 100 112" aria-hidden="true">
+      <defs><linearGradient id="bzg${i}" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="${F[0]}"/><stop offset="1" stop-color="${F[1]}"/></linearGradient>
+        <clipPath id="bzc${i}"><path d="${SCHILD}"/></clipPath></defs>
+      <g class="bz-strahlen" opacity=".55">${Array.from({ length: 12 }, (_, k) => `<path d="M50 52 ${50 + 60 * Math.cos((k * 30 - 4) * Math.PI / 180)} ${52 + 60 * Math.sin((k * 30 - 4) * Math.PI / 180)} ${50 + 60 * Math.cos((k * 30 + 4) * Math.PI / 180)} ${52 + 60 * Math.sin((k * 30 + 4) * Math.PI / 180)}Z" fill="${F[0]}" opacity=".35"/>`).join('')}</g>
+      <path d="${SCHILD}" fill="url(#bzg${i})" stroke="rgba(255,255,255,.75)" stroke-width="3"/>
+      <path d="M50 13 81 24.5v27c0 21-12.5 36-31 45" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="3" stroke-linecap="round"/>
+      <g clip-path="url(#bzc${i})"><rect class="bz-glanz" x="-40" y="-10" width="22" height="140" fill="#fff" opacity=".4" transform="skewX(-18)"/></g>
+      ${motiv}
+      <path d="M10 80h80l-6 8 6 8H10l6-8Z" fill="${F[2]}" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linejoin="round"/>${sterne}
+      <g class="bz-funken" fill="#fff"><path d="M88 10q0 5 5 5-5 0-5 5 0-5-5-5 5 0 5-5Z"/><path d="M12 32q0 4 4 4-4 0-4 4 0-4-4-4 4 0 4-4Z"/><path d="M92 62q0 3 3 3-3 0-3 3 0-3-3-3 3 0 3-3Z"/></g></svg>`;
   }
 
   function zeigeLevelEnde() {
@@ -1407,7 +1506,7 @@
     if (NA && NA.phase === 'antwort') {
       if (k === 'p') antworte(true);
       else if (k === 'e') antworte(false);
-      else if (k === 'j' && !$('#joker').hidden) jokerEinsetzen();
+      else if (k === 'j' && !$('#joker').closest('.chip-box').classList.contains('zu')) jokerEinsetzen();
     } else if (FB) {
       if (k === 'arrowright' || k === 'arrowdown') { e.preventDefault(); weiter(); }
       else if (k === 'arrowleft' || k === 'arrowup') { e.preventDefault(); aktiviere(FB.i - 1); }
@@ -1467,6 +1566,7 @@
     $('.joker-figur').innerHTML = JOKER_SVG;
     jokerAnzeigen();
     $('#joker').addEventListener('click', () => { K.klick(); jokerEinsetzen(); });
+    $('#serie').addEventListener('click', () => { K.klick(); serieInfo(); });
     window.addEventListener('pagehide', () => LMS.beenden());
     window.addEventListener('beforeunload', () => LMS.beenden());
 

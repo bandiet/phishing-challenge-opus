@@ -1,8 +1,28 @@
 {
   "_kommentar": "Welcher Klang für welche Rolle: 'synth' = live erzeugt (js/klang.js), sonst Datei aus raw/ ohne .mp3. level = Lautheit (dB RMS), max = höchstens so viele Sekunden. Danach: python3 tools/sfx/bouw_klang.py",
-  "aankomst": { "datei": "synth", "level": -30, "max": 0.45 },
-  "post":     { "datei": "synth", "level": -27, "max": 0.7 },
-  "knop":     { "datei": "synth", "level": -30, "max": 0.12 },
-  "hacker":   { "datei": "synth", "level": -28, "max": 0.45 },
-  "joker":    { "datei": "synth", "level": -25, "max": 0 }
+  "aankomst": {
+    "datei": "synth",
+    "level": -30,
+    "max": 0.45
+  },
+  "post": {
+    "datei": "synth",
+    "level": -27,
+    "max": 0.7
+  },
+  "knop": {
+    "datei": "synth",
+    "level": -30,
+    "max": 0.12
+  },
+  "hacker": {
+    "datei": "wusch-2",
+    "level": -53,
+    "max": 0.5
+  },
+  "joker": {
+    "datei": "synth",
+    "level": -25,
+    "max": 0
+  }
 }

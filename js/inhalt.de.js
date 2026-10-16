@@ -35,7 +35,7 @@ window.PC_INHALT = {
     hinweiseUeberspringbar: true, // kleiner "Hinweise überspringen"-Link
     bestehensgrenze: 80,          // % für "passed" im LMS (= masteryscore im Original-Manifest)
     interaktionenMelden: true,    // jede Antwort als cmi.interaction
-    jokerBei: [3, 5, 7],          // Joker bei dieser Serie; ab der letzten Zahl bei jeder weiteren richtigen Antwort
+    jokerBei: [3, 6, 8, 10, 12, 14], // Joker bei dieser Serie (alles richtig = 6 Joker); danach alle zwei richtigen Antworten
     jokerMax: 9                   // mehr Joker kann man nicht sammeln
   },
 
@@ -191,7 +191,10 @@ window.PC_INHALT = {
       erklaerung: 'Deine Serie! Jede richtige Antwort in Folge lässt die Flamme wachsen.',
       zwei: ['2 in Folge! Starker Blick!', 'Läuft bei dir! Weiter so!', 'Sicherheitsprofi am Werk!', 'Perfekt erkannt!'],
       vier: ['{{n}} in Folge! Unaufhaltsam!', 'Absolute Spitzenklasse!', 'ON FIRE! Nichts entgeht dir!', 'Meisterleistung! Weiter so!'],
-      verloren: 'Serie beendet – die nächste richtige Antwort startet eine neue.'
+      verloren: 'Serie beendet – die nächste richtige Antwort startet eine neue.',
+      bisJokerEins: 'Noch eine richtige Antwort – dann gibt es einen Joker!',
+      bisJoker: 'Noch {{n}} richtige Antworten bis zum nächsten Joker.',
+      jokerVoll: 'Du hast schon {{n}} Joker – setz zuerst einen ein.'
     },
 
     // Joker: gibt es für eine Serie (siehe einstellungen.jokerBei); ein Klick zeigt einen Tipp zur aktuellen Nachricht
@@ -269,6 +272,7 @@ window.PC_INHALT = {
           von: { name: 'LinkedIn Network', adresse: 'messages-noreply@linkedin.com' },
           an: '{{email}}', zeit: 'Gestern, 17:30',
           betreff: 'Dr. Stefan Weber möchte sich auf LinkedIn mit Ihnen vernetzen',
+          // Korrektur: Link endete auf „12345“ – wirkte selbst verdächtig.
           inhalt: `
 <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.55;color:#1f2937;">
   <div style="display:flex;align-items:center;gap:10px;margin:0 0 20px 0;"><svg width="30" height="30" viewBox="0 0 24 24" style="display:block;"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="#0A66C2"></path></svg><div style="font-size:1.267em;font-weight:700;color:#0A66C2;">LinkedIn</div></div>
@@ -280,7 +284,7 @@ window.PC_INHALT = {
     </div>
     <div style="margin-top:14px;">möchte sich mit Ihnen vernetzen.</div>
   </div>
-  <div style="margin-top:18px;"><a data-ziel="https://www.linkedin.com/comm/mynetwork/invite-accept/12345" style="display:inline-block;background:#0A66C2;color:#fff;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:18px;">Einladung annehmen</a></div>
+  <div style="margin-top:18px;"><a data-ziel="https://www.linkedin.com/comm/mynetwork/invite-accept/7389216054" style="display:inline-block;background:#0A66C2;color:#fff;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:18px;">Einladung annehmen</a></div>
 </div>`,
           hinweise: [
             { id: 'a', bei: 'absender', art: 'ok', titel: 'Absender-Domain passt',

@@ -9,7 +9,11 @@ Pro Nachricht (E-Mail wie in einem echten Postfach, SMS wie auf dem iPhone, Team
 2. Ergebnis + Kernaussage im Panel, kleiner Stempel oben rechts an der Nachricht. Danach – nacheinander, nicht gleichzeitig – Serie, Joker und (bei Phishing) der Hacker.
 3. **Details anzeigen** → Stempel weg, Hinweise der Reihe nach: die aktive Stelle bekommt einen gemeinsamen Umriss (auch über mehrere Zeilen), die übrigen sind dünn umrandet, der Rest ist abgedunkelt; im breiten Layout zoomt die Nachricht leicht auf die Stelle.
 
-**Serie** (Flamme oben rechts): richtige Antworten in Folge, beim ersten Mal erklärt. **Joker** (violette Flamme daneben): verdient bei Serie 3, 5, 7 und danach bei jeder weiteren richtigen Antwort (höchstens 9, `einstellungen.jokerBei` / `jokerMax`). Ein Klick vor der Antwort zeigt den `joker`-Tipp der Nachricht (verrät die Antwort nicht). Joker und „schon erklärt“ stehen in den suspend_data.
+**Serie** (Flamme oben rechts): richtige Antworten in Folge; ein Klick sagt, wie viele noch bis zum nächsten Joker fehlen. **Joker** (violette Flamme daneben): verdient bei Serie 3, 6, 8, 10, 12, 14 (`einstellungen.jokerBei`, höchstens `jokerMax`). Ein Klick vor der Antwort zeigt den `joker`-Tipp der Nachricht (verrät die Antwort nicht). Joker und „schon erklärt“ stehen in den suspend_data.
+
+**Wer meldet sich?** Nach einer Antwort höchstens eine Figur: Joker (neu verdient), Hacker (reingefallen bzw. abwechselnd bei durchschauten Phishing-Mails) oder die Flamme, die aus ihrem Kreis springt (Erklärung, Serie beendet, 2er-/4er-Serie) – oder keine. Hacker und Flamme wechseln sich ab.
+
+**Täusch-Domains** (`js/domains.js`): die unauffälligsten Kniffe zuerst – Doppelgänger-Zeichen (rn/m, vv/w, cl/d, I/l, g/q, lc/k), fehlender Doppelbuchstabe, doppelter Bindestrich; vertauschte Buchstaben nur, wenn nichts anderes passt.
 
 **Hacker** wie im Original (SVG): lugt von links herein, zwinkert mit Funkeln (hat dich erwischt) oder bekommt große Augen und Schweiß (durchschaut). **Konfetti** nach einem geschafften Level, **Feuerwerk** am Ende (beides `js/feier.js`, eine Leinwand).
 
