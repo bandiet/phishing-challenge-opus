@@ -2,8 +2,10 @@
    Phishing Challenge (intern: Opus) – Ablauf
    Start → Briefing → Profil → Hallo →
    (Level-Start → 5 Nachrichten → Auswertung → Sicherheitstipp) ×3 → Ergebnis
-   Eine Nachricht: Situation lesen → Phishing/Echt → Hinweise der Reihe
+   Eine Nachricht: Situation lesen → Phishing/Echt → Ergebnis (Stempel,
+   Serie, Hacker nacheinander) → „Details anzeigen“ → Hinweise der Reihe
    nach; die aktive Stelle bekommt einen Rahmen, der Rest wird dunkler.
+   Joker (für eine Serie verdient) zeigen vor der Antwort einen Tipp.
    Test-Sprünge: #start #profil #l2 (Level-Start) #l2n3 (Nachricht)
    #e1 (Auswertung) #k1 (Sicherheitstipp) #ende – ?neu löscht den Stand.
    ------------------------------------------------------------------ */
@@ -90,6 +92,14 @@
       <rect x="31" y="31" width="6" height="6"/><rect x="41" y="35" width="6" height="6"/><rect x="47" y="45" width="8" height="8"/><rect x="33" y="45" width="6" height="10"/></g><g fill="#fff"><rect x="13" y="13" width="8" height="8"/><rect x="43" y="13" width="8" height="8"/><rect x="13" y="43" width="8" height="8"/></g></svg>`
   };
 
+  // Der Joker: kleine violette Flamme mit Gesicht
+  const JOKER_SVG = `<svg class="joker-svg" viewBox="0 0 40 48" aria-hidden="true"><defs><linearGradient id="jkg" x1="0" y1="1" x2=".2" y2="0"><stop offset="0" stop-color="#5B3FE0"/><stop offset=".55" stop-color="#9B6BFF"/><stop offset="1" stop-color="#5CE1FF"/></linearGradient></defs>
+    <path class="j-koerper" d="M20 46.5c-9.4 0-15.2-6.4-15.2-14.3 0-6.4 3.7-10.3 6.8-13.8 1.1 2.7 2.6 4.1 4.4 4.9-.7-6.2 1.9-12.6 7.6-19.3.3 6 3.8 9.3 6.9 12.9 2.6 3.1 4.7 6.6 4.7 11.4 0 9.6-5.8 18.2-15.2 18.2Z" fill="url(#jkg)"/>
+    <path d="M20 44c-5.5 0-9.2-3.7-9.2-8.6 0-3.5 2-5.8 3.9-7.6.8 1.5 1.8 2.3 3 2.7.1-3.2 1.6-6 4-8.6.6 3 2.4 4.8 4 6.6 1.6 1.8 3.1 3.9 3.1 7 0 4.8-3.4 8.5-8.8 8.5Z" fill="#fff" opacity=".22"/>
+    <g class="j-augen"><ellipse cx="15" cy="32" rx="3.1" ry="3.6" fill="#fff"/><ellipse cx="25.4" cy="32" rx="3.1" ry="3.6" fill="#fff"/>
+      <g class="j-pupillen"><circle cx="15.6" cy="32.6" r="1.7" fill="#1B0F4D"/><circle cx="26" cy="32.6" r="1.7" fill="#1B0F4D"/></g></g>
+    <path d="M16.6 38.6q3.6 2.8 7.2 0" fill="none" stroke="#1B0F4D" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+
   /* ================= Profil & Platzhalter ================= */
   function setzeProfil(p) {
     const w = D.profil(p || {}, I);
@@ -98,15 +108,16 @@
   }
 
   /* ================= Zustand ================= */
-  const S = { profil: null, level: 0, nr: 0, erg: LV.map(() => []), serie: 0, fertig: false };
+  const S = { profil: null, level: 0, nr: 0, erg: LV.map(() => []), serie: 0, joker: 0, erklaert: 0, fertig: false };
+  const ERKL = { serie: 1, joker: 2 };   // Bits in S.erklaert: was wurde schon einmal erklärt
   function neuerStand(profil) {
-    S.profil = profil || S.profil; S.level = 0; S.nr = 0; S.erg = LV.map(() => []); S.serie = 0; S.fertig = false;
+    S.profil = profil || S.profil; S.level = 0; S.nr = 0; S.erg = LV.map(() => []); S.serie = 0; S.joker = 0; S.fertig = false;
   }
   let testModus = false;   // Test-Sprünge (#l2n3 …) speichern nichts und melden nichts ans LMS
   function speichere() {
     if (testModus) return;
     const p = S.profil || {};
-    LMS.speichern({ v: 3, p: [p.name || '', p.firma || '', p.email || ''], l: S.level, m: S.nr, e: S.erg.map(a => a.join('')), s: S.serie, f: S.fertig ? 1 : 0 },
+    LMS.speichern({ v: 3, p: [p.name || '', p.firma || '', p.email || ''], l: S.level, m: S.nr, e: S.erg.map(a => a.join('')), s: S.serie, j: S.joker, x: S.erklaert, f: S.fertig ? 1 : 0 },
       'L' + (S.level + 1) + '-' + Math.min(S.nr + 1, LV[S.level].nachrichten.length));
   }
   function ladeStand(d) {
@@ -117,6 +128,8 @@
     S.erg = LV.map((l, i) => (d.e && typeof d.e[i] === 'string' ? d.e[i].split('').slice(0, l.nachrichten.length).map(Number) : []));
     S.nr = S.erg[S.level].length;
     S.serie = d.s | 0;
+    S.joker = Math.max(0, Math.min(E.jokerMax || 9, d.j | 0));
+    S.erklaert = d.x | 0;
     S.fertig = !!d.f;
     return true;
   }
@@ -171,29 +184,89 @@
       p.className = e === 1 ? 'ja' : e === 0 ? 'nein' : i === S.nr && app.dataset.screen === 'nachricht' ? 'jetzt' : '';
     });
   }
+  // Sprechblase links neben Serie/Joker (schmal: unter der Leiste). Meldungen laufen
+  // nacheinander, damit Serie und Joker nicht gleichzeitig reden.
+  const hudBlase = (() => {
+    const bl = $('#hud-blase'), schlange = [];
+    let t = 0, laeuft = false;
+    function naechste() {
+      const x = schlange.shift();
+      if (!x) { laeuft = false; return; }
+      laeuft = true;
+      bl.textContent = x.text;
+      bl.dataset.art = x.art;
+      bl.classList.remove('an'); void bl.offsetWidth; bl.classList.add('an');
+      if (x.ton) x.ton();
+      clearTimeout(t);
+      t = setTimeout(() => { bl.classList.remove('an'); t = setTimeout(naechste, T(260)); }, T(x.dauer || 2800));
+    }
+    return {
+      sag(text, art, dauer, ton) { schlange.push({ text, art, dauer, ton }); if (!laeuft) naechste(); },
+      weg() { schlange.length = 0; clearTimeout(t); laeuft = false; bl.classList.remove('an'); }
+    };
+  })();
+  const zufall = l => l[Math.floor(Math.random() * l.length)];
+
   // Serie (Streak) oben rechts: Flamme mit Zahl; beim ersten Mal kurz erklärt
-  let serieErklaert = false, serieT = 0;
   function serieAnzeigen(neu, verloren) {
-    const el = $('#serie'), bl = $('#serie-blase');
+    const el = $('#serie');
     const war = !el.hidden;
     el.hidden = S.serie < 2 && !(verloren && war);
     $('#serie-zahl').textContent = S.serie;
     el.title = f(U.serie.titel, { n: S.serie });
     el.classList.toggle('gross', S.serie >= 4);
     el.classList.toggle('aus', !!verloren);
-    if (verloren && war) { setTimeout(() => { el.hidden = S.serie < 2; el.classList.remove('aus'); }, T(1400)); return; }
+    if (verloren && war) {
+      hudBlase.sag(U.serie.verloren, 'serie', 2600);
+      setTimeout(() => { el.hidden = S.serie < 2; el.classList.remove('aus'); }, T(1600));
+      return;
+    }
     if (!neu || S.serie < 2) return;
     el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
     let text = '';
-    if (!serieErklaert) { text = U.serie.erklaerung; serieErklaert = true; }
-    else if (S.serie === 2) text = U.serie.zwei[Math.floor(Math.random() * U.serie.zwei.length)];
-    else if (S.serie >= 4 && S.serie % 2 === 0) text = U.serie.vier[Math.floor(Math.random() * U.serie.vier.length)];
+    if (!(S.erklaert & ERKL.serie)) { text = U.serie.erklaerung; S.erklaert |= ERKL.serie; speichere(); }
+    else if (S.serie === 2) text = zufall(U.serie.zwei);
+    else if (S.serie >= 4 && S.serie % 2 === 0) text = f(zufall(U.serie.vier), { n: S.serie });
     if (!text) { K.zaehler(); return; }
-    bl.textContent = text;
-    bl.classList.remove('an'); void bl.offsetWidth; bl.classList.add('an');
-    K.serie();
-    clearTimeout(serieT); serieT = setTimeout(() => bl.classList.remove('an'), T(text === U.serie.erklaerung ? 4200 : 2800));
+    hudBlase.sag(text, 'serie', text === U.serie.erklaerung ? 4200 : 2600, K.serie);
   }
+
+  // Joker: für eine Serie verdient (einstellungen.jokerBei), ein Klick zeigt einen Tipp
+  const JB = E.jokerBei || [3, 5, 7];
+  const jokerFaellig = n => JB.includes(n) || n > JB[JB.length - 1];
+  function jokerAnzeigen(neu) {
+    const el = $('#joker');
+    el.hidden = S.joker < 1 && !(S.erklaert & ERKL.joker);
+    el.classList.toggle('leer', S.joker < 1);
+    $('#joker-zahl').textContent = S.joker;
+    const titel = f(U.joker.titel, { n: S.joker });
+    el.title = titel; el.setAttribute('aria-label', titel);
+    if (!neu) return;
+    el.classList.remove('kommt'); void el.offsetWidth; el.classList.add('kommt');
+    if (!(S.erklaert & ERKL.joker)) { S.erklaert |= ERKL.joker; speichere(); hudBlase.sag(U.joker.erster, 'joker', 4600, K.joker); }
+    else hudBlase.sag(zufall(U.joker.neu), 'joker', 2400, K.joker);
+  }
+  function jokerEinsetzen() {
+    const na = NA;
+    const el = $('#joker');
+    el.classList.remove('wackelt'); void el.offsetWidth;
+    if (!na || na.phase !== 'antwort') { el.classList.add('wackelt'); hudBlase.weg(); hudBlase.sag(U.joker.spaeter, 'joker', 2800); K.tipp(); return; }
+    if (na.joker) { el.classList.add('wackelt'); hudBlase.weg(); hudBlase.sag(U.joker.schon, 'joker', 2400); K.tipp(); return; }
+    if (S.joker < 1) { el.classList.add('wackelt'); hudBlase.weg(); hudBlase.sag(U.joker.leer, 'joker', 3000); K.tipp(); return; }
+    const tipp = na.m.joker;
+    if (!tipp) return;
+    S.joker--; na.joker = true;
+    speichere();
+    hudBlase.weg();
+    el.classList.add('hilft');
+    setTimeout(() => el.classList.remove('hilft'), T(900));
+    jokerAnzeigen();
+    K.jokerTipp();
+    const karte = `<div class="joker-tipp"><span class="jt-kopf">${JOKER_SVG}${esc(U.joker.tippTitel)}</span><p>${f(tipp)}</p></div>`;
+    $$('.lage', na.el).forEach(l => l.insertAdjacentHTML('beforeend', karte));
+    ansage(U.joker.tippTitel + ': ' + tipp.replace(/<[^>]+>/g, ''));
+  }
+
   function tonAnzeigen() {
     app.classList.toggle('stumm', !K.an());
     $('#ton').setAttribute('aria-label', K.an() ? U.tonAn : U.tonAus);
@@ -223,43 +296,27 @@
 
   function ansage(text) { const s = $('#sr'); s.textContent = ''; setTimeout(() => { s.textContent = text; }, 60); }
 
-  // Hacker: breit von links unten, schmal hinter der Kante des Feedback-Panels hervor
+  // Hacker wie im Original: lugt von links ins Bild, zwinkert (hat dich erwischt)
+  // oder schwitzt (durchschaut) – mit Sprechblase
   const hacker = (() => {
-    const el = $('#hacker'), blase = $('#hacker-blase'), zaehler = { erwischt: 0, durchschaut: 0 };
-    let t = 0;
-    function heim() { if (el.parentNode !== app) app.appendChild(el); }
+    const el = $('#hacker'), blase = $('#hacker-blase');
+    let t = 0, t2 = 0;
     return {
       zeige(stimmung, text, dauer) {
-        clearTimeout(t);
-        if (!text) { const l = U.hacker[stimmung]; text = l[Math.floor(Math.random() * l.length)]; }
-        blase.textContent = text;
-        if (innerWidth < 768) return;   // wie im Original: auf kleinen Bildschirmen nicht
-        heim();
+        clearTimeout(t); clearTimeout(t2);
+        blase.textContent = text || zufall(U.hacker[stimmung]);
         el.className = 'hacker ' + (stimmung === 'erwischt' ? 'freut' : 'aergert');
         void el.offsetWidth;
         el.classList.add('da');
-        (stimmung === 'erwischt' ? K.hackerHaha : K.hackerGrr)();
-        t = setTimeout(() => el.classList.remove('da'), dauer || 4300);
+        K.hackerWusch();
+        t2 = setTimeout(() => (stimmung === 'erwischt' ? K.hackerHaha : K.hackerGrr)(), T(650));
+        t = setTimeout(() => el.classList.remove('da'), T(dauer || 4800));
       },
-      weg() { clearTimeout(t); el.classList.remove('da'); heim(); }
+      weg() { clearTimeout(t); clearTimeout(t2); el.classList.remove('da'); }
     };
   })();
 
-  function konfetti(menge) {
-    if (ruhig) return;
-    const box = $('#konfetti'), farben = ['#17FFC0', '#FF5C93', '#FFCF4A', '#8B6EFF', '#5CC8FF', '#FFFFFF', '#FF8278'];
-    const frag = document.createDocumentFragment();
-    for (let i = 0; i < (menge || 90); i++) {
-      const e = document.createElement('i'), links = i % 2 === 0;
-      e.style.cssText = `--sx:${links ? 14 : 86}%;--sy:78%;--x:${(links ? 1 : -1) * (60 + Math.random() * 460)}px;--hoch:${-(260 + Math.random() * 380)}px;` +
-        `--fall:${120 + Math.random() * 360}px;--r:${Math.round((Math.random() * 2 - 1) * 900)}deg;--w:${6 + Math.random() * 6}px;--h:${8 + Math.random() * 10}px;` +
-        `--c:${farben[i % farben.length]};--t:${1.7 + Math.random() * 1.2}s;--d:${Math.random() * .3}s`;
-      frag.appendChild(e);
-    }
-    box.appendChild(frag);
-    K.konfetti();
-    setTimeout(() => { box.innerHTML = ''; }, 3600);
-  }
+  const konfetti = menge => window.Feier && Feier.konfetti(menge);
 
   /* ================= Deko-QR-Code (nicht scannbar) ================= */
   function qrSvg(saat) {
@@ -288,34 +345,56 @@
   }
 
   /* ================= Nachrichten darstellen ================= */
+  // wie Outlook: erstes und letztes Wort („IT Infrastructure Security“ → IS); Titel, Rechtsform und Zusätze nach | · fallen weg
   function initialen(name) {
-    const t = String(name).replace(/[^A-Za-zÀ-ÿ ]/g, ' ').trim().split(/\s+/).filter(Boolean);
-    return ((t[0] || '?')[0] + (t[1] ? t[1][0] : '')).toUpperCase();
+    const t = String(name).split(/[|·]/)[0].replace(/\b(Dr|Prof)\.\s*/g, '').replace(/\b(GmbH|AG|Ltd|Inc)\b\.?/g, '')
+      .replace(/[^A-Za-zÀ-ÿ ]/g, ' ').trim().split(/\s+/).filter(Boolean);
+    return ((t[0] || '?')[0] + (t.length > 1 ? t[t.length - 1][0] : '')).toUpperCase();
   }
   function anhaenge(liste) {
     return (liste || []).map((a, i) => {
       const name = f(a.name), endung = (name.split('.').pop() || '').slice(0, 4).toUpperCase();
+      // Farbe wie in Outlook nach der TATSÄCHLICHEN Endung (…docx.exe ist ein Programm)
+      const farbe = { DOCX: '#2B579A', DOC: '#2B579A', XLSX: '#107C41', XLS: '#107C41', PPTX: '#C43E1C', PDF: '#C4314B', ZIP: '#9A6B00' }[endung] || '#5B6170';
       return `<button type="button" class="g-anhang"${i === 0 ? ' data-bei="anhang"' : ''}>` +
-        `<span class="g-anhang-ico">${esc(endung)}</span><span class="g-anhang-text"><b>${name}</b><small>${esc(a.groesse)}</small></span></button>`;
+        `<span class="g-anhang-ico" style="background:${farbe}">${esc(endung)}</span><span class="g-anhang-text"><b>${name}</b><small>${esc(a.groesse)}</small></span></button>`;
     }).join('');
   }
 
+  // Farbe für Initialen-Avatare wie in Outlook/Teams: fest je Name
+  const AV_FARBEN = ['#0F6CBD', '#8764B8', '#C239B3', '#CA5010', '#498205', '#038387', '#4F6BED', '#986F0B', '#B4009E'];
+  function avFarbe(name) {
+    let h = 0; for (const c of String(name)) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    return AV_FARBEN[h % AV_FARBEN.length];
+  }
+
+  // E-Mail im Stil eines echten Postfachs (Lesebereich mit Symbolleiste)
   function geraetMail(m) {
-    const abs = f(m.von.name);
+    const abs = f(m.von.name), roh = abs.replace(/&amp;/g, '&');
+    const IC = {
+      antw: '<svg viewBox="0 0 24 24"><path d="M10 8 5 12.5l5 4.5M5.5 12.5H14a5 5 0 0 1 5 5v1"/></svg>',
+      alle: '<svg viewBox="0 0 24 24"><path d="M8 8l-4.5 4.5L8 17M12 8l-4.5 4.5L12 17M8 12.5h7a5 5 0 0 1 5 5v1"/></svg>',
+      weiter: '<svg viewBox="0 0 24 24"><path d="M14 8l5 4.5-5 4.5M18.5 12.5H10a5 5 0 0 0-5 5v1"/></svg>',
+      mehr: '<svg viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></svg>'
+    };
     return `<article class="geraet mail">
+      <div class="mail-leiste" aria-hidden="true">
+        <span class="ml-k">${IC.antw}<span>Antworten</span></span><span class="ml-k">${IC.alle}<span>Allen antworten</span></span>
+        <span class="ml-k">${IC.weiter}<span>Weiterleiten</span></span><span class="ml-mehr">${IC.mehr}</span>
+      </div>
       <div class="mail-kopf">
         <h2 class="g-betreff" data-bei="betreff">${f(m.betreff)}</h2>
         <div class="mail-meta">
-          <span class="m-av">${esc(initialen(abs.replace(/&amp;/g, '&')).slice(0, 1))}</span>
+          <span class="m-av" style="--c:${avFarbe(roh)}">${esc(initialen(roh))}</span>
           <div class="mail-wer">
-            <p class="mail-von"><b>${abs}</b> <span class="mail-adr"${m.von.hover ? ` data-antwort="${f(m.von.hover)}"` : ''}>&lt;<span class="g-adresse" data-bei="absender">${f(m.von.adresse)}</span>&gt;</span></p>
+            <p class="mail-von"><b>${abs}</b> <span class="mail-adr" data-bei="absender"${m.von.hover ? ` data-antwort="${f(m.von.hover)}"` : ''}>&lt;${f(m.von.adresse)}&gt;</span></p>
             <p class="mail-an">${esc(U.an)}: ${f(m.an)}</p>
           </div>
           <time class="mail-zeit">${esc(m.zeit)}</time>
         </div>
+        ${m.extern ? `<p class="g-extern" data-bei="banner">${ICO.warn}<span>${esc(U.extern)}</span></p>` : ''}
+        ${m.anhang ? `<div class="g-anhaenge">${anhaenge(m.anhang)}</div>` : ''}
       </div>
-      ${m.extern ? `<p class="g-extern" data-bei="banner">${ICO.warn}<span>${esc(U.extern)}</span></p>` : ''}
-      ${m.anhang ? `<div class="g-anhaenge">${anhaenge(m.anhang)}</div>` : ''}
       <div class="mail-body">${f(m.inhalt)}</div>
     </article>`;
   }
@@ -324,15 +403,23 @@
     return `<div class="phone-status${dunkel ? ' dunkel' : ''}"><span>9:41</span>${ICO.status}</div>`;
   }
 
+  // SMS wie in iOS-Nachrichten
   function geraetSms(m) {
+    const ini = m.von.initialen || (/^[+\d\s]+$/.test(m.von.name) ? '' : initialen(m.von.name));
+    const blasen = m.nachrichten.map((t, i) => `<div class="blase b-anim${i === m.nachrichten.length - 1 ? ' schwanz' : ''}">${f(t)}</div>`).join('');
     return `<article class="geraet phone sms"><div class="phone-screen">
       ${phoneStatus()}
-      <div class="sms-kopf"><span class="sms-av">${ICO.person}</span><span class="sms-nummer" data-bei="absender">${f(m.von.name)}${m.von.info ? `<small>${f(m.von.info)}</small>` : ''}</span></div>
-      <div class="chat">
-        <p class="chat-datum">${esc(U.textnachricht)} · ${esc(U.heute)} ${esc(m.zeit)}</p>
-        ${m.nachrichten.map(t => `<div class="blase b-anim">${f(t)}</div>`).join('')}
+      <div class="sms-kopf">
+        <span class="sms-zurueck">${ICO.zurueck}</span>
+        <span class="sms-av">${ini ? `<b>${esc(ini)}</b>` : ICO.person}</span>
+        <span class="sms-nummer" data-bei="absender">${f(m.von.name)}${m.von.info ? `<small>${f(m.von.info)}</small>` : ''}</span>
       </div>
-      <div class="phone-eingabe"><span>${esc(U.nachrichtSchreiben)}</span></div>
+      <div class="chat">
+        <p class="chat-datum"><b>${esc(U.textnachricht)}</b><br>${esc(U.heute)} ${esc(m.zeit)}</p>
+        ${blasen}
+      </div>
+      <div class="phone-eingabe"><span class="pe-plus">+</span><span class="pe-feld">${esc(U.textnachricht)}<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></span></div>
+      <i class="home-balken"></i>
     </div></article>`;
   }
 
@@ -354,20 +441,33 @@
     </div></article>`;
   }
 
+  // Microsoft Teams (neues Teams): Leiste links, Suche oben, Chat mit grauer Blase
   function geraetTeams(m) {
     const ini = esc(m.von.initialen || initialen(m.von.name));
+    const farbe = avFarbe(m.von.name);
+    const RAIL = [
+      ['Aktivität', '<path d="M12 4a5 5 0 0 0-5 5v3.5L5.5 15h13L17 12.5V9a5 5 0 0 0-5-5ZM10 18a2 2 0 0 0 4 0"/>'],
+      ['Chat', '<path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v6a2.5 2.5 0 0 1-2.5 2.5H11l-4 3.5V15h0a2 2 0 0 1-2-2Z"/>', true],
+      ['Teams', '<circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.3"/><path d="M3.5 18.5a5.5 5.5 0 0 1 11 0M14 18.5h6.5a4 4 0 0 0-5.6-3.7"/>'],
+      ['Kalender', '<rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>'],
+      ['Anrufe', '<path d="M6 4h3l1.6 4-2 1.3a10 10 0 0 0 4.2 4.2l1.3-2 4 1.6v3a2 2 0 0 1-2 2A14 14 0 0 1 4 6a2 2 0 0 1 2-2Z"/>']
+    ];
     return `<article class="geraet fenster teams">
-      <div class="teams-rail"><span class="tr-logo">T</span><i></i><i class="an"></i><i></i><i></i></div>
-      <div class="teams-haupt">
-        <div class="teams-kopf"><span class="m-av teams-av">${ini}<i class="presence"></i></span>
-          <div class="teams-wer" data-bei="absender"><b>${f(m.von.name)}</b><small>${f(m.von.info || '')}</small></div>
-          <span class="teams-tabs"><b>Chat</b><span>Dateien</span></span></div>
-        <div class="chat teams-chat">
-          <div class="teams-msg"><span class="m-av teams-av klein">${ini}</span>
-            <div class="teams-inhalt"><p class="teams-meta"><b>${f(m.von.name)}</b><time>${esc(m.zeit)}</time></p>
-              ${m.nachrichten.map(t => `<div class="teams-blase b-anim">${f(t)}</div>`).join('')}</div></div>
+      <div class="teams-top" aria-hidden="true"><span class="tt-punkte"><i></i><i></i><i></i></span><span class="tt-suche"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></svg>Suchen</span><span class="m-av tt-ich">${esc(initialen(V.name ? V.name.replace(/&amp;/g, '&') : 'Du'))}</span></div>
+      <div class="teams-body">
+        <nav class="teams-rail" aria-hidden="true">${RAIL.map(([n, d, an]) => `<span class="tr-k${an ? ' an' : ''}"><svg viewBox="0 0 24 24">${d}</svg><small>${n}</small></span>`).join('')}</nav>
+        <div class="teams-haupt">
+          <div class="teams-kopf"><span class="m-av teams-av" style="--c:${farbe}">${ini}<i class="presence"></i></span>
+            <div class="teams-wer" data-bei="absender"><b>${f(m.von.name)}</b><small>${f(m.von.info || '')}</small></div>
+            <span class="teams-tabs"><b>Chat</b><span>Freigegeben</span></span></div>
+          <div class="chat teams-chat">
+            <p class="chat-datum">${esc(U.heute)}</p>
+            <div class="teams-msg"><span class="m-av teams-av klein" style="--c:${farbe}">${ini}</span>
+              <div class="teams-inhalt"><p class="teams-meta"><b>${f(m.von.name)}</b><time>${esc(m.zeit)}</time></p>
+                ${m.nachrichten.map(t => `<div class="teams-blase b-anim">${f(t)}</div>`).join('')}</div></div>
+          </div>
+          <div class="teams-eingabe"><span>${esc(U.nachrichtSchreiben)}</span><span class="te-icons"><i></i><i></i><i></i><svg viewBox="0 0 24 24"><path d="M4 12 20 4l-4.5 16-3.5-6.5L4 12Z"/></svg></span></div>
         </div>
-        <div class="teams-eingabe">${esc(U.nachrichtSchreiben)}</div>
       </div>
     </article>`;
   }
@@ -393,7 +493,11 @@
   function geraet(m) {
     const html = { email: geraetMail, sms: geraetSms, whatsapp: geraetWhatsapp, teams: geraetTeams, linkedin: geraetLinkedin }[m.art](m);
     const el = bau(html);
-    $$('.m-qr', el).forEach(q => { if (!q.querySelector('img')) q.innerHTML = qrSvg(q.dataset.ziel || m.id); q.setAttribute('role', 'img'); });
+    $$('.m-qr', el).forEach(q => {
+      if (q.querySelector('img')) q.classList.add('mit-bild');   // Bild aus dem Inhalt (nicht durch den Deko-Code ersetzen)
+      else q.innerHTML = qrSvg(q.dataset.ziel || m.id);
+      q.setAttribute('role', 'img');
+    });
     m.hinweise.forEach(h => {
       if (!h.bei) return;
       const z = el.querySelector(`[data-bei="${h.bei}"]`);
@@ -427,61 +531,94 @@
     return liste;
   }
 
-  /* ================= Spotlight: aktive Stelle hell, Rest dunkler ================= */
+  /* ================= Spotlight: aktive Stelle hell, Rest dunkler =================
+     Eine mehrzeilige Stelle bekommt EINEN gemeinsamen Umriss (keine Linien
+     zwischen den Zeilen). Die übrigen Stellen sind dünn umrandet und liegen
+     unter der dunklen Fläche – als ruhiger Überblick. */
   let spotNr = 0;
+  const SVGNS = 'http://www.w3.org/2000/svg';
   function spotBauen(g, liste) {
     const host = $('.phone-screen', g) || g;
     host.classList.add('spot-host');
     const id = 'spotmaske' + (++spotNr);
     const lay = bau(`<div class="spot" aria-hidden="true"><svg class="spot-dunkel"><defs><mask id="${id}" maskUnits="userSpaceOnUse">` +
-      `<rect x="0" y="0" width="100%" height="100%" fill="#fff"/></mask></defs>` +
-      `<rect class="spot-flaeche" x="0" y="0" width="100%" height="100%" mask="url(#${id})"/><g class="spot-rahmen"></g></svg></div>`);
+      `<rect x="0" y="0" width="100%" height="100%" fill="#fff"/><path class="loch" fill="#000"/></mask></defs>` +
+      `<g class="spot-alle"></g><rect class="spot-flaeche" x="0" y="0" width="100%" height="100%" mask="url(#${id})"/><path class="spot-rahmen"/></svg></div>`);
     host.appendChild(lay);
-    const sp = { host, lay, maske: $('mask', lay), rahmen: $('.spot-rahmen', lay), liste, aktiv: -1, loecher: [], anim: 0 };
+    const alle = $('.spot-alle', lay);
+    const duenn = liste.map(x => {
+      const pf = document.createElementNS(SVGNS, 'path');
+      pf.setAttribute('class', 'spot-duenn d-' + x.h.art);
+      alle.appendChild(pf);
+      return pf;
+    });
+    const sp = { host, lay, loch: $('.loch', lay), rahmen: $('.spot-rahmen', lay), duenn, liste, aktiv: -1, loecher: [], anim: 0 };
     sp.ro = new ResizeObserver(() => spotLayout(sp));
     sp.ro.observe(host);
-    spotLayout(sp);
     return sp;
   }
+  // Rechtecke einer Stelle in Koordinaten des Hosts – ein Zoom (transform: scale) wird herausgerechnet
   function spotRects(sp, el) {
     const hr = sp.host.getBoundingClientRect();
+    const k = sp.host.offsetWidth / (hr.width || 1);
     const block = el.classList.contains('hl-block');
     const rs = (block ? [el.getBoundingClientRect()] : Array.from(el.getClientRects())).filter(r => r.width > 1 && r.height > 1);
     const pad = block ? 8 : 5;
-    return rs.map(r => ({ x: r.left - hr.left - pad, y: r.top - hr.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 }));
+    return rs.map(r => ({ x: (r.left - hr.left) * k - pad, y: (r.top - hr.top) * k - pad, w: r.width * k + pad * 2, h: r.height * k + pad * 2 }));
+  }
+  // Umriss aus Zeilen-Rechtecken: berührende Zeilen werden zu einer Fläche verschmolzen
+  function umriss(rs, rad) {
+    if (!rs.length) return '';
+    const q = rs.map(r => ({ l: r.x, t: r.y, r: r.x + r.w, b: r.y + r.h })).sort((a, b) => a.t - b.t || a.l - b.l);
+    const gruppen = [];
+    q.forEach(z => {
+      const g = gruppen[gruppen.length - 1], v = g && g[g.length - 1];
+      if (v && Math.abs(z.l - v.l) < 2 && Math.abs(z.r - v.r) < 2 && Math.abs(z.t - v.t) < 2 && Math.abs(z.b - v.b) < 2) return;   // doppelt
+      if (v && z.t <= v.b + 2 && z.b > v.b + .5 && Math.min(z.r, v.r) - Math.max(z.l, v.l) > rad * 2) g.push(z);
+      else gruppen.push([z]);
+    });
+    return gruppen.map(g => {
+      const band = g.map((z, i) => ({ l: z.l, r: z.r, t: i ? (g[i - 1].b + z.t) / 2 : z.t, b: i < g.length - 1 ? (z.b + g[i + 1].t) / 2 : z.b }));
+      let pts = [];
+      band.forEach(z => pts.push([z.r, z.t], [z.r, z.b]));
+      for (let i = band.length - 1; i >= 0; i--) pts.push([band[i].l, band[i].b], [band[i].l, band[i].t]);
+      // doppelte und gerade durchlaufende Punkte entfernen
+      for (let n = 0; n < 3; n++) {
+        pts = pts.filter((p, i) => { const o = pts[(i + 1) % pts.length]; return Math.abs(p[0] - o[0]) + Math.abs(p[1] - o[1]) > .5; });
+        pts = pts.filter((p, i) => {
+          const a = pts[(i - 1 + pts.length) % pts.length], c = pts[(i + 1) % pts.length];
+          return !((Math.abs(a[0] - p[0]) < .5 && Math.abs(c[0] - p[0]) < .5) || (Math.abs(a[1] - p[1]) < .5 && Math.abs(c[1] - p[1]) < .5));
+        });
+      }
+      if (pts.length < 3) return '';
+      const z = v => v.toFixed(1);
+      return pts.map((b, i) => {
+        const a = pts[(i - 1 + pts.length) % pts.length], c = pts[(i + 1) % pts.length];
+        const l1 = Math.hypot(b[0] - a[0], b[1] - a[1]), l2 = Math.hypot(c[0] - b[0], c[1] - b[1]);
+        const r = Math.min(rad, l1 / 2, l2 / 2);
+        const p1 = [b[0] + (a[0] - b[0]) * r / l1, b[1] + (a[1] - b[1]) * r / l1], p2 = [b[0] + (c[0] - b[0]) * r / l2, b[1] + (c[1] - b[1]) * r / l2];
+        return (i ? 'L' : 'M') + z(p1[0]) + ' ' + z(p1[1]) + 'Q' + z(b[0]) + ' ' + z(b[1]) + ' ' + z(p2[0]) + ' ' + z(p2[1]);
+      }).join('') + 'Z';
+    }).join('');
   }
   function spotSetze(sp, rs) {
-    // Rahmen um jede Teilfläche der aktiven Stelle
-    const rahmen = $$('rect', sp.rahmen);
-    while (rahmen.length < rs.length) {
-      const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      r.setAttribute('rx', '8'); sp.rahmen.appendChild(r); rahmen.push(r);
-    }
-    rahmen.forEach((r, k) => {
-      const q = rs[k];
-      if (!q) { r.remove(); return; }
-      r.setAttribute('x', q.x); r.setAttribute('y', q.y); r.setAttribute('width', Math.max(0, q.w)); r.setAttribute('height', Math.max(0, q.h));
-    });
-    const vorhanden = $$('rect.loch', sp.maske);
-    while (vorhanden.length < rs.length) {
-      const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      r.setAttribute('class', 'loch'); r.setAttribute('fill', '#000'); r.setAttribute('rx', '9');
-      sp.maske.appendChild(r); vorhanden.push(r);
-    }
-    vorhanden.forEach((r, k) => {
-      const q = rs[k];
-      if (!q) { r.remove(); return; }
-      r.setAttribute('x', q.x); r.setAttribute('y', q.y); r.setAttribute('width', Math.max(0, q.w)); r.setAttribute('height', Math.max(0, q.h));
-    });
+    const d = umriss(rs, 9);
+    sp.rahmen.setAttribute('d', d);
+    sp.loch.setAttribute('d', d);
+  }
+  function spotDuenn(sp) {
+    sp.liste.forEach((x, j) => sp.duenn[j].setAttribute('d', j === sp.aktiv ? '' : umriss(spotRects(sp, x.el), 7)));
   }
   function spotLayout(sp) {
-    if (!sp.host.isConnected) return;
-    if (sp.aktiv >= 0 && !sp.anim) { sp.loecher = spotRects(sp, sp.liste[sp.aktiv].el); spotSetze(sp, sp.loecher); }
+    if (!sp.host.isConnected || sp.aktiv < 0) return;
+    spotDuenn(sp);
+    if (!sp.anim) { sp.loecher = spotRects(sp, sp.liste[sp.aktiv].el); spotSetze(sp, sp.loecher); }
   }
   function spotZiel(sp, i) {
     sp.aktiv = i;
     sp.lay.classList.add('an');
     sp.lay.dataset.art = sp.liste[i].h.art;
+    spotDuenn(sp);
     const ziel = spotRects(sp, sp.liste[i].el);
     const mitte = r => ({ x: r.x + r.w / 2, y: r.y + r.h / 2, w: 0, h: 0 });
     const von = sp.loecher.length ? sp.loecher : ziel.map(mitte);
@@ -493,11 +630,46 @@
     const t0 = performance.now(), dauer = 420;
     const schritt = jetzt => {
       const t = Math.min(1, (jetzt - t0) / dauer), e = 1 - Math.pow(1 - t, 3);
-      spotSetze(sp, A.map((a, k) => ({ x: a.x + (B[k].x - a.x) * e, y: a.y + (B[k].y - a.y) * e, w: a.w + (B[k].w - a.w) * e, h: a.h + (B[k].h - a.h) * e })));
-      if (t < 1) sp.anim = requestAnimationFrame(schritt);
-      else { sp.anim = 0; sp.loecher = ziel; spotSetze(sp, ziel); }
+      if (t < 1) {
+        // Zeile für Zeile gleiten; die Zeilen bleiben dabei aneinander, der Umriss bleibt eine Fläche
+        const zw = A.map((a, k) => ({ x: a.x + (B[k].x - a.x) * e, y: a.y + (B[k].y - a.y) * e, w: a.w + (B[k].w - a.w) * e, h: a.h + (B[k].h - a.h) * e }));
+        spotSetze(sp, zw);
+        sp.anim = requestAnimationFrame(schritt);
+      } else { sp.anim = 0; sp.loecher = ziel; spotSetze(sp, ziel); }
     };
     sp.anim = requestAnimationFrame(schritt);
+  }
+
+  // Leichter Zoom auf die aktive Stelle: sie rückt ein Stück zur Mitte und nach vorn.
+  // Nur im breiten Layout; die Spalte scrollt dabei, falls die Stelle außerhalb liegt.
+  const ZOOM = 1.05, ZUG = 0.32, ZOOM_MAX = 70;
+  function zoomZu(fb, el) {
+    const r = $('.m-rahmen', fb.na.el), sp = fb.spalte;
+    if (!r) return;
+    if (!app.classList.contains('breit') || ruhig) { r.style.transform = ''; scrollZu(sp, el); return; }
+    const rr = r.getBoundingClientRect(), s0 = rr.width / (r.offsetWidth || 1);
+    const tf = getComputedStyle(r).transform;
+    const mx = tf && tf !== 'none' ? new DOMMatrixReadOnly(tf) : { e: 0, f: 0 };
+    const ox = rr.left - mx.e, oy = rr.top - mx.f;   // Lage ohne Zoom
+    const er = el.getBoundingClientRect();
+    const cx = (er.left + er.width / 2 - rr.left) / s0, cy = (er.top + er.height / 2 - rr.top) / s0, hh = er.height / s0;
+    const sr = sp.getBoundingClientRect();
+    // erst scrollen (falls nötig), dann von der neuen Lage aus zoomen
+    let neu = sp.scrollTop;
+    const oben = oy + cy - hh / 2, unten = oy + cy + hh / 2;
+    if (oben < sr.top + sr.height * 0.14 || unten > sr.bottom - sr.height * 0.14) neu = sp.scrollTop + (oy + cy) - (sr.top + sr.height / 2);
+    neu = Math.max(0, Math.min(sp.scrollHeight - sp.clientHeight, neu));
+    const oy2 = oy - (neu - sp.scrollTop);
+    // nie breiter zoomen, als die Spalte Platz hat – sonst würde die Nachricht seitlich abgeschnitten
+    const gl = fb.na.g.offsetLeft, gw = fb.na.g.offsetWidth;
+    const z = Math.max(1, Math.min(ZOOM, (sr.width - 20) / gw));
+    const lim = v => Math.max(-ZOOM_MAX, Math.min(ZOOM_MAX, v));
+    let dx = lim(cx * (1 - z) + ZUG * (sr.left + sr.width / 2 - ox - cx));
+    const dy = lim(cy * (1 - z) + ZUG * (sr.top + sr.height / 2 - oy2 - cy));
+    const minX = sr.left + 10 - ox - z * gl, maxX = sr.right - 10 - ox - z * (gl + gw);
+    dx = minX <= maxX ? Math.max(minX, Math.min(maxX, dx)) : (minX + maxX) / 2;
+    r.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${z.toFixed(3)})`;
+    if (Math.abs(neu - sp.scrollTop) > 1) sp.scrollTo({ top: neu, behavior: 'smooth' });
   }
 
   /* ================= URL-Anzeige mit hervorgehobener Domain ================= */
@@ -522,19 +694,26 @@
   }
 
   /* ================= Start ================= */
-  // Wie im Original: sieben Symbole tauchen klein in der Ferne auf und fliegen
-  // nacheinander durch die Bildmitte am Betrachter vorbei.
+  // Flug durch den Raum: Symbole tauchen klein rund um den Text auf und gleiten
+  // langsam nach außen – links nach links, rechts nach rechts, oben nach oben –
+  // ohne hinter dem Text vorbeizuziehen. Dazu ein paar Sterne für die Tiefe.
   function sternenflug() {
     const teile = [
-      BILD.postfach,
-      '<img src="assets/icon-lupe.png" alt="">',
-      BILD.warnung,
-      '<img src="assets/icon-entscheid.png" alt="">',
-      BILD.haken,
-      BILD.qr,
-      `<span class="sw-chip">${ICO.link}paypaI.com</span>`
+      [BILD.postfach, -1, -.32], ['<img src="assets/icon-lupe.png" alt="">', 1, -.42], [BILD.warnung, -.92, .5],
+      ['<img src="assets/icon-entscheid.png" alt="">', .95, .38], [BILD.haken, -.45, -1], [BILD.qr, .5, -1],
+      [`<span class="sw-chip">${ICO.link}paypaI.com</span>`, 1, .02], [BILD.level, -1, .08]
     ];
-    return `<div class="sternenflug" aria-hidden="true">${teile.map((h, i) => `<div class="flieg flieg-${i + 1}">${h}</div>`).join('')}</div>`;
+    const dauer = 15, n = teile.length;
+    const symbole = teile.map(([h, x, y], i) => {
+      const l = Math.hypot(x, y);
+      return `<div class="flieg" style="--dx:${(x / l).toFixed(3)};--dy:${(y / l).toFixed(3)};--t:${dauer}s;--d:${(-i * dauer / n - 1).toFixed(2)}s;--r0:${((i % 2 ? 1 : -1) * 8)}deg">${h}</div>`;
+    }).join('');
+    let sterne = '';
+    for (let i = 0; i < 22; i++) {
+      const w = (i / 22) * Math.PI * 2 + Math.random() * .25;
+      sterne += `<i class="stern" style="--dx:${Math.cos(w).toFixed(3)};--dy:${(Math.sin(w) * .8).toFixed(3)};--t:${(6 + Math.random() * 4).toFixed(1)}s;--d:${(-Math.random() * 10).toFixed(1)}s"></i>`;
+    }
+    return `<div class="sternenflug" aria-hidden="true">${sterne}${symbole}</div>`;
   }
 
   function zeigeStart(gespeichert) {
@@ -573,7 +752,7 @@
     const erg = $('#s-ergebnis', el);
     if (erg) erg.addEventListener('click', () => { K.klick(); zeigeFinale(true); });
     const neu = $('#s-neu', el);
-    if (neu) neu.addEventListener('click', () => { K.klick(); neuerStand(S.profil); speichere(); zeigeProfil(); });
+    if (neu) neu.addEventListener('click', () => { K.klick(); neuerStand(S.profil); speichere(); serieAnzeigen(); jokerAnzeigen(); zeigeProfil(); });
   }
 
   function fortsetzen() {
@@ -622,18 +801,40 @@
     </div></section>`);
     wechsel(el, 'profil');
     const name = $('#p-name', el), firma = $('#p-firma', el), email = $('#p-email', el), hinweis = $('#p-hinweis', el), auto = $('.auto', el);
-    let automatisch = !vor.email;
+    // Vorschlag aus Name und Firma, getrennt in [lokaler Teil, Domain]
+    const vorschlag = () => {
+      const e = D.profil({ name: name.value, firma: firma.value }, I).email, at = e.lastIndexOf('@');
+      return [e.slice(0, at), e.slice(at + 1)];
+    };
+    // Teile der Adresse, die noch dem letzten Vorschlag entsprechen, wandern mit Name/Firma mit –
+    // auch wenn der andere Teil schon von Hand geändert wurde.
+    let alt = vorschlag();
+    const leer = () => !name.value.trim() && !firma.value.trim();
     const aktualisieren = () => {
-      if (!automatisch) return;
-      // ohne Eingaben bleibt das Feld leer und zeigt das Beispiel als Platzhalter
-      email.value = name.value.trim() || firma.value.trim() ? D.profil({ name: name.value, firma: firma.value }, I).email : '';
+      const neu = vorschlag(), v = email.value.trim(), at = v.lastIndexOf('@');
+      let mitLokal = false, mitDomain = false;
+      if (!v) { email.value = leer() ? '' : neu.join('@'); mitLokal = mitDomain = true; }
+      else {
+        let lok = at >= 0 ? v.slice(0, at) : v, dom = at >= 0 ? v.slice(at + 1) : '';
+        if (lok.toLowerCase() === alt[0]) { lok = neu[0]; mitLokal = true; }
+        if (at >= 0 && dom.toLowerCase() === alt[1]) { dom = neu[1]; mitDomain = true; }
+        const wert = at >= 0 ? lok + '@' + dom : lok;
+        if (leer() && wert === neu.join('@')) email.value = '';   // alles gelöscht: wieder Beispiel als Platzhalter
+        else if (wert !== v) email.value = wert;
+      }
+      alt = neu;
+      auto.style.opacity = mitLokal || mitDomain ? 1 : 0;
       email.classList.remove('fehler'); hinweis.className = ''; hinweis.textContent = pr.emailHinweis;
     };
-    auto.style.opacity = automatisch ? 1 : 0;
-    if (automatisch) aktualisieren();
+    aktualisieren();
     name.addEventListener('input', aktualisieren);
     firma.addEventListener('input', aktualisieren);
-    email.addEventListener('input', () => { automatisch = email.value.trim() === ''; auto.style.opacity = automatisch ? 1 : 0; if (automatisch) aktualisieren(); });
+    email.addEventListener('input', () => {
+      const v = email.value.trim(), at = v.lastIndexOf('@'), neu = vorschlag();
+      const mit = !v || v.slice(0, at < 0 ? v.length : at).toLowerCase() === neu[0] || (at >= 0 && v.slice(at + 1).toLowerCase() === neu[1]);
+      auto.style.opacity = mit ? 1 : 0;
+      if (!v) aktualisieren();
+    });
     $('form', el).addEventListener('submit', e => {
       e.preventDefault();
       const mail = email.value.trim();
@@ -692,7 +893,7 @@
   function zeigeLevelIntro() {
     const lv = LV[S.level], n = lv.nachrichten.length, li = U.levelIntro;
     const el = bau(`<section class="s-intro zentriert"><div class="inhalt intro">
-      <div><span class="pille-kicker">${esc(f(li.kicker, { n: S.level + 1, gesamt: N_LV }))}</span>${punkte(S.level)}</div>
+      <div><span class="pille-kicker">${esc(f(li.kicker, { n: S.level + 1, gesamt: N_LV }))}</span></div>
       <div class="intro-icon">${BILD.level}<span class="intro-zahl">0</span></div>
       <h1 class="titel-gross">${esc(f(li.titel, { n: S.level + 1 }))}</h1>
       <p class="untertitel">${esc(lv.kicker)}</p>
@@ -814,6 +1015,10 @@
     })();
   }
 
+  // Antwort in zwei Schritten:
+  // 1) Ergebnis + Kernaussage im Panel, kleiner Stempel über der Nachricht; Serie, Joker
+  //    und Hacker kommen nacheinander statt alle auf einmal.
+  // 2) „Details anzeigen“: Stempel weg, Hinweise und Spotlight erscheinen.
   async function antworte(sagtPhishing) {
     const na = NA;
     if (!na || na.phase !== 'antwort' || !na.bereit) return;
@@ -822,23 +1027,25 @@
     S.erg[S.level][S.nr] = richtig ? 1 : 0;
     const alteSerie = S.serie;
     S.serie = richtig ? S.serie + 1 : 0;
+    const jokerNeu = richtig && jokerFaellig(S.serie) && S.joker < (E.jokerMax || 9);
+    if (jokerNeu) S.joker++;
     speichere();
     if (E.interaktionenMelden && !testModus) LMS.interaktion(m.id, sagtPhishing ? 'phishing' : 'echt', m.phishing ? 'phishing' : 'echt', richtig);
 
     tooltip.aus();
+    hudBlase.weg();
     const knopf = $(`.antwort[data-antwort="${sagtPhishing ? 'phishing' : 'echt'}"]`, na.el);
     knopf.classList.add('gewaehlt');
     na.el.classList.add('beantwortet');
     $$('.antwort', na.el).forEach(b => { b.disabled = true; });
     hud();
-    serieAnzeigen(S.serie > alteSerie, !richtig && alteSerie >= 2);
     await warte(T(380));
     if (NA !== na) return;
 
-    // Panel: Frage → Feedback
+    // Schritt 1: Ergebnis
     const liste = hinweisZiele(na.g, m);
     const titel = richtig ? U.ergebnis.richtig : m.phishing ? U.ergebnis.falschPhishing : U.ergebnis.falschEcht;
-    const seite = bau(`<div class="seite fb ${richtig ? 'fb-ja' : 'fb-nein'}">
+    const seite = bau(`<div class="seite fb ${richtig ? 'fb-ja' : 'fb-nein'}" data-stufe="1">
       <div class="fb-kopf">
         <span class="fb-ikon"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21"/><path d="${richtig ? 'M14.5 24.5l6.5 6.5 12.5-14' : 'M17 17l14 14M31 17 17 31'}"/></svg></span>
         <div><h2 class="fb-titel">${esc(titel)}</h2>
@@ -859,7 +1066,7 @@
         ${m.tipps && m.tipps.length ? `<div class="fb-tipp"><b>${ICO.hTipp}${esc(U.schulungstipp)}</b>${m.tipps.map(t => `<p>${f(t)}</p>`).join('')}</div>` : ''}
       </div>
       <div class="fb-aktionen">
-        <button class="btn btn-gross btn-primaer btn-weiter" type="button"><span>${esc(U.weiter)}</span>${ICO.pfeil}</button>
+        <button class="btn btn-gross btn-primaer btn-weiter" type="button"><span>${esc(U.detailsAnzeigen)}</span>${ICO.pfeil}</button>
         ${E.hinweiseUeberspringbar ? `<button class="link-btn fb-skip" type="button">${esc(U.ueberspringen)}</button>` : ''}
       </div>
     </div>`);
@@ -872,8 +1079,42 @@
     (richtig ? K.richtig : K.falsch)();
     ansage(titel + ' ' + (m.phishing ? U.ergebnis.istPhishing : U.ergebnis.istEcht));
 
-    // Textstellen markieren
-    liste.forEach((x, i) => {
+    FB = { na, liste, i: -1, stufe: 1, gesehen: new Set(), seite, sp: null, spalte: $('.m-spalte', na.el) };
+    const fb = FB;
+    $('.btn-weiter', seite).addEventListener('click', () => { K.klick(); weiter(); });
+    const skip = $('.fb-skip', seite);
+    if (skip) skip.addEventListener('click', () => { K.klick(); naechste(); });
+    setTimeout(() => { if (FB === fb) $('.btn-weiter', seite).focus({ preventScroll: true }); }, T(500));
+
+    // nacheinander: Stempel → Serie → Joker → Hacker
+    const spaeter = (ms, fn) => setTimeout(() => { if (FB === fb) fn(); }, T(ms));
+    spaeter(260, () => { if (fb.stufe === 1) stempel(na, m.phishing); });
+    spaeter(1000, () => serieAnzeigen(S.serie > alteSerie, !richtig && alteSerie >= 2));
+    if (jokerNeu) spaeter(1500, () => jokerAnzeigen(true));
+    if (m.phishing) spaeter(jokerNeu ? 2100 : 1700, () => hacker.zeige(richtig ? 'durchschaut' : 'erwischt'));
+  }
+
+  // kleiner Stempel oben rechts an der Nachricht
+  function stempel(na, phishing) {
+    const r = $('.m-rahmen', na.el), g = na.g;
+    if (!r || !g) return;
+    const st = bau(`<div class="stempel ${phishing ? 'st-phishing' : 'st-echt'}" aria-hidden="true">${phishing ? ICO.schildWarn : ICO.schildCheck}<span>${esc(phishing ? U.stempel.phishing : U.stempel.echt)}</span></div>`);
+    st.style.left = (g.offsetLeft + g.offsetWidth) + 'px';
+    st.style.top = g.offsetTop + 'px';
+    r.appendChild(st);
+    na.stempel = st;
+    K.stempel();
+  }
+
+  // Schritt 2: Hinweise und Spotlight
+  function details() {
+    const fb = FB;
+    if (!fb || fb.stufe !== 1) return;
+    fb.stufe = 2;
+    const na = fb.na, seite = fb.seite;
+    if (na.stempel) { const st = na.stempel; st.classList.add('weg'); setTimeout(() => st.remove(), T(400)); }
+    seite.dataset.stufe = '2';
+    fb.liste.forEach((x, i) => {
       const z = x.el;
       const block = getComputedStyle(z).display !== 'inline';
       z.classList.add('hl', 'hl-' + x.h.art, block ? 'hl-block' : 'hl-inline');
@@ -883,26 +1124,22 @@
       const los = e => { e.preventDefault(); e.stopPropagation(); K.klick(); aktiviere(i); };
       z.addEventListener('click', los);
       z.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') los(e); });
-      setTimeout(() => K.marker(i), T(i * 160 + 80));
       x.karte = $$('.h-karte', seite)[i];
     });
-    na.g.classList.add('zeigen');
-    const sp = spotBauen(na.g, liste);
-
-    FB = { na, liste, i: -1, gesehen: new Set(), seite, sp, spalte: $('.m-spalte', na.el) };
-    const fb = FB;
     $$('.h-kopf', seite).forEach((k, i) => k.addEventListener('click', () => { K.klick(); aktiviere(i); }));
-    $('.btn-weiter', seite).addEventListener('click', () => { K.klick(); weiter(); });
-    const skip = $('.fb-skip', seite);
-    if (skip) skip.addEventListener('click', () => { K.klick(); naechste(); });
-
-    // Hacker bei Phishing (wie im Original)
-    if (m.phishing) setTimeout(() => { if (FB === fb) hacker.zeige(richtig ? 'durchschaut' : 'erwischt'); }, T(500));
-
-    await warte(T(420 + liste.length * 160));
-    if (FB !== fb) return;
-    aktiviere(0, true);
-    $('.btn-weiter', seite).focus({ preventScroll: true });
+    na.g.classList.add('zeigen');
+    if (!fb.liste.length) { aktiviereLeer(fb); return; }
+    fb.sp = spotBauen(na.g, fb.liste);
+    setTimeout(() => { if (FB === fb) aktiviere(0); }, T(220));
+  }
+  // Nachricht ohne markierte Stelle: gleich weiter
+  function aktiviereLeer(fb) {
+    const letzteNachricht = S.nr === LV[S.level].nachrichten.length - 1;
+    const btn = $('.btn-weiter', fb.seite);
+    $('span', btn).textContent = letzteNachricht ? U.zurAuswertung : U.naechsteNachricht;
+    btn.classList.add('final');
+    const tipp = $('.fb-tipp', fb.seite); if (tipp) tipp.classList.add('an');
+    const skip = $('.fb-skip', fb.seite); if (skip) skip.classList.add('weg');
   }
 
   function scrollZu(c, el) {
@@ -915,7 +1152,7 @@
 
   function aktiviere(i, still) {
     const fb = FB;
-    if (!fb || i < 0 || i >= fb.liste.length) return;
+    if (!fb || fb.stufe !== 2 || i < 0 || i >= fb.liste.length) return;
     fb.i = i;
     fb.gesehen.add(i);
     const n = fb.liste.length;
@@ -939,7 +1176,7 @@
     if (skip) skip.classList.toggle('weg', letzter);
 
     const x = fb.liste[i];
-    scrollZu(fb.spalte, x.el);
+    zoomZu(fb, x.el);
     spotZiel(fb.sp, i);
     if (app.classList.contains('breit')) {
       // nur das Panel selbst scrollen – scrollIntoView würde im LMS auch die Seite um das iframe verschieben
@@ -961,7 +1198,8 @@
   function weiter() {
     const fb = FB;
     if (!fb) return;
-    if (fb.i < fb.liste.length - 1) aktiviere(fb.i + 1);
+    if (fb.stufe === 1) details();
+    else if (fb.i < fb.liste.length - 1) aktiviere(fb.i + 1);
     else naechste();
   }
 
@@ -969,6 +1207,8 @@
     if (FB && FB.sp) FB.sp.ro.disconnect();
     FB = null;
     hacker.weg();
+    // wer schnell weiterklickt, überspringt die Animationen – Zahlen trotzdem nachziehen
+    serieAnzeigen(); jokerAnzeigen();
     S.nr++;
     speichere();
     if (S.nr < LV[S.level].nachrichten.length) zeigeNachricht();
@@ -1121,7 +1361,7 @@
     if (!nurAnsehen) { S.fertig = true; speichere(); lmsOk = LMS.abschliessen(prozent, bestanden); }
     else lmsOk = LMS.aktiv();
     const titel = prozent >= 90 ? fi.titelTop : prozent >= 75 ? fi.titelGut : prozent >= 50 ? fi.titelMittel : fi.titel;
-    const mitte = `<span class="m-prozent">0 %</span><span class="m-richtig">${r} / ${n}</span>`;
+    const mitte = `<span class="m-prozent">0 %</span>`;
     const el = bau(`<section class="s-finale zentriert"><div class="inhalt finale">
       <div class="f-kopf">
         ${messer(n ? r / n : 0, E.bestehensgrenze / 100, mitte, U.levelEnde.bestandenAb)}
@@ -1144,15 +1384,16 @@
     wechsel(el, 'finale');
     messerStarten(el);
     setTimeout(() => K.finale(), T(300));
-    if (bestanden) setTimeout(() => konfetti(140), T(1400));
+    if (bestanden) setTimeout(() => { if (el.isConnected && window.Feier) Feier.feuerwerk(prozent >= 90 ? 9 : 6); }, T(1300));
     setTimeout(() => {
       if (el.isConnected) hacker.zeige(r >= n - 2 ? 'durchschaut' : 'erwischt', r >= n - 2 ? U.hacker.finaleGut : U.hacker.finale, 3400);
     }, T(2300));
     $('#f-nochmal', el).addEventListener('click', () => {
       K.klick();
+      if (window.Feier) Feier.stopp();
       neuerStand(S.profil);
       speichere();
-      serieAnzeigen();
+      serieAnzeigen(); jokerAnzeigen();
       zeigeLevelIntro();
     });
   }
@@ -1166,6 +1407,7 @@
     if (NA && NA.phase === 'antwort') {
       if (k === 'p') antworte(true);
       else if (k === 'e') antworte(false);
+      else if (k === 'j' && !$('#joker').hidden) jokerEinsetzen();
     } else if (FB) {
       if (k === 'arrowright' || k === 'arrowdown') { e.preventDefault(); weiter(); }
       else if (k === 'arrowleft' || k === 'arrowup') { e.preventDefault(); aktiviere(FB.i - 1); }
@@ -1177,7 +1419,11 @@
   window.addEventListener('resize', () => {
     tooltip.aus();
     clearTimeout(rt);
-    rt = setTimeout(() => { const g = (FB && FB.na.g) || (NA && NA.g); if (g) telefonPlanen(g); }, 160);
+    rt = setTimeout(() => {
+      const g = (FB && FB.na.g) || (NA && NA.g);
+      if (g) telefonPlanen(g);
+      if (FB && FB.stufe === 2 && FB.i >= 0) zoomZu(FB, FB.liste[FB.i].el);
+    }, 160);
   });
 
   /* ================= Test-Sprünge (#l2n3 …) ================= */
@@ -1194,6 +1440,7 @@
       S.level = +m[1] - 1; S.nr = +m[2] - 1;
       for (let l = 0; l < S.level; l++) S.erg[l] = probe(l);
       S.erg[S.level] = probe(S.level).slice(0, S.nr);
+      S.joker = Math.max(S.joker, 1); jokerAnzeigen();
       zeigeNachricht(); return true;
     }
     if ((m = /^e(\d)$/.exec(h))) { S.level = +m[1] - 1; S.erg[S.level] = probe(S.level); zeigeLevelEnde(); return true; }
@@ -1217,6 +1464,9 @@
     const hat = ladeStand(d);
     setzeProfil(S.profil || { name: LMS.aktiv() ? LMS.name() : '' });
     serieAnzeigen();
+    $('.joker-figur').innerHTML = JOKER_SVG;
+    jokerAnzeigen();
+    $('#joker').addEventListener('click', () => { K.klick(); jokerEinsetzen(); });
     window.addEventListener('pagehide', () => LMS.beenden());
     window.addEventListener('beforeunload', () => LMS.beenden());
 

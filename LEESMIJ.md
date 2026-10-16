@@ -2,7 +2,16 @@
 
 Intern „Opus“: die bewährten Inhalte der ursprünglichen Phishing Challenge (Nachrichten, Situationen, Warnsignale, Feedback, Sicherheitstipps 1:1) in der neuen Oberfläche. Korrekturen am Original sind in `js/inhalt.de.js` mit `// Korrektur:` markiert. Die Variante mit neuen Nachrichten liegt daneben in `PhishingChallenge/` (2.0).
 
-Start (Symbole fliegen durch den Raum) → Briefing → Profil (Name, Firma, E-Mail; leer = Max Mustermann, firma.de) → Hallo → 3 Level mit je 5 Nachrichten, nach Level 1 und 2 ein Sicherheitstipp (Folie für Folie). Pro Nachricht: Situation lesen → **Phishing** oder **Echt** → Hinweise der Reihe nach; die aktive Stelle bekommt einen Rahmen, der Rest wird abgedunkelt. Serie (Flamme) oben rechts, Hacker bei Phishing-Nachrichten (ab 768 px Breite, 4,3 s wie im Original).
+Start (Symbole gleiten ruhig nach außen, wie ein Flug durch den Raum) → Briefing → Profil (Name, Firma, E-Mail; leer = Max Mustermann, firma.de; die E-Mail folgt Name und Firma, solange der jeweilige Teil nicht von Hand geändert wurde) → Hallo → 3 Level mit je 5 Nachrichten, nach Level 1 und 2 ein Sicherheitstipp (Folie für Folie).
+
+Pro Nachricht (E-Mail wie in einem echten Postfach, SMS wie auf dem iPhone, Teams wie im neuen Teams):
+1. Situation lesen → **Phishing** oder **Echt**.
+2. Ergebnis + Kernaussage im Panel, kleiner Stempel oben rechts an der Nachricht. Danach – nacheinander, nicht gleichzeitig – Serie, Joker und (bei Phishing) der Hacker.
+3. **Details anzeigen** → Stempel weg, Hinweise der Reihe nach: die aktive Stelle bekommt einen gemeinsamen Umriss (auch über mehrere Zeilen), die übrigen sind dünn umrandet, der Rest ist abgedunkelt; im breiten Layout zoomt die Nachricht leicht auf die Stelle.
+
+**Serie** (Flamme oben rechts): richtige Antworten in Folge, beim ersten Mal erklärt. **Joker** (violette Flamme daneben): verdient bei Serie 3, 5, 7 und danach bei jeder weiteren richtigen Antwort (höchstens 9, `einstellungen.jokerBei` / `jokerMax`). Ein Klick vor der Antwort zeigt den `joker`-Tipp der Nachricht (verrät die Antwort nicht). Joker und „schon erklärt“ stehen in den suspend_data.
+
+**Hacker** wie im Original (SVG): lugt von links herein, zwinkert mit Funkeln (hat dich erwischt) oder bekommt große Augen und Schweiß (durchschaut). **Konfetti** nach einem geschafften Level, **Feuerwerk** am Ende (beides `js/feier.js`, eine Leinwand).
 
 ## Ordner
 
@@ -10,9 +19,12 @@ Start (Symbole fliegen durch den Raum) → Briefing → Profil (Name, Firma, E-M
 |---|---|
 | `js/inhalt.de.js` | **Alle Texte**: Oberfläche, 15 Nachrichten, Hinweise, Sicherheitstipps, Standard-Profil, Einstellungen |
 | `js/domains.js` | baut aus Name/Firma/E-Mail die Platzhalter und die Täusch-Domains (doppelt, vertauscht, rn/m, vv/w, cl/d, -it, andere Endung) – für jede Domain |
-| `js/app.js` | Ablauf, Darstellung der Nachrichten, Hinweise mit Spotlight, Stempel, Hacker, Daumen, Konfetti |
+| `js/app.js` | Ablauf, Darstellung der Nachrichten, Hinweise mit Spotlight und Zoom, Stempel, Serie, Joker, Hacker |
+| `js/feier.js` | Konfetti (Level) und Feuerwerk (Ende) auf einer Leinwand |
 | `js/lms.js` | SCORM 1.2 + 2004 (sucht das API selbst), ohne LMS: localStorage |
-| `js/klang.js` | Geräusche, live erzeugt (keine Audiodateien) |
+| `js/klang.js` | Geräusche, live erzeugt; einzelne Rollen können durch Aufnahmen ersetzt werden |
+| `js/klang-daten.js` | ausgewählte Aufnahmen (base64), erzeugt von `tools/sfx/bouw_klang.py` – leer = alles live erzeugt |
+| `tools/sfx/` | ElevenLabs-Aufnahmen (`raw/`), Auswahl `picks.json`, Anhör-Seite `klangwahl.html` (http://127.0.0.1:8811/tools/sfx/klangwahl.html) |
 | `css/style.css` | Gestaltung; `.breit` = Panel rechts, `.schmal` = Bedienung unten |
 | `tools/pruefen.js` | Inhaltsprüfung (auch für Übersetzungen) |
 | `tools/bouw.py` | baut SCORM-Paket und Website (dist/site) |

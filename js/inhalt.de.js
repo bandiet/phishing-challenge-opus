@@ -18,6 +18,8 @@
      <mark data-h="b">…</mark>                    – Textstelle zu Hinweis b
      <a data-ziel="https://…" data-h="c">…</a>    – Link (Ziel per Hover)
      Hinweis mit bei: 'absender' | 'anhang' | 'banner' | 'betreff'
+   joker: kurzer Tipp, den ein eingesetzter Joker zeigt – lenkt den Blick,
+     verrät aber nicht, ob die Nachricht Phishing oder echt ist.
    ------------------------------------------------------------------ */
 window.PC_INHALT = {
   sprache: 'de',
@@ -32,7 +34,9 @@ window.PC_INHALT = {
     bestehenNoetig: true,         // ohne Ziel kein nächstes Level
     hinweiseUeberspringbar: true, // kleiner "Hinweise überspringen"-Link
     bestehensgrenze: 80,          // % für "passed" im LMS (= masteryscore im Original-Manifest)
-    interaktionenMelden: true     // jede Antwort als cmi.interaction
+    interaktionenMelden: true,    // jede Antwort als cmi.interaction
+    jokerBei: [3, 5, 7],          // Joker bei dieser Serie; ab der letzten Zahl bei jeder weiteren richtigen Antwort
+    jokerMax: 9                   // mehr Joker kann man nicht sammeln
   },
 
   ui: {
@@ -126,8 +130,10 @@ window.PC_INHALT = {
     },
     hinweisArt: { warn: 'Warnsignal', ok: 'Spricht für echt', tipp: 'Gut zu wissen' },
     hinweisZaehler: 'Hinweis {{n}} von {{gesamt}}',
-    schulungstipp: 'Schulungstipp',
+    schulungstipp: 'Tipp',
     weiter: 'Weiter',
+    detailsAnzeigen: 'Details anzeigen',
+    stempel: { phishing: 'Phishing', echt: 'Echt' },
     naechsteNachricht: 'Nächste Frage',
     zurAuswertung: 'Level-Auswertung anzeigen',
     ueberspringen: 'Hinweise überspringen',
@@ -166,7 +172,7 @@ window.PC_INHALT = {
         'Bestätige ungewöhnliche oder sensible Anfragen über einen zweiten, bekannten Kontaktweg.',
         'Persönliche Details sind kein Beweis für Echtheit.'
       ],
-      lms: 'Ihr Fortschritt wurde erfolgreich an das LMS übermittelt.',
+      lms: 'Dein Fortschritt wurde erfolgreich an das LMS übermittelt.',
       nochmal: 'Quiz erneut starten'
     },
 
@@ -184,8 +190,20 @@ window.PC_INHALT = {
       titel: '{{n}} richtige Antworten in Folge',
       erklaerung: 'Deine Serie! Jede richtige Antwort in Folge lässt die Flamme wachsen.',
       zwei: ['2 in Folge! Starker Blick!', 'Läuft bei dir! Weiter so!', 'Sicherheitsprofi am Werk!', 'Perfekt erkannt!'],
-      vier: ['4er-Serie! Unaufhaltsam!', 'Absolute Spitzenklasse!', 'ON FIRE! Nichts entgeht dir!', 'Meisterleistung! Weiter so!'],
-      verloren: 'Serie beendet'
+      vier: ['{{n}} in Folge! Unaufhaltsam!', 'Absolute Spitzenklasse!', 'ON FIRE! Nichts entgeht dir!', 'Meisterleistung! Weiter so!'],
+      verloren: 'Serie beendet – die nächste richtige Antwort startet eine neue.'
+    },
+
+    // Joker: gibt es für eine Serie (siehe einstellungen.jokerBei); ein Klick zeigt einen Tipp zur aktuellen Nachricht
+    joker: {
+      name: 'Joker',
+      tippTitel: 'Joker-Tipp',
+      erster: 'Du hast einen Joker verdient! Klick auf mich, wenn du bei einer Nachricht einen Tipp brauchst.',
+      neu: ['Noch ein Joker für dich!', 'Joker verdient – heb ihn gut auf!', 'Deine Serie bringt einen Joker!'],
+      spaeter: 'Heb mich für die nächste Nachricht auf – dort gebe ich dir einen Tipp.',
+      schon: 'Den Tipp zu dieser Nachricht siehst du schon.',
+      leer: 'Keine Joker übrig. Mit einer neuen Serie verdienst du weitere.',
+      titel: 'Joker: {{n}} übrig – Klick für einen Tipp'
     }
   },
 
@@ -200,6 +218,7 @@ window.PC_INHALT = {
       nachrichten: [
         {
           id: 'l2-msg-4', art: 'email', phishing: true,
+          joker: 'Lies den Absender und den Namen des Anhangs ganz genau – bis zum letzten Zeichen.',
           titel: 'Bekomme ich jetzt mehr Gehalt?',
           lage: 'Eine E-Mail der Personalabteilung kündigt eine neue Gehaltstabelle im Anhang an.',
           von: { name: 'HR Personalabteilung', adresse: 'hr-abteilung@{{fake_doppel}}' },
@@ -226,6 +245,7 @@ window.PC_INHALT = {
         },
         {
           id: 'l1-amazon-delivery-sms', art: 'sms', phishing: false,
+          joker: 'Passt die SMS zu deiner Situation? Prüfe außerdem, wohin der Link wirklich führt.',
           titel: 'Der Fahrer schreibt mir?',
           lage: 'Du erwartest heute ein Amazon-Paket. Kurz vor der Zustellung kommt diese SMS.',
           von: { name: 'Amazon' },
@@ -243,6 +263,7 @@ window.PC_INHALT = {
         },
         {
           id: 'l2-msg-9', art: 'email', phishing: false,
+          joker: 'Schau, von welcher Domain die E-Mail kommt und wohin der Button führt.',
           titel: 'Stefan Weber? Kenne ich den schon?',
           lage: 'Eine E-Mail informiert dich über eine neue Kontaktanfrage auf LinkedIn.',
           von: { name: 'LinkedIn Network', adresse: 'messages-noreply@linkedin.com' },
@@ -271,6 +292,7 @@ window.PC_INHALT = {
         },
         {
           id: 'l3-msg-2', art: 'sms', phishing: true,
+          joker: 'Fahre über den Link: Gehört die Domain direkt vor der Endung wirklich deiner Bank?',
           titel: 'Das ist nicht meine Überweisung!',
           lage: 'An der Supermarktkasse vibriert dein Handy. Eine SMS meldet eine vorgemerkte Zahlung über 1.250 Euro.',
           von: { name: 'Commerzbank Security', info: '+49 174 881293' },
@@ -288,6 +310,7 @@ window.PC_INHALT = {
         },
         {
           id: 'l5-msg-10', art: 'email', phishing: false,
+          joker: 'Prüfe die Absender-Domain. Und frag dich: Will die Nachricht, dass du etwas tust oder preisgibst?',
           titel: 'In deinem Postfach landet ein Microsoft-Sicherheitscode.',
           lage: '',
           von: { name: 'Microsoft-Kontoteam', adresse: 'account-security-noreply@accountprotection.microsoft.com' },
@@ -327,6 +350,7 @@ window.PC_INHALT = {
       nachrichten: [
         {
           id: 'l2-msg-1', art: 'email', phishing: true,
+          joker: 'Lies die Absenderadresse Zeichen für Zeichen und prüfe, wohin der Button wirklich führt.',
           titel: '489 Euro? Ich habe doch gar nichts bestellt!',
           lage: 'Beim Blick ins Postfach entdeckst du eine Zahlungsbestätigung für einen unbekannten Einkauf.',
           von: { name: 'PayPal Kundenservice', adresse: 'service@paypaI.com' },
@@ -356,6 +380,7 @@ window.PC_INHALT = {
         },
         {
           id: 'ai-img-1790147331698', art: 'email', phishing: false,
+          joker: 'Passt die Freigabe zu deinem Tag? Prüfe, ob Absender und Link-Ziel zu bekannten Diensten gehören.',
           titel: 'Ein Blick auf die Zahlen vor dem Meeting.',
           lage: 'Du bereitest dich auf die Finanzbesprechung vor, als eine Dateifreigabe von Anna Müller eintrifft.',
           von: { name: 'Müller, Anna', adresse: 'Anna.Mueller@{{domain}}' },
@@ -397,6 +422,7 @@ window.PC_INHALT = {
         },
         {
           id: 'l3-msg-9', art: 'email', phishing: false,
+          joker: 'Erwartest du diese Nachricht laut Situation? Prüfe, auf welche Domain der Link zeigt.',
           titel: 'Da war doch noch was …',
           lage: 'Nach deiner letzten Dienstreise steht deine Reisekostenabrechnung noch aus. Jetzt kommt eine Erinnerung per E-Mail.',
           von: { name: 'Personalabteilung', adresse: 'hr-benefits@{{domain}}' },
@@ -418,6 +444,7 @@ window.PC_INHALT = {
         },
         {
           id: 'ai-img-1790160787284', art: 'email', phishing: true,
+          joker: 'Vergleiche die Absender-Domain Buchstabe für Buchstabe mit deiner Firmen-Domain – und fahre über den Link.',
           titel: 'Bin ich auch auf den Fotos?',
           lage: 'Nach dem Sommerfest erhältst du eine Einladung zu einer neuen Teams-Gruppe. Dort sollen Fotos vom Fest geteilt werden.',
           von: { name: 'Microsoft Teams', adresse: 'teams@{{fake_tausch}}' },
@@ -463,6 +490,7 @@ window.PC_INHALT = {
         },
         {
           id: 'l4-msg-3', art: 'email', phishing: true,
+          joker: 'Was genau soll sich hier ändern? Überleg, wie du so eine Änderung normalerweise bestätigen würdest.',
           titel: 'Der Lieferant hat plötzlich eine neue IBAN.',
           lage: 'In der Einkaufsabteilung kommt eine Mitteilung über geänderte Zahlungsdaten an.',
           von: { name: 'Auenberg Baustoffe GmbH', adresse: 'buchhaltung@auenberg-baustoffe.de' },
@@ -509,6 +537,7 @@ window.PC_INHALT = {
       nachrichten: [
         {
           id: 'l5-msg-1', art: 'email', phishing: true,
+          joker: 'Wie wird so etwas bei euch normalerweise eingerichtet? Passt der Weg, den die E-Mail vorschlägt, dazu?',
           titel: 'Soll ich meine Zwei-Faktor-Authentifizierung wirklich neu einrichten?',
           lage: 'Am Morgen kommt eine angeblich verpflichtende Nachricht zur Einrichtung einer neuen Authenticator-App.',
           von: { name: 'IT Infrastructure Security', adresse: 'mfa-security@{{domain}}' },
@@ -537,6 +566,7 @@ window.PC_INHALT = {
         },
         {
           id: 'l4-msg-1', art: 'email', phishing: true,
+          joker: 'Prüfe die Absender-Domain genau und fahre über die Adresse: An wen würde deine Antwort gehen?',
           titel: 'Eine Nachricht der Geschäftsführung.',
           lage: 'Kurz nach Arbeitsbeginn erhältst du eine E-Mail der Geschäftsführung mit der Bitte um eine Überweisung.',
           von: { name: 'Dr. Hans Meier | Geschäftsführung', adresse: 'ceo.office@{{fake_glyph}}', hover: 'extern.finance@protonmail.com' },
@@ -566,6 +596,7 @@ window.PC_INHALT = {
         },
         {
           id: 'l4-msg-9', art: 'teams', phishing: true,
+          joker: 'Frag dich: Was genau sollst du hier herausgeben – und wofür ist das eigentlich gedacht?',
           titel: 'Die IT braucht meinen Anmeldecode',
           lage: 'In einem internen Chat bittet dich ein vermeintlicher Administrator um einen Einmal-Code.',
           von: { name: 'IT-Administrator', info: 'IT-Service', initialen: 'IT' },
@@ -582,6 +613,7 @@ window.PC_INHALT = {
         },
         {
           id: 'l3-msg-6', art: 'email', phishing: false,
+          joker: 'Erwartest du dieses Dokument laut Situation? Prüfe die Absender-Domain und wohin der Button führt.',
           titel: 'Da fehlt noch meine Unterschrift.',
           lage: 'Ein neues Projekt steht an. Zwischen deinen E-Mails liegt eine Bitte, eine Geheimhaltungsvereinbarung zu unterschreiben.',
           von: { name: 'Docusign Signatur-Service', adresse: 'dse@docusign.net' },
@@ -607,6 +639,7 @@ window.PC_INHALT = {
         },
         {
           id: 'l3-hotel-payment-phishing', art: 'email', phishing: true,
+          joker: 'Erinnere dich: Wann und wie wolltest du bezahlen? Prüfe außerdem, wohin der Link führt.',
           titel: 'Mit meiner Hotelbuchung stimmt etwas nicht?',
           lage: 'Du hast im Hotel Seeblick gebucht und erinnerst dich: Bezahlt wird erst vor Ort. Jetzt kommt diese E-Mail.',
           von: { name: 'Hotel Seeblick · Reservierung', adresse: 'reservierung@hotel-seeblick.host' },

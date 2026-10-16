@@ -1,6 +1,9 @@
 /* ------------------------------------------------------------------
    Klang – kleine UI-Geräusche, live erzeugt mit Web Audio.
    Keine Audiodateien: nichts kann im LMS fehlen, nichts muss laden.
+   Optional: ausgewählte Aufnahmen (ElevenLabs) aus js/klang-daten.js
+   ersetzen einzelne Rollen (aankomst, post, knop, hacker, joker);
+   fehlt eine, klingt der live erzeugte Ton.
    Der AudioContext startet erst beim ersten Klick (Autoplay-Regeln).
    ------------------------------------------------------------------ */
 window.Klang = (function () {
@@ -24,6 +27,29 @@ window.Klang = (function () {
   function wecken() {
     init();
     if (ctx && ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
+    probenLaden();
+  }
+
+  // Aufnahmen (base64-AAC) einmal dekodieren
+  var proben = {};
+  function probenLaden() {
+    var d = window.KLANG_DATEN;
+    if (!ctx || !d) return;
+    Object.keys(d).forEach(function (k) {
+      if (k in proben) return;
+      proben[k] = null;
+      try {
+        var bin = atob(d[k]), u = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+        ctx.decodeAudioData(u.buffer, function (b) { proben[k] = b; }, function () {});
+      } catch (e) {}
+    });
+  }
+  function probe(k) {
+    var b = proben[k];
+    if (!b) return false;
+    var q = ctx.createBufferSource(); q.buffer = b; q.connect(master); q.start();
+    return true;
   }
   ['pointerdown', 'keydown', 'touchstart'].forEach(function (t) {
     document.addEventListener(t, wecken, { capture: true, passive: true });
@@ -90,13 +116,14 @@ window.Klang = (function () {
     },
     wecken: wecken,
     // leiser Klick für Knöpfe
-    klick: spiel(function () { ton(1400, 0, 0.05, { typ: 'triangle', vol: 0.05, nach: 900 }); }),
+    klick: spiel(function () { if (!probe('knop')) ton(1400, 0, 0.05, { typ: 'triangle', vol: 0.05, nach: 900 }); }),
     // neue Nachricht trifft ein
     ping: spiel(function () {
+      if (probe('post')) return;
       ton(988, 0, 0.18, { vol: 0.09 }); ton(1480, 0.07, 0.32, { vol: 0.08 });
     }),
     // Bildschirmwechsel
-    wisch: spiel(function () { rauschen(0, 0.32, { von: 500, bis: 2600, vol: 0.05 }); }),
+    wisch: spiel(function () { if (!probe('aankomst')) rauschen(0, 0.32, { von: 500, bis: 2600, vol: 0.05 }); }),
     // Sprechblase / Chat-Nachricht
     blase: spiel(function () { ton(620, 0, 0.09, { typ: 'sine', vol: 0.07, nach: 900 }); }),
     richtig: spiel(function () {
@@ -143,6 +170,25 @@ window.Klang = (function () {
       [392, 330, 262].forEach(function (f, i) { ton(f, i * 0.14, 0.35, { typ: 'triangle', vol: 0.09, lp: 1400 }); });
     }),
     stern: spiel(function (i) { ton(880 * Math.pow(1.26, i || 0), 0, 0.3, { vol: 0.07 }); }),
+    // Hacker huscht ins Bild
+    hackerWusch: spiel(function () { if (!probe('hacker')) rauschen(0, 0.38, { von: 350, bis: 1800, vol: 0.06, q: 0.9 }); }),
+    // Joker verdient: kleines Glitzern nach oben
+    joker: spiel(function () {
+      if (probe('joker')) return;
+      [1047, 1319, 1568, 2093].forEach(function (f, i) { ton(f, i * 0.05, 0.22, { vol: 0.05 }); });
+      ton(2637, 0.22, 0.4, { vol: 0.03, vibrato: 7 });
+    }),
+    // Joker eingesetzt: „pling“ mit Funkeln
+    jokerTipp: spiel(function () {
+      ton(784, 0, 0.16, { vol: 0.07, nach: 1175 }); ton(1568, 0.1, 0.35, { vol: 0.045 });
+      rauschen(0.05, 0.25, { typ: 'highpass', von: 3500, bis: 6500, vol: 0.025 });
+    }),
+    // Feuerwerk: dumpfer Knall mit Knistern
+    knall: spiel(function () {
+      ton(90 + Math.random() * 40, 0, 0.35, { vol: 0.16, nach: 45, lp: 600 });
+      rauschen(0, 0.5, { typ: 'lowpass', von: 2400, bis: 300, vol: 0.06, q: 0.6 });
+      rauschen(0.12, 0.45, { typ: 'highpass', von: 4000, bis: 7000, vol: 0.02 });
+    }),
     finale: spiel(function () {
       [523, 659, 784, 1047, 1319].forEach(function (f, i) { ton(f, i * 0.09, 0.6, { vol: 0.07 }); });
       [1047, 1319, 1568].forEach(function (f) { ton(f, 0.55, 1.1, { vol: 0.045 }); });

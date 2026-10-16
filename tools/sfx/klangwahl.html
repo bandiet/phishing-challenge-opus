@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Geluidskeuze</title>
+<style>
+  :root { --bg: #120A45; --kaart: #24215A; --tekst: #fff; --zacht: #B9B5E6; --mint: #17FFC0; color-scheme: dark; }
+  body { margin: 0; background: var(--bg); color: var(--tekst); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 28px 16px 60px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  p.uitleg { color: var(--zacht); margin: 0 0 22px; }
+  section { background: var(--kaart); border-radius: 18px; padding: 16px 18px; margin-bottom: 14px; }
+  h2 { font-size: 1.05rem; margin: 0 0 2px; }
+  h2 small { color: var(--zacht); font-weight: 500; }
+  .opties { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  label { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 99px; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); cursor: pointer; user-select: none; }
+  label:has(input:checked) { background: rgba(23,255,192,.14); box-shadow: inset 0 0 0 1.5px var(--mint); }
+  input { accent-color: var(--mint); margin: 0; }
+  button { font: inherit; color: #000; background: var(--mint); border: 0; border-radius: 99px; padding: 10px 18px; font-weight: 700; cursor: pointer; }
+  button.klein { background: rgba(255,255,255,.1); color: #fff; padding: 4px 10px; font-weight: 600; }
+  .scenario { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 18px; }
+  pre { background: #0B0630; padding: 12px 14px; border-radius: 12px; overflow-x: auto; color: var(--mint); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Geluidskeuze Phishing Challenge</h1>
+  <p class="uitleg">Klik een optie om hem te horen en te kiezen. „Synth” is het huidige geluid. Met de knoppen hieronder hoor je je keuze in samenhang. Stuur me daarna de regel onderaan (of zeg gewoon welke je wilt).</p>
+  <div class="scenario">
+    <button id="s-bericht" type="button">▶ Nieuw bericht</button>
+    <button id="s-antwoord" type="button">▶ Knop + hacker</button>
+    <button id="s-alles" type="button">▶ Alles na elkaar</button>
+  </div>
+  <div id="rollen"></div>
+  <h2>Je keuze</h2>
+  <pre id="keuze"></pre>
+</main>
+<script src="../../js/klang.js"></script>
+<script>
+  const ROLLEN = [
+    { id: 'aankomst', titel: 'Bericht komt binnen', sub: 'zachte whoosh', synth: 'wisch', opties: ['wusch-1', 'wusch-2', 'wusch-3', 'qb-swipe-1', 'qb-swipe-2', 'qb-swipe-3'] },
+    { id: 'post', titel: 'Nieuwe-mail-signaal', sub: 'klein, herkenbaar', synth: 'ping', opties: ['post-1', 'post-2', 'post-3'] },
+    { id: 'knop', titel: 'Knoppen', sub: 'subtiele pop/klik', synth: 'klick', opties: ['qb-pop-1', 'qb-pop-2', 'qb-click-1', 'qb-click-2', 'qb-click-3'] },
+    { id: 'hacker', titel: 'Hacker komt in beeld', sub: 'kleine whoosh', synth: 'hackerWusch', opties: ['wusch-1', 'wusch-2', 'wusch-3', 'qb-swipe-1', 'qb-swipe-2', 'qb-swipe-3'] },
+    { id: 'joker', titel: 'Joker verdiend', sub: 'beloning', synth: 'joker', opties: ['qb-earn-1', 'qb-earn-2', 'qb-jokerNew-1', 'qb-jokerNew-2', 'qb-star-1', 'qb-star-2'] }
+  ];
+  let keuze = {};
+  try { keuze = JSON.parse(localStorage.getItem('pc-klangwahl') || '{}'); } catch (e) {}
+  const spelers = {};
+  function speel(naam, synth) {
+    if (naam === 'synth') { Klang.wecken(); Klang[synth](); return; }
+    const a = spelers[naam] || (spelers[naam] = new Audio('raw/' + naam + '.mp3'));
+    a.volume = 0.6; a.currentTime = 0; a.play();
+  }
+  const box = document.getElementById('rollen');
+  ROLLEN.forEach(r => {
+    const s = document.createElement('section');
+    s.innerHTML = `<h2>${r.titel} <small>· ${r.sub}</small></h2><div class="opties">` +
+      ['synth', ...r.opties].map(o => `<label><input type="radio" name="${r.id}" value="${o}"${(keuze[r.id] || 'synth') === o ? ' checked' : ''}>${o === 'synth' ? 'Synth (nu)' : o}</label>`).join('') + '</div>';
+    s.querySelectorAll('input').forEach(i => i.addEventListener('change', () => { keuze[r.id] = i.value; bewaar(); speel(i.value, r.synth); }));
+    s.querySelectorAll('label').forEach(l => l.addEventListener('click', e => { const i = l.querySelector('input'); if (i.checked && e.target === l) speel(i.value, r.synth); }));
+    box.appendChild(s);
+  });
+  function bewaar() {
+    try { localStorage.setItem('pc-klangwahl', JSON.stringify(keuze)); } catch (e) {}
+    document.getElementById('keuze').textContent = ROLLEN.map(r => r.id + ': ' + (keuze[r.id] || 'synth')).join('\n');
+  }
+  bewaar();
+  const rol = id => ROLLEN.find(r => r.id === id);
+  const k = id => speel(keuze[id] || 'synth', rol(id).synth);
+  const na = ms => new Promise(r => setTimeout(r, ms));
+  async function bericht() { k('aankomst'); await na(320); k('post'); }
+  async function antwoord() { k('knop'); await na(900); k('hacker'); }
+  document.getElementById('s-bericht').onclick = bericht;
+  document.getElementById('s-antwoord').onclick = antwoord;
+  document.getElementById('s-alles').onclick = async () => { await bericht(); await na(1400); k('knop'); await na(600); k('knop'); await na(1000); await antwoord(); await na(1500); k('joker'); };
+</script>
+</body>
+</html>

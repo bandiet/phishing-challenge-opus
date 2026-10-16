@@ -86,6 +86,11 @@
         if ((m.lage || '').length > 230) W(O, `Situation ist ${m.lage.length} Zeichen lang (≤ 230 lesen sich besser)`);
         if ((m.kern || '').length > 170) W(O, `Kernsatz ist ${m.kern.length} Zeichen lang (≤ 170)`);
         if ((m.titel || '').length > 60) W(O, `Titel ist ${m.titel.length} Zeichen lang (≤ 60)`);
+        if (!m.joker) W(O, 'joker-Tipp fehlt (der Joker bleibt bei dieser Nachricht wirkungslos)');
+        else {
+          if (m.joker.length > 140) W(O, `joker-Tipp ist ${m.joker.length} Zeichen lang (≤ 140)`);
+          if (/phishing|\becht\b|gefälscht|betrug/i.test(m.joker)) W(O, 'joker-Tipp verrät womöglich die Antwort');
+        }
 
         const hs = m.hinweise || [];
         if (hs.length < 2 || hs.length > 4) W(O, hs.length + ' Hinweise (2–4, am besten 3)');
