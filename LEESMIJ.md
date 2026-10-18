@@ -11,7 +11,9 @@ Pro Nachricht (E-Mail wie in einem echten Postfach, SMS wie auf dem iPhone, Team
 
 **Serie** (Flamme oben rechts): richtige Antworten in Folge; ein Klick sagt, wie viele noch bis zum nächsten Joker fehlen. **Joker** (violette Flamme daneben): verdient bei Serie 3, 6, 8, 10, 12, 14 (`einstellungen.jokerBei`, höchstens `jokerMax`). Ein Klick vor der Antwort zeigt den `joker`-Tipp der Nachricht (verrät die Antwort nicht). Joker und „schon erklärt“ stehen in den suspend_data.
 
-**Wer meldet sich?** Nach einer Antwort höchstens eine Figur: Joker (neu verdient), Hacker (reingefallen bzw. abwechselnd bei durchschauten Phishing-Mails) oder die Flamme, die aus ihrem Kreis springt (Erklärung, Serie beendet, 2er-/4er-Serie) – oder keine. Hacker und Flamme wechseln sich ab.
+**Wer meldet sich?** Nach einer Antwort höchstens einer – oft auch keiner: der Hacker (wenn man reingefallen ist, sonst ab und zu bei durchschauten Phishing-Mails), der Joker (nur über den Joker: erster Joker stellt sich vor, später „neuer Joker“, einmal pro Durchgang Erinnerung an ungenutzte Joker) oder die Serie (nur über die Serie: erste Serie erklärt, später ab und zu Lob für die Serie, „Serie beendet“). Wer zuletzt sprach, setzt beim nächsten Mal aus. Serie und Joker bleiben in ihrem Kreis; die Sprechblase hängt mit einer Spitze direkt darunter und bleibt immer ganz im Bild.
+
+**Hinweise:** der Tipp der Nachricht ist der letzte Schritt (ohne Stelle in der Nachricht – dann ist die ganze Nachricht hell). Mobil verschwindet das allgemeine Feedback, sobald die Hinweise kommen.
 
 **Täusch-Domains** (`js/domains.js`): die unauffälligsten Kniffe zuerst – Doppelgänger-Zeichen (rn/m, vv/w, cl/d, I/l, g/q, lc/k), fehlender Doppelbuchstabe, doppelter Bindestrich; vertauschte Buchstaben nur, wenn nichts anderes passt.
 

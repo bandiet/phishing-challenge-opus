@@ -100,15 +100,6 @@
       <g class="j-pupillen"><circle cx="15.6" cy="32.6" r="1.7" fill="#1B0F4D"/><circle cx="26" cy="32.6" r="1.7" fill="#1B0F4D"/></g></g>
     <path d="M16.6 38.6q3.6 2.8 7.2 0" fill="none" stroke="#1B0F4D" stroke-width="1.8" stroke-linecap="round"/></svg>`;
 
-  // Die Serie-Flamme als Figur (springt aus ihrem Kreis, wenn sie etwas sagt)
-  const FLAMME_SVG = `<svg class="flamme-svg" viewBox="0 0 40 48" aria-hidden="true"><defs><linearGradient id="flg" x1="0" y1="1" x2=".2" y2="0"><stop offset="0" stop-color="#FF3D1F"/><stop offset=".55" stop-color="#FF9A1F"/><stop offset="1" stop-color="#FFE14D"/></linearGradient></defs>
-    <path class="f-koerper" d="M20 46.5c-9.4 0-15.2-6.4-15.2-14.3 0-6.4 3.7-10.3 6.8-13.8 1.1 2.7 2.6 4.1 4.4 4.9-.7-6.2 1.9-12.6 7.6-19.3.3 6 3.8 9.3 6.9 12.9 2.6 3.1 4.7 6.6 4.7 11.4 0 9.6-5.8 18.2-15.2 18.2Z" fill="url(#flg)"/>
-    <path d="M20 44c-5.5 0-9.2-3.7-9.2-8.6 0-3.5 2-5.8 3.9-7.6.8 1.5 1.8 2.3 3 2.7.1-3.2 1.6-6 4-8.6.6 3 2.4 4.8 4 6.6 1.6 1.8 3.1 3.9 3.1 7 0 4.8-3.4 8.5-8.8 8.5Z" fill="#FFF3B0" opacity=".55"/>
-    <g class="j-augen"><ellipse cx="15" cy="32" rx="3.1" ry="3.6" fill="#fff"/><ellipse cx="25.4" cy="32" rx="3.1" ry="3.6" fill="#fff"/>
-      <g class="j-pupillen"><circle cx="15.6" cy="32.6" r="1.7" fill="#4A1300"/><circle cx="26" cy="32.6" r="1.7" fill="#4A1300"/></g></g>
-    <path class="f-mund-froh" d="M15.8 38.2q4.4 3.6 8.8 0" fill="none" stroke="#4A1300" stroke-width="1.9" stroke-linecap="round"/>
-    <path class="f-mund-traurig" d="M16.6 40.4q3.6-2.6 7.2 0" fill="none" stroke="#4A1300" stroke-width="1.9" stroke-linecap="round"/></svg>`;
-
   /* ================= Profil & Platzhalter ================= */
   function setzeProfil(p) {
     const w = D.profil(p || {}, I);
@@ -118,9 +109,13 @@
 
   /* ================= Zustand ================= */
   const S = { profil: null, level: 0, nr: 0, erg: LV.map(() => []), serie: 0, joker: 0, erklaert: 0, fertig: false };
-  const ERKL = { serie: 1, joker: 2 };   // Bits in S.erklaert: was wurde schon einmal erklärt
+  // Bits in S.erklaert: serie/joker = schon einmal erklärt; jokerRunde = in diesem Durchgang schon einen Joker gehabt;
+  // erinnert = in diesem Durchgang schon an ungenutzte Joker erinnert
+  const ERKL = { serie: 1, joker: 2, jokerRunde: 4, erinnert: 8 };
   function neuerStand(profil) {
     S.profil = profil || S.profil; S.level = 0; S.nr = 0; S.erg = LV.map(() => []); S.serie = 0; S.joker = 0; S.fertig = false;
+    S.erklaert &= ~(ERKL.jokerRunde | ERKL.erinnert);
+    S.ohneJoker = 0;
   }
   let testModus = false;   // Test-Sprünge (#l2n3 …) speichern nichts und melden nichts ans LMS
   function speichere() {
@@ -193,43 +188,47 @@
       p.className = e === 1 ? 'ja' : e === 0 ? 'nein' : i === S.nr && app.dataset.screen === 'nachricht' ? 'jetzt' : '';
     });
   }
-  // Sprecher: Flamme (Serie) oder Joker springen aus ihrem Kreis heraus, stellen sich
-  // unter die Leiste und sagen kurz etwas. Meldungen laufen nacheinander.
+  // Sprechblase direkt unter dem Kreis von Serie bzw. Joker, mit Spitze zum Kreis; der Kreis leuchtet,
+  // solange gesprochen wird. Bleibt immer ganz im Bild (auch mobil). Meldungen laufen nacheinander.
   const sprecher = (() => {
-    const box = $('#hud-sprecher'), figur = $('.hs-figur', box), blase = $('.hs-blase', box), schlange = [];
-    let t = 0, laeuft = false, chip = null;
-    function zurueck() {
-      box.classList.remove('an'); box.classList.add('geht');
-      t = setTimeout(() => {
-        box.classList.remove('geht');
-        if (chip) chip.classList.remove('raus');
-        t = setTimeout(naechste, T(220));
-      }, T(380));
+    const bl = $('#hud-sprecher'), schlange = [];
+    let t = 0, t2 = 0, laeuft = false, chip = null;
+    function setzen() {
+      if (!chip) return;
+      const cr = chip.getBoundingClientRect(), w = bl.offsetWidth, rand = 10;
+      const mitte = cr.left + cr.width / 2;
+      const links = Math.max(rand, Math.min(innerWidth - rand - w, mitte - w + 40));
+      bl.style.left = links + 'px';
+      bl.style.top = (cr.bottom + 12) + 'px';
+      bl.style.setProperty('--spitze', Math.max(16, Math.min(w - 16, mitte - links)) + 'px');
     }
     function naechste() {
       const x = schlange.shift();
-      if (!x) { laeuft = false; return; }
+      if (!x) { laeuft = false; chip = null; return; }
       laeuft = true;
       chip = x.art === 'joker' ? $('#joker') : $('#serie');
-      const hr = $('.hud-rechts').getBoundingClientRect(), cr = chip.getBoundingClientRect();
-      const mitte = x.art === 'joker' ? cr.left + cr.width / 2 : cr.left + 22;
-      box.style.right = Math.max(4, hr.right - mitte - 30) + 'px';
-      figur.innerHTML = x.art === 'joker' ? JOKER_SVG : FLAMME_SVG;
-      box.dataset.art = x.art;
-      box.classList.toggle('traurig', !!x.traurig);
-      blase.textContent = x.text;
-      box.classList.remove('geht', 'an'); void box.offsetWidth; box.classList.add('an');
-      chip.classList.add('raus');
+      bl.dataset.art = x.art;
+      bl.textContent = x.text;
+      bl.classList.remove('an');
+      setzen();
+      void bl.offsetWidth;
+      bl.classList.add('an');
+      chip.classList.add('redet');
       if (x.ton) x.ton();
+      clearTimeout(t2); t2 = setTimeout(setzen, T(600));   // falls der Kreis gerade erst aufgeht
       clearTimeout(t);
-      t = setTimeout(zurueck, T(x.dauer || 3400));
+      t = setTimeout(() => {
+        bl.classList.remove('an'); chip.classList.remove('redet');
+        t = setTimeout(naechste, T(300));
+      }, T(x.dauer || 3400));
     }
+    window.addEventListener('resize', () => { if (laeuft) setzen(); });
     return {
-      sag(art, text, dauer, o) { o = o || {}; schlange.push({ art, text, dauer, ton: o.ton, traurig: o.traurig }); if (!laeuft) naechste(); },
+      sag(art, text, dauer, o) { o = o || {}; schlange.push({ art, text, dauer, ton: o.ton }); if (!laeuft) naechste(); },
       weg() {
-        schlange.length = 0; clearTimeout(t); laeuft = false;
-        box.classList.remove('an', 'geht');
-        $$('.hud-rechts .raus').forEach(c => c.classList.remove('raus'));
+        schlange.length = 0; clearTimeout(t); clearTimeout(t2); laeuft = false;
+        bl.classList.remove('an');
+        $$('.hud-rechts .redet').forEach(c => c.classList.remove('redet'));
       },
       redet: () => laeuft
     };
@@ -255,18 +254,17 @@
     chipBox(el, S.serie >= 2);
     if (neu && S.serie >= 2) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
   }
-  // Was sagt die Flamme zu dieser Antwort? (null = nichts)
+  // Was könnte die Serie zu dieser Antwort sagen? Nur über die Serie (null = nichts)
   function serieMeldung(neu, verloren) {
     if (verloren) return { text: U.serie.verloren, dauer: 3800, traurig: true };
     if (!neu || S.serie < 2) return null;
-    if (!(S.erklaert & ERKL.serie)) return { text: U.serie.erklaerung, dauer: 5200, erkl: true };
-    if (S.serie === 2) return { text: zufall(U.serie.zwei), dauer: 3200 };
-    if (S.serie >= 4 && S.serie % 2 === 0) return { text: f(zufall(U.serie.vier), { n: S.serie }), dauer: 3200 };
+    if (!(S.erklaert & ERKL.serie)) return { text: f(U.serie.erklaerung, { n: S.serie }), dauer: 5600, erkl: true };
+    if (S.serie >= 4 && !jokerFaellig(S.serie)) return { text: f(zufall(U.serie.lob), { n: S.serie }), dauer: 3400 };
     return null;
   }
-  function flammeSagt(meld) {
+  function serieSagt(meld) {
     if (meld.erkl) { S.erklaert |= ERKL.serie; speichere(); }
-    sprecher.sag('serie', meld.text, meld.dauer, { ton: meld.traurig ? null : K.serie, traurig: meld.traurig });
+    sprecher.sag('serie', meld.text, meld.dauer, { ton: meld.traurig ? null : K.serie });
   }
   // Klick auf die Serie: wie weit ist es bis zum nächsten Joker?
   function serieInfo() {
@@ -282,17 +280,19 @@
   const JL = JB[JB.length - 1];
   const jokerFaellig = n => JB.includes(n) || (n > JL && (n - JL) % 2 === 0);
   const naechsterJoker = n => { for (let k = n + 1; k < n + 40; k++) if (jokerFaellig(k)) return k; return 0; };
-  function jokerAnzeigen(neu) {
+  function jokerAnzeigen(neu, sprechen) {
     const el = $('#joker');
-    chipBox(el, S.joker > 0 || !!(S.erklaert & ERKL.joker));
+    if (S.joker > 0) S.erklaert |= ERKL.jokerRunde;
+    chipBox(el, S.joker > 0 || !!(S.erklaert & ERKL.jokerRunde));
     el.classList.toggle('leer', S.joker < 1);
     $('#joker-zahl').textContent = S.joker;
     const titel = f(U.joker.titel, { n: S.joker });
     el.title = titel; el.setAttribute('aria-label', titel);
     if (!neu) return;
     el.classList.remove('kommt'); void el.offsetWidth; el.classList.add('kommt');
+    if (!sprechen) { K.joker(); return; }
     if (!(S.erklaert & ERKL.joker)) { S.erklaert |= ERKL.joker; speichere(); sprecher.sag('joker', U.joker.erster, 5600, { ton: K.joker }); }
-    else sprecher.sag('joker', zufall(U.joker.neu), 3400, { ton: K.joker });
+    else sprecher.sag('joker', f(zufall(U.joker.neu), { n: S.joker }), 3600, { ton: K.joker });
   }
   function jokerEinsetzen() {
     const na = NA;
@@ -304,7 +304,7 @@
     if (S.joker < 1) return sag(U.joker.leer, 4000);
     const tipp = na.m.joker;
     if (!tipp) return;
-    S.joker--; na.joker = true;
+    S.joker--; na.joker = true; S.ohneJoker = 0;
     speichere();
     sprecher.weg();
     el.classList.add('hilft');
@@ -975,7 +975,7 @@
 
   /* ================= Nachricht ================= */
   let NA = null;   // aktuelle Nachricht (Antwortphase)
-  let letzterSprecher = '';   // Hacker und Flamme wechseln sich ab
+  let letzterSprecher = '';   // Hacker, Joker und Serie wechseln sich ab (wer zuletzt sprach, setzt aus)
   let FB = null;   // Feedback (Hinweisphase)
 
   function zeigeNachricht() {
@@ -1063,6 +1063,12 @@
       na.bereit = true;
       $$('.antwort', el).forEach(b => { b.disabled = false; });
       el.classList.add('bereit');
+      // lange nicht genutzt? Der Joker erinnert einmal daran, dass er helfen kann
+      if (S.joker > 0) S.ohneJoker = (S.ohneJoker || 0) + 1;
+      if (S.joker > 0 && S.ohneJoker >= 4 && !(S.erklaert & ERKL.erinnert) && !testModus) {
+        S.erklaert |= ERKL.erinnert; speichere();
+        setTimeout(() => { if (NA === na && na.phase === 'antwort') sprecher.sag('joker', f(U.joker.erinnerung, { n: S.joker }), 5000, { ton: K.tipp }); }, T(700));
+      }
     })();
   }
 
@@ -1095,6 +1101,7 @@
 
     // Schritt 1: Ergebnis
     const liste = hinweisZiele(na.g, m);
+    const hatTipp = !!(m.tipps && m.tipps.length);   // der Tipp ist der letzte Schritt (ohne Stelle in der Nachricht)
     const titel = richtig ? U.ergebnis.richtig : m.phishing ? U.ergebnis.falschPhishing : U.ergebnis.falschEcht;
     const seite = bau(`<div class="seite fb ${richtig ? 'fb-ja' : 'fb-nein'}" data-stufe="1">
       <div class="fb-kopf">
@@ -1104,7 +1111,7 @@
       </div>
       <p class="fb-kern">${m.kernTitel ? `<b>${f(m.kernTitel)}</b> ` : ''}${f(m.kern)}</p>
       <div class="fb-hinweise">
-        <div class="fb-zaehler"><span class="fb-zaehler-text"></span><span class="fb-dots">${liste.map(() => '<i></i>').join('')}</span></div>
+        <div class="fb-zaehler"><span class="fb-zaehler-text"></span><span class="fb-dots">${liste.map(() => '<i></i>').join('')}${hatTipp ? '<i></i>' : ''}</span></div>
         <ol class="h-liste">${liste.map((x, i) => {
           const h = x.h;
           const ziel = x.el.dataset.ziel ? urlChip(x.el.dataset.ziel) : '';
@@ -1113,8 +1120,11 @@
               <span class="h-kopf-text"><small class="h-art">${esc(U.hinweisArt[h.art] || '')}</small><b class="h-titel">${f(h.titel)}</b></span>${ICO.chevron}</button>
             <div class="h-body"><div class="h-body-innen"><div class="h-body-pad"><p>${f(h.text)}</p>${ziel}${h.klartext ? klartext(h.klartext) : ''}</div></div></div>
           </li>`;
-        }).join('')}</ol>
-        ${m.tipps && m.tipps.length ? `<div class="fb-tipp"><b>${ICO.hTipp}${esc(U.schulungstipp)}</b>${m.tipps.map(t => `<p>${f(t)}</p>`).join('')}</div>` : ''}
+        }).join('')}${hatTipp ? `<li class="h-karte h-schulung" style="--i:${liste.length}">
+            <button class="h-kopf" type="button" aria-expanded="false"><span class="h-nr">${ICO.birne}</span>
+              <span class="h-kopf-text"><small class="h-art">${esc(U.schulungstipp)}</small><b class="h-titel">${esc(U.tippTitel)}</b></span>${ICO.chevron}</button>
+            <div class="h-body"><div class="h-body-innen"><div class="h-body-pad">${m.tipps.map(t => `<p>${f(t)}</p>`).join('')}</div></div></div>
+          </li>` : ''}</ol>
       </div>
       <div class="fb-aktionen">
         <button class="btn btn-gross btn-primaer btn-weiter" type="button"><span>${esc(U.detailsAnzeigen)}</span>${ICO.pfeil}</button>
@@ -1130,28 +1140,34 @@
     (richtig ? K.richtig : K.falsch)();
     ansage(titel + ' ' + (m.phishing ? U.ergebnis.istPhishing : U.ergebnis.istEcht));
 
-    FB = { na, liste, i: -1, stufe: 1, gesehen: new Set(), seite, sp: null, spalte: $('.m-spalte', na.el) };
+    FB = { na, liste, schritte: liste.length + (hatTipp ? 1 : 0), i: -1, stufe: 1, gesehen: new Set(), seite, sp: null, spalte: $('.m-spalte', na.el) };
     const fb = FB;
     $('.btn-weiter', seite).addEventListener('click', () => { K.klick(); weiter(); });
     const skip = $('.fb-skip', seite);
     if (skip) skip.addEventListener('click', () => { K.klick(); naechste(); });
     setTimeout(() => { if (FB === fb) $('.btn-weiter', seite).focus({ preventScroll: true }); }, T(500));
 
-    // nacheinander: Stempel → Serie-Zahl → EINE Figur (Joker, Flamme oder Hacker – oder keine)
+    // nacheinander: Stempel → Serie-Zahl/Joker-Zahl → höchstens EINER meldet sich – oft auch keiner:
+    // Hacker (reingefallen; sonst ab und zu), Joker (nur über den Joker), Serie (nur über die Serie).
     const neu = S.serie > alteSerie, verloren = !richtig && alteSerie >= 2;
     const meld = serieMeldung(neu, verloren);
     let wer = 'keiner';
-    if (jokerNeu) wer = 'joker';
-    else if (m.phishing && !richtig) wer = 'hacker';                       // reingefallen: der Hacker freut sich
-    else if (meld && (meld.erkl || meld.traurig)) wer = 'flamme';           // Erklärung / Serie vorbei
-    else if (m.phishing) wer = meld ? (letzterSprecher === 'hacker' ? 'flamme' : 'hacker') : (letzterSprecher === 'hacker' ? 'keiner' : 'hacker');
-    else if (meld) wer = 'flamme';
-    if (wer !== 'keiner') letzterSprecher = wer;
+    if (m.phishing && !richtig) wer = 'hacker';                                         // reingefallen: der Hacker freut sich
+    else if (jokerNeu && !(S.erklaert & ERKL.joker)) wer = 'joker';                      // erster Joker: stellt sich vor
+    else if (meld && meld.erkl) wer = 'serie';                                           // erste Serie: kurz erklärt
+    else {
+      const moeglich = [];
+      if (jokerNeu) moeglich.push('joker');
+      if (meld) moeglich.push('serie');
+      if (m.phishing) moeglich.push('hacker');
+      wer = moeglich.find(x => x !== letzterSprecher) || 'keiner';                       // wer zuletzt sprach, setzt aus
+    }
+    letzterSprecher = wer;
     const spaeter = (ms, fn) => setTimeout(() => { if (FB === fb) fn(); }, T(ms));
     spaeter(260, () => { if (fb.stufe === 1) stempel(na, m.phishing); });
-    spaeter(1000, () => { serieAnzeigen(neu, verloren); if (wer !== 'flamme' && wer !== 'joker' && neu && S.serie >= 2) K.zaehler(); });
-    if (wer === 'joker') spaeter(1300, () => jokerAnzeigen(true));
-    if (wer === 'flamme') spaeter(1300, () => flammeSagt(meld));
+    spaeter(1000, () => { serieAnzeigen(neu, verloren); if (wer !== 'serie' && neu && S.serie >= 2 && !jokerNeu) K.zaehler(); });
+    if (jokerNeu) spaeter(1250, () => jokerAnzeigen(true, wer === 'joker'));
+    if (wer === 'serie') spaeter(1300, () => serieSagt(meld));
     if (wer === 'hacker') spaeter(1500, () => hacker.zeige(richtig ? 'durchschaut' : 'erwischt'));
   }
 
@@ -1189,10 +1205,11 @@
       z.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') los(e); });
       x.karte = $$('.h-karte', seite)[i];
     });
+    fb.karten = $$('.h-karte', seite);
     $$('.h-kopf', seite).forEach((k, i) => k.addEventListener('click', () => { K.klick(); aktiviere(i); }));
     na.g.classList.add('zeigen');
-    if (!fb.liste.length) { aktiviereLeer(fb); return; }
-    fb.sp = spotBauen(na.g, fb.liste);
+    if (!fb.schritte) { aktiviereLeer(fb); return; }
+    if (fb.liste.length) fb.sp = spotBauen(na.g, fb.liste);
     setTimeout(() => { if (FB === fb) aktiviere(0); }, T(220));
   }
   // Nachricht ohne markierte Stelle: gleich weiter
@@ -1201,7 +1218,6 @@
     const btn = $('.btn-weiter', fb.seite);
     $('span', btn).textContent = letzteNachricht ? U.zurAuswertung : U.naechsteNachricht;
     btn.classList.add('final');
-    const tipp = $('.fb-tipp', fb.seite); if (tipp) tipp.classList.add('an');
     const skip = $('.fb-skip', fb.seite); if (skip) skip.classList.add('weg');
   }
 
@@ -1215,15 +1231,15 @@
 
   function aktiviere(i, still) {
     const fb = FB;
-    if (!fb || fb.stufe !== 2 || i < 0 || i >= fb.liste.length) return;
+    if (!fb || fb.stufe !== 2 || i < 0 || i >= fb.schritte) return;
     fb.i = i;
     fb.gesehen.add(i);
-    const n = fb.liste.length;
-    fb.liste.forEach((x, j) => {
-      x.el.classList.toggle('aktiv', j === i);
-      x.karte.classList.toggle('aktiv', j === i);
-      x.karte.classList.toggle('gesehen', fb.gesehen.has(j));
-      $('.h-kopf', x.karte).setAttribute('aria-expanded', j === i ? 'true' : 'false');
+    const n = fb.schritte;
+    fb.liste.forEach((x, j) => x.el.classList.toggle('aktiv', j === i));
+    fb.karten.forEach((k, j) => {
+      k.classList.toggle('aktiv', j === i);
+      k.classList.toggle('gesehen', fb.gesehen.has(j));
+      $('.h-kopf', k).setAttribute('aria-expanded', j === i ? 'true' : 'false');
     });
     $$('.fb-dots i', fb.seite).forEach((d, j) => { d.className = j === i ? 'jetzt' : fb.gesehen.has(j) ? 'an' : ''; });
     $('.fb-zaehler-text', fb.seite).textContent = f(U.hinweisZaehler, { n: i + 1, gesamt: n });
@@ -1233,14 +1249,12 @@
     const btn = $('.btn-weiter', fb.seite);
     $('span', btn).textContent = letzter ? (letzteNachricht ? U.zurAuswertung : U.naechsteNachricht) : U.weiter;
     btn.classList.toggle('final', letzter);
-    const tipp = $('.fb-tipp', fb.seite);
-    if (tipp) tipp.classList.toggle('an', letzter);
     const skip = $('.fb-skip', fb.seite);
     if (skip) skip.classList.toggle('weg', letzter);
 
-    const x = fb.liste[i];
-    zoomZu(fb, x.el);
-    spotZiel(fb.sp, i);
+    const x = { karte: fb.karten[i], h: i < fb.liste.length ? fb.liste[i].h : { art: 'schulung' } };
+    if (i < fb.liste.length) { zoomZu(fb, fb.liste[i].el); spotZiel(fb.sp, i); }
+    else spotAus(fb);   // Tipp: keine Stelle – die ganze Nachricht ist wieder hell
     if (app.classList.contains('breit')) {
       // nur das Panel selbst scrollen – scrollIntoView würde im LMS auch die Seite um das iframe verschieben
       setTimeout(() => {
@@ -1265,14 +1279,22 @@
       }, T(470));
     }
     if (!still) K.tipp();
-    ansage(f(U.hinweisZaehler, { n: i + 1, gesamt: n }) + '. ' + (U.hinweisArt[x.h.art] || '') + ': ' + x.karte.textContent.replace(/\s+/g, ' ').trim());
+    ansage(f(U.hinweisZaehler, { n: i + 1, gesamt: n }) + '. ' + (U.hinweisArt[x.h.art] || U.schulungstipp) + ': ' + x.karte.textContent.replace(/\s+/g, ' ').trim());
+  }
+  function spotAus(fb) {
+    const sp = fb.sp, r = $('.m-rahmen', fb.na.el);
+    if (r) r.style.transform = '';
+    if (!sp) return;
+    cancelAnimationFrame(sp.anim); sp.anim = 0;
+    sp.aktiv = -1; sp.loecher = [];
+    sp.lay.classList.remove('an');
   }
 
   function weiter() {
     const fb = FB;
     if (!fb) return;
     if (fb.stufe === 1) details();
-    else if (fb.i < fb.liste.length - 1) aktiviere(fb.i + 1);
+    else if (fb.i < fb.schritte - 1) aktiviere(fb.i + 1);
     else naechste();
   }
 
@@ -1521,7 +1543,7 @@
     rt = setTimeout(() => {
       const g = (FB && FB.na.g) || (NA && NA.g);
       if (g) telefonPlanen(g);
-      if (FB && FB.stufe === 2 && FB.i >= 0) zoomZu(FB, FB.liste[FB.i].el);
+      if (FB && FB.stufe === 2 && FB.i >= 0 && FB.i < FB.liste.length) zoomZu(FB, FB.liste[FB.i].el);
     }, 160);
   });
 

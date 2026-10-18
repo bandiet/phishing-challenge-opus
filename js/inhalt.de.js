@@ -131,6 +131,7 @@ window.PC_INHALT = {
     hinweisArt: { warn: 'Warnsignal', ok: 'Spricht für echt', tipp: 'Gut zu wissen' },
     hinweisZaehler: 'Hinweis {{n}} von {{gesamt}}',
     schulungstipp: 'Tipp',
+    tippTitel: 'Für deinen Arbeitsalltag',
     weiter: 'Weiter',
     detailsAnzeigen: 'Details anzeigen',
     stempel: { phishing: 'Phishing', echt: 'Echt' },
@@ -188,9 +189,9 @@ window.PC_INHALT = {
     serie: {
       label: 'Serie',
       titel: '{{n}} richtige Antworten in Folge',
-      erklaerung: 'Deine Serie! Jede richtige Antwort in Folge lässt die Flamme wachsen.',
-      zwei: ['2 in Folge! Starker Blick!', 'Läuft bei dir! Weiter so!', 'Sicherheitsprofi am Werk!', 'Perfekt erkannt!'],
-      vier: ['{{n}} in Folge! Unaufhaltsam!', 'Absolute Spitzenklasse!', 'ON FIRE! Nichts entgeht dir!', 'Meisterleistung! Weiter so!'],
+      // die Flamme spricht nur über die Serie
+      erklaerung: 'Super, {{n}} richtig in Folge! Das ist deine Serie – jede weitere richtige Antwort lässt die Flamme wachsen.',
+      lob: ['{{n}} richtig in Folge – deine Serie wächst!', 'Serie {{n}}! Die Flamme lodert.', '{{n}} am Stück – starke Serie!', 'Weiter so: {{n}} richtige Antworten in Folge!'],
       verloren: 'Serie beendet – die nächste richtige Antwort startet eine neue.',
       bisJokerEins: 'Noch eine richtige Antwort – dann gibt es einen Joker!',
       bisJoker: 'Noch {{n}} richtige Antworten bis zum nächsten Joker.',
@@ -202,7 +203,9 @@ window.PC_INHALT = {
       name: 'Joker',
       tippTitel: 'Joker-Tipp',
       erster: 'Du hast einen Joker verdient! Klick auf mich, wenn du bei einer Nachricht einen Tipp brauchst.',
-      neu: ['Noch ein Joker für dich!', 'Joker verdient – heb ihn gut auf!', 'Deine Serie bringt einen Joker!'],
+      // der Joker spricht nur über den Joker
+      neu: ['Noch ein Joker – du hast jetzt {{n}}.', 'Deine Serie bringt dir einen Joker. Jetzt: {{n}}.', 'Joker Nummer {{n}} – heb ihn gut auf!'],
+      erinnerung: 'Du hast {{n}} Joker. Klick auf mich, wenn du bei einer Nachricht einen Tipp brauchst.',
       spaeter: 'Heb mich für die nächste Nachricht auf – dort gebe ich dir einen Tipp.',
       schon: 'Den Tipp zu dieser Nachricht siehst du schon.',
       leer: 'Keine Joker übrig. Mit einer neuen Serie verdienst du weitere.',
