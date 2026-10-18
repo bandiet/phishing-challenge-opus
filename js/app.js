@@ -1232,6 +1232,7 @@
   function aktiviere(i, still) {
     const fb = FB;
     if (!fb || fb.stufe !== 2 || i < 0 || i >= fb.schritte) return;
+    const vorher = fb.i;
     fb.i = i;
     fb.gesehen.add(i);
     const n = fb.schritte;
@@ -1241,6 +1242,14 @@
       k.classList.toggle('gesehen', fb.gesehen.has(j));
       $('.h-kopf', k).setAttribute('aria-expanded', j === i ? 'true' : 'false');
     });
+    // mobil steht nur ein Hinweis da: der alte gleitet hinaus, der neue herein (vorwärts nach links, zurück nach rechts)
+    if (!app.classList.contains('breit') && vorher >= 0 && vorher !== i && !ruhig) {
+      const alt = fb.karten[vorher], neu = fb.karten[i], vor = i > vorher;
+      alt.classList.add('geht', vor ? 'nach-links' : 'nach-rechts');
+      neu.classList.add(vor ? 'von-rechts' : 'von-links');
+      setTimeout(() => alt.classList.remove('geht', 'nach-links', 'nach-rechts'), 360);
+      setTimeout(() => neu.classList.remove('von-rechts', 'von-links'), 420);
+    }
     $$('.fb-dots i', fb.seite).forEach((d, j) => { d.className = j === i ? 'jetzt' : fb.gesehen.has(j) ? 'an' : ''; });
     $('.fb-zaehler-text', fb.seite).textContent = f(U.hinweisZaehler, { n: i + 1, gesamt: n });
 
@@ -1255,29 +1264,17 @@
     const x = { karte: fb.karten[i], h: i < fb.liste.length ? fb.liste[i].h : { art: 'schulung' } };
     if (i < fb.liste.length) { zoomZu(fb, fb.liste[i].el); spotZiel(fb.sp, i); }
     else spotAus(fb);   // Tipp: keine Stelle – die ganze Nachricht ist wieder hell
-    if (app.classList.contains('breit')) {
-      // nur das Panel selbst scrollen – scrollIntoView würde im LMS auch die Seite um das iframe verschieben
-      setTimeout(() => {
-        const pk = $('.panel-karte', fb.na.el);
-        if (!pk) return;
-        const kr = x.karte.getBoundingClientRect(), lr = pk.getBoundingClientRect();
-        const fuss = $('.fb-aktionen', fb.seite).offsetHeight + 12;
-        let d = 0;
-        if (kr.bottom > lr.bottom - fuss) d = kr.bottom - (lr.bottom - fuss);
-        if (kr.top - d < lr.top + 8) d = kr.top - lr.top - 8;
-        if (d) pk.scrollBy({ top: d, behavior: ruhig ? 'auto' : 'smooth' });
-      }, T(380));
-    } else {
-      // mobil: nach unten bis zum Knopf scrollen – außer der aktive Hinweis würde oben verschwinden,
-      // dann so weit, dass er ganz oben im Blatt steht
-      setTimeout(() => {
-        const pk = $('.panel-karte', fb.na.el);
-        if (!pk || FB !== fb) return;
-        const kr = x.karte.getBoundingClientRect(), pr = pk.getBoundingClientRect();
-        const ganzUnten = pk.scrollHeight - pk.clientHeight, karteOben = pk.scrollTop + kr.top - pr.top - 10;
-        pk.scrollTo({ top: Math.max(0, Math.min(ganzUnten, karteOben)), behavior: ruhig ? 'auto' : 'smooth' });
-      }, T(470));
-    }
+    // Panel so scrollen, dass der Weiter-Knopf gleich wieder zu sehen ist – außer der aktive Hinweis
+    // würde dabei oben verschwinden; dann so weit, dass er oben im Panel steht.
+    // (Nur das Panel scrollen – scrollIntoView würde im LMS auch die Seite um das iframe verschieben.)
+    setTimeout(() => {
+      const pk = $('.panel-karte', fb.na.el);
+      if (!pk || FB !== fb) return;
+      const kr = x.karte.getBoundingClientRect(), pr = pk.getBoundingClientRect();
+      const ganzUnten = pk.scrollHeight - pk.clientHeight, karteOben = pk.scrollTop + kr.top - pr.top - 10;
+      const ziel = Math.max(0, Math.min(ganzUnten, karteOben));
+      if (Math.abs(ziel - pk.scrollTop) > 1) pk.scrollTo({ top: ziel, behavior: ruhig ? 'auto' : 'smooth' });
+    }, T(450));
     if (!still) K.tipp();
     ansage(f(U.hinweisZaehler, { n: i + 1, gesamt: n }) + '. ' + (U.hinweisArt[x.h.art] || U.schulungstipp) + ': ' + x.karte.textContent.replace(/\s+/g, ' ').trim());
   }
