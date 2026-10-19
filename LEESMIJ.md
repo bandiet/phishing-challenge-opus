@@ -13,11 +13,11 @@ Pro Nachricht (E-Mail wie in einem echten Postfach, SMS wie auf dem iPhone, Team
 
 **Wer meldet sich?** Nach einer Antwort höchstens einer – oft auch keiner: der Hacker (wenn man reingefallen ist, sonst ab und zu bei durchschauten Phishing-Mails), der Joker (nur über den Joker: erster Joker stellt sich vor, später „neuer Joker“, einmal pro Durchgang Erinnerung an ungenutzte Joker) oder die Serie (nur über die Serie: erste Serie erklärt, später ab und zu Lob für die Serie, „Serie beendet“). Wer zuletzt sprach, setzt beim nächsten Mal aus. Serie und Joker bleiben in ihrem Kreis; die Sprechblase hängt mit einer Spitze direkt darunter und bleibt immer ganz im Bild.
 
-**Hinweise:** der Tipp der Nachricht ist der letzte Schritt (ohne Stelle in der Nachricht – dann ist die ganze Nachricht hell). Mobil stehen in Schritt 2 nur noch die Hinweise (ohne Ergebnis-Kopf und allgemeines Feedback); sie gleiten seitlich weiter. Das Panel scrollt nach jedem Schritt so, dass der Weiter-Knopf zu sehen ist – außer der aktive Hinweis würde dabei oben verschwinden.
+**Hinweise:** Mobil stehen in Schritt 2 nur noch die Hinweise (ohne Ergebnis-Kopf und allgemeines Feedback); sie gleiten seitlich weiter. Das Panel scrollt nach jedem Schritt so, dass der Weiter-Knopf zu sehen ist – außer der aktive Hinweis würde dabei oben verschwinden.
 
 **Täusch-Domains** (`js/domains.js`): die unauffälligsten Kniffe zuerst – Doppelgänger-Zeichen (rn/m, vv/w, cl/d, I/l, g/q, lc/k), fehlender Doppelbuchstabe, doppelter Bindestrich; vertauschte Buchstaben nur, wenn nichts anderes passt.
 
-**Hacker** wie im Original (SVG): lugt von links herein, zwinkert mit Funkeln (hat dich erwischt) oder bekommt große Augen und Schweiß (durchschaut). **Konfetti** nach einem geschafften Level, **Feuerwerk** am Ende (beides `js/feier.js`, eine Leinwand).
+**Hacker** wie im Original (SVG, ca. 3,8 s sichtbar): lugt von links herein, zwinkert mit Funkeln (hat dich erwischt) oder bekommt große Augen und Schweiß (durchschaut). **Konfetti** nach einem geschafften Level, am Ende eine festlichere Variante mit drei Salven, Sternen und Luftschlangen (beides `js/feier.js`, eine Leinwand). Neue Nachrichten kommen mit dem Whoosh aus der ursprünglichen Challenge (`tools/sfx/raw/message_whosh.mp3`, Lautstärke wie die Synth-Klänge).
 
 ## Ordner
 

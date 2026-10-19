@@ -416,8 +416,6 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   transition: background .35s, box-shadow .35s, opacity .35s, transform .35s var(--sprung); animation: karteEin .5s var(--sprung) both; animation-delay: calc(.35s + var(--i) * .09s); }
 .h-ok { --c: var(--ok); --cw: var(--ok-w); }
 .h-tipp { --c: var(--tipp); --cw: var(--tipp-w); }
-.h-schulung { --c: var(--gold); --cw: rgba(255, 207, 74, .18); }
-.h-schulung .h-body p + p { margin-top: 6px; }
 @keyframes karteEin { from { opacity: 0; transform: translateX(26px); } }
 .fb[data-stufe="2"] .h-karte { animation-delay: calc(.1s + var(--i) * .08s); }
 .h-karte:not(.aktiv) { opacity: .7; }
@@ -508,7 +506,8 @@ mark { background: none; color: inherit; }
 .g-anhang-text { min-width: 0; }
 .g-anhang b { display: block; font-weight: 600; overflow-wrap: anywhere; }
 .g-anhang small { color: #6B7280; }
-.mail-body { padding: 1.35em 1.5em 1.7em; background: #fff; color: #1D2230; }
+.mail-body { padding: 1.35em 1.5em 1.7em; background: #fff; color: #1D2230; overflow-wrap: anywhere; }
+.mail-body div, .mail-body span, .mail-body a { min-width: 0; }   /* Flex-Kinder dürfen schrumpfen, sonst läuft ein langer Dateiname hinaus */
 .mail-body p { margin: 0 0 .85em; }
 .mail-body p:last-child { margin-bottom: 0; }
 .li-msg .g-anhang { background: #F3F2EF; color: #242424; box-shadow: none; }
@@ -838,12 +837,14 @@ mark { background: none; color: inherit; }
 @keyframes lupe { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(6px, 3px); } 50% { transform: translate(4px, 8px); } 75% { transform: translate(-2px, 4px); } }
 .badge-svg.an .bz-m3 { transform-origin: 50px 46px; animation: sternPuls 2.4s ease-in-out infinite; }
 @keyframes sternPuls { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.1) rotate(8deg); } }
-.le-fuss { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; padding-top: 18px; box-shadow: inset 0 1px 0 var(--kante); }
+.le-fuss { position: sticky; bottom: 0; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 20px calc(-1 * clamp(20px, 3vw, 36px)) -24px; padding: 14px clamp(20px, 3vw, 36px) 18px; border-radius: 0 0 26px 26px;
+  background: #27264E; box-shadow: inset 0 1px 0 var(--kante), 0 -14px 24px -16px rgba(0, 0, 0, .7); }
 .le-fuss.allein { justify-content: center; }
 
 /* ================= Wissens-Nugget: Folie für Folie ================= */
 .nugget { width: min(1100px, 100%); align-items: stretch !important; text-align: left !important; }
-.n-kopf { margin-bottom: 22px; }
+.n-kopf { margin-bottom: 16px; }
 .n-kopf h1 { font-size: clamp(1.9rem, 3.2vw, 2.9rem); font-weight: 900; letter-spacing: -.025em; margin-top: 12px; }
 .n-kopf p { color: var(--text-2); font-size: 1.1rem; margin-top: 4px; }
 .n-buehne { display: grid; }
@@ -864,11 +865,14 @@ mark { background: none; color: inherit; }
 .n-merke .ico { color: var(--gold); width: 1.6em; height: 1.6em; }
 .n-merke b { color: var(--gold); }
 .n-folie.aktiv .n-merke { animation: popEin .55s .5s var(--sprung) both; }
-.n-bild { position: relative; display: grid; place-items: center; min-height: 220px; border-radius: 22px; background: rgba(5, 2, 30, .45); box-shadow: inset 0 0 0 1px var(--kante); overflow: hidden; padding: 18px; }
-.n-bild img { max-height: clamp(200px, 36vh, 340px); width: auto; max-width: 100%; border-radius: 14px; }
+.n-rechts { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.n-rechts .n-merke { margin-top: 0; }
+.n-bild { position: relative; display: grid; place-items: center; min-height: 200px; border-radius: 22px; background: rgba(5, 2, 30, .45); box-shadow: inset 0 0 0 1px var(--kante); overflow: hidden; padding: 18px; }
+.n-bild img { max-height: clamp(170px, 31vh, 300px); width: auto; max-width: 100%; border-radius: 14px; }
 .n-folie.aktiv .n-bild img { animation: bildEin .8s .1s var(--sprung) both, schweben 7s 1s ease-in-out infinite; --rot: -1.5deg; }
 @keyframes bildEin { from { opacity: 0; transform: scale(.8) rotate(-4deg); } }
-.n-fuss { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 20px; }
+.n-fuss { position: sticky; bottom: 0; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 12px; padding: 10px 0 14px;
+  background: linear-gradient(rgba(14, 7, 52, 0), rgba(14, 7, 52, .92) 38%); }
 .n-nav { display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; border-radius: 99px; background: rgba(29, 29, 66, .82); box-shadow: inset 0 0 0 1px var(--kante); }
 .n-zurueck { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: var(--text-2); transition: background .2s, opacity .2s; }
 .n-zurueck:hover:not(:disabled) { background: rgba(255, 255, 255, .1); }
@@ -992,7 +996,9 @@ mark { background: none; color: inherit; }
   .b-innen { padding: 22px 22px 22px 112px; text-align: left; }
   .b-icon { left: 56px; top: 50%; width: 84px; }
   .n-folie { grid-template-columns: minmax(0, 1fr); }
+  .n-rechts { display: contents; }
   .n-bild { order: -1; min-height: 0; }
+  .n-rechts .n-merke { order: 2; }
   .n-bild img { max-height: 200px; }
   .f-kopf { flex-direction: column; text-align: center; gap: 14px; }
   .f-raster { grid-template-columns: minmax(0, 1fr); }
@@ -1011,16 +1017,48 @@ mark { background: none; color: inherit; }
   .held-schild { width: 84px; margin-bottom: 10px; }
   .s-start .lead { margin: 10px 0 22px; }
   .start-fakten { margin-top: 18px; }
-  .b-karte { margin-top: 48px; } .b-innen { padding-top: 64px; } .b-karte:nth-child(2) { margin-top: 70px; }
-  .b-icon { width: 98px; }
   .intro-icon { width: 96px; margin: 12px auto 14px; }
   .intro-info { margin: 16px 0 20px; }
   .lage-titel { font-size: clamp(1.25rem, 1vw + .8rem, 1.7rem); }
   .antwort { min-height: 60px; }
   .entscheidung { padding-top: 18px; }
   .messer { width: min(220px, 60vw); }
-  .n-bild img { max-height: 30vh; }
-  .n-folie { padding: 22px 26px; }
+  .n-bild img { max-height: 27vh; }
+  .n-folie { padding: 20px 24px; }
+  .n-kopf h1 { font-size: clamp(1.6rem, 2.6vw, 2.3rem); margin-top: 8px; }
+  .n-kopf p { font-size: 1rem; }
+  .n-text h2 { margin-bottom: 8px; }
+  .n-text ul { margin-top: 10px; gap: 6px; }
+  .n-schutz { margin-top: 12px; padding: 10px 12px; }
+  .n-bild { min-height: 0; padding: 14px; }
+}
+@media (max-height: 620px) {
+  .n-kopf { margin-bottom: 10px; }
+  .n-kopf p { display: none; }
+  .n-kopf h1 { font-size: 1.5rem; margin-top: 6px; }
+  .n-folie { padding: 16px 20px; }
+  .n-text p, .n-text li { font-size: .95rem; line-height: 1.45; }
+  .n-bild img { max-height: 24vh; }
+}
+/* schmale Telefone: Messer-Beschriftung oben rechts im Kasten, damit sie nicht aus dem Bild läuft */
+@media (max-width: 480px) {
+  .le-fuss { flex-direction: column-reverse; align-items: stretch; gap: 2px; padding-top: 10px; padding-bottom: 10px; }
+  .le-fuss .btn { width: 100%; }
+  .le-fuss .text-btn { align-self: center; padding: 6px 10px; font-size: .84rem; }
+  .m-label { left: auto !important; right: 0; top: 0 !important; transform: none !important; align-items: flex-end !important; font-size: .6rem; }
+  .m-label b { font-size: .95rem; }
+}
+@media (max-height: 780px) and (min-width: 861px) {
+  .b-karte { margin-top: 48px; } .b-innen { padding-top: 64px; } .b-karte:nth-child(2) { margin-top: 70px; }
+  .b-icon { width: 98px; }
+}
+@media (max-height: 760px) and (max-width: 860px) {
+  /* gestapelte Briefing-Karten auf kleinen Telefonen: kompakt, damit „Los geht's“ zu sehen bleibt */
+  .b-karten { gap: 10px; margin-bottom: 18px; }
+  .b-innen { padding: 14px 16px 14px 96px; }
+  .b-icon { left: 50px; width: 70px; }
+  .b-karte h2 { font-size: 1.12rem; margin-bottom: 4px; }
+  .b-karte p { font-size: .92rem; line-height: 1.4; }
 }
 @media (max-height: 560px) {
   .app { --hud-h: 54px; }

@@ -424,8 +424,6 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   transition: background .35s, box-shadow .35s, opacity .35s, transform .35s var(--sprung); animation: karteEin .5s var(--sprung) both; animation-delay: calc(.35s + var(--i) * .09s); }
 .h-ok { --c: var(--ok); --cw: var(--ok-w); }
 .h-tipp { --c: var(--tipp); --cw: var(--tipp-w); }
-.h-schulung { --c: var(--gold); --cw: rgba(255, 207, 74, .18); }
-.h-schulung .h-body p + p { margin-top: 6px; }
 @keyframes karteEin { from { opacity: 0; transform: translateX(26px); } }
 .fb[data-stufe="2"] .h-karte { animation-delay: calc(.1s + var(--i) * .08s); }
 .h-karte:not(.aktiv) { opacity: .7; }
@@ -516,7 +514,8 @@ mark { background: none; color: inherit; }
 .g-anhang-text { min-width: 0; }
 .g-anhang b { display: block; font-weight: 600; overflow-wrap: anywhere; }
 .g-anhang small { color: #6B7280; }
-.mail-body { padding: 1.35em 1.5em 1.7em; background: #fff; color: #1D2230; }
+.mail-body { padding: 1.35em 1.5em 1.7em; background: #fff; color: #1D2230; overflow-wrap: anywhere; }
+.mail-body div, .mail-body span, .mail-body a { min-width: 0; }   /* Flex-Kinder dürfen schrumpfen, sonst läuft ein langer Dateiname hinaus */
 .mail-body p { margin: 0 0 .85em; }
 .mail-body p:last-child { margin-bottom: 0; }
 .li-msg .g-anhang { background: #F3F2EF; color: #242424; box-shadow: none; }
@@ -846,12 +845,14 @@ mark { background: none; color: inherit; }
 @keyframes lupe { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(6px, 3px); } 50% { transform: translate(4px, 8px); } 75% { transform: translate(-2px, 4px); } }
 .badge-svg.an .bz-m3 { transform-origin: 50px 46px; animation: sternPuls 2.4s ease-in-out infinite; }
 @keyframes sternPuls { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.1) rotate(8deg); } }
-.le-fuss { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; padding-top: 18px; box-shadow: inset 0 1px 0 var(--kante); }
+.le-fuss { position: sticky; bottom: 0; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 20px calc(-1 * clamp(20px, 3vw, 36px)) -24px; padding: 14px clamp(20px, 3vw, 36px) 18px; border-radius: 0 0 26px 26px;
+  background: #27264E; box-shadow: inset 0 1px 0 var(--kante), 0 -14px 24px -16px rgba(0, 0, 0, .7); }
 .le-fuss.allein { justify-content: center; }
 
 /* ================= Wissens-Nugget: Folie für Folie ================= */
 .nugget { width: min(1100px, 100%); align-items: stretch !important; text-align: left !important; }
-.n-kopf { margin-bottom: 22px; }
+.n-kopf { margin-bottom: 16px; }
 .n-kopf h1 { font-size: clamp(1.9rem, 3.2vw, 2.9rem); font-weight: 900; letter-spacing: -.025em; margin-top: 12px; }
 .n-kopf p { color: var(--text-2); font-size: 1.1rem; margin-top: 4px; }
 .n-buehne { display: grid; }
@@ -872,11 +873,14 @@ mark { background: none; color: inherit; }
 .n-merke .ico { color: var(--gold); width: 1.6em; height: 1.6em; }
 .n-merke b { color: var(--gold); }
 .n-folie.aktiv .n-merke { animation: popEin .55s .5s var(--sprung) both; }
-.n-bild { position: relative; display: grid; place-items: center; min-height: 220px; border-radius: 22px; background: rgba(5, 2, 30, .45); box-shadow: inset 0 0 0 1px var(--kante); overflow: hidden; padding: 18px; }
-.n-bild img { max-height: clamp(200px, 36vh, 340px); width: auto; max-width: 100%; border-radius: 14px; }
+.n-rechts { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.n-rechts .n-merke { margin-top: 0; }
+.n-bild { position: relative; display: grid; place-items: center; min-height: 200px; border-radius: 22px; background: rgba(5, 2, 30, .45); box-shadow: inset 0 0 0 1px var(--kante); overflow: hidden; padding: 18px; }
+.n-bild img { max-height: clamp(170px, 31vh, 300px); width: auto; max-width: 100%; border-radius: 14px; }
 .n-folie.aktiv .n-bild img { animation: bildEin .8s .1s var(--sprung) both, schweben 7s 1s ease-in-out infinite; --rot: -1.5deg; }
 @keyframes bildEin { from { opacity: 0; transform: scale(.8) rotate(-4deg); } }
-.n-fuss { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 20px; }
+.n-fuss { position: sticky; bottom: 0; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 12px; padding: 10px 0 14px;
+  background: linear-gradient(rgba(14, 7, 52, 0), rgba(14, 7, 52, .92) 38%); }
 .n-nav { display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; border-radius: 99px; background: rgba(29, 29, 66, .82); box-shadow: inset 0 0 0 1px var(--kante); }
 .n-zurueck { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: var(--text-2); transition: background .2s, opacity .2s; }
 .n-zurueck:hover:not(:disabled) { background: rgba(255, 255, 255, .1); }
@@ -1000,7 +1004,9 @@ mark { background: none; color: inherit; }
   .b-innen { padding: 22px 22px 22px 112px; text-align: left; }
   .b-icon { left: 56px; top: 50%; width: 84px; }
   .n-folie { grid-template-columns: minmax(0, 1fr); }
+  .n-rechts { display: contents; }
   .n-bild { order: -1; min-height: 0; }
+  .n-rechts .n-merke { order: 2; }
   .n-bild img { max-height: 200px; }
   .f-kopf { flex-direction: column; text-align: center; gap: 14px; }
   .f-raster { grid-template-columns: minmax(0, 1fr); }
@@ -1019,16 +1025,48 @@ mark { background: none; color: inherit; }
   .held-schild { width: 84px; margin-bottom: 10px; }
   .s-start .lead { margin: 10px 0 22px; }
   .start-fakten { margin-top: 18px; }
-  .b-karte { margin-top: 48px; } .b-innen { padding-top: 64px; } .b-karte:nth-child(2) { margin-top: 70px; }
-  .b-icon { width: 98px; }
   .intro-icon { width: 96px; margin: 12px auto 14px; }
   .intro-info { margin: 16px 0 20px; }
   .lage-titel { font-size: clamp(1.25rem, 1vw + .8rem, 1.7rem); }
   .antwort { min-height: 60px; }
   .entscheidung { padding-top: 18px; }
   .messer { width: min(220px, 60vw); }
-  .n-bild img { max-height: 30vh; }
-  .n-folie { padding: 22px 26px; }
+  .n-bild img { max-height: 27vh; }
+  .n-folie { padding: 20px 24px; }
+  .n-kopf h1 { font-size: clamp(1.6rem, 2.6vw, 2.3rem); margin-top: 8px; }
+  .n-kopf p { font-size: 1rem; }
+  .n-text h2 { margin-bottom: 8px; }
+  .n-text ul { margin-top: 10px; gap: 6px; }
+  .n-schutz { margin-top: 12px; padding: 10px 12px; }
+  .n-bild { min-height: 0; padding: 14px; }
+}
+@media (max-height: 620px) {
+  .n-kopf { margin-bottom: 10px; }
+  .n-kopf p { display: none; }
+  .n-kopf h1 { font-size: 1.5rem; margin-top: 6px; }
+  .n-folie { padding: 16px 20px; }
+  .n-text p, .n-text li { font-size: .95rem; line-height: 1.45; }
+  .n-bild img { max-height: 24vh; }
+}
+/* schmale Telefone: Messer-Beschriftung oben rechts im Kasten, damit sie nicht aus dem Bild läuft */
+@media (max-width: 480px) {
+  .le-fuss { flex-direction: column-reverse; align-items: stretch; gap: 2px; padding-top: 10px; padding-bottom: 10px; }
+  .le-fuss .btn { width: 100%; }
+  .le-fuss .text-btn { align-self: center; padding: 6px 10px; font-size: .84rem; }
+  .m-label { left: auto !important; right: 0; top: 0 !important; transform: none !important; align-items: flex-end !important; font-size: .6rem; }
+  .m-label b { font-size: .95rem; }
+}
+@media (max-height: 780px) and (min-width: 861px) {
+  .b-karte { margin-top: 48px; } .b-innen { padding-top: 64px; } .b-karte:nth-child(2) { margin-top: 70px; }
+  .b-icon { width: 98px; }
+}
+@media (max-height: 760px) and (max-width: 860px) {
+  /* gestapelte Briefing-Karten auf kleinen Telefonen: kompakt, damit „Los geht's“ zu sehen bleibt */
+  .b-karten { gap: 10px; margin-bottom: 18px; }
+  .b-innen { padding: 14px 16px 14px 96px; }
+  .b-icon { left: 50px; width: 70px; }
+  .b-karte h2 { font-size: 1.12rem; margin-bottom: 4px; }
+  .b-karte p { font-size: .92rem; line-height: 1.4; }
 }
 @media (max-height: 560px) {
   .app { --hud-h: 54px; }
@@ -1290,12 +1328,10 @@ window.PC_INHALT = {
     },
     hinweisArt: { warn: 'Warnsignal', ok: 'Spricht für echt', tipp: 'Gut zu wissen' },
     hinweisZaehler: 'Hinweis {{n}} von {{gesamt}}',
-    schulungstipp: 'Tipp',
-    tippTitel: 'Für deinen Arbeitsalltag',
     weiter: 'Weiter',
     detailsAnzeigen: 'Details anzeigen',
     stempel: { phishing: 'Phishing', echt: 'Echt' },
-    naechsteNachricht: 'Nächste Frage',
+    naechsteNachricht: 'Nächste Nachricht',
     zurAuswertung: 'Level-Auswertung anzeigen',
     ueberspringen: 'Hinweise überspringen',
 
@@ -1406,8 +1442,7 @@ window.PC_INHALT = {
           ],
           // Korrektur: Original-Titel „Phishing-Versuch vereitelt!“ passte nicht, wenn man falsch geantwortet hat.
           kernTitel: 'Getarnter Anhang von einer fremden Domain.',
-          kern: 'Prüfe unerwartete Anhänge und ihre vollständige Dateiendung genau.',
-          tipps: ['Öffne keine ausführbaren Dateien (.exe), wenn du eigentlich ein Dokument erwartest.']
+          kern: 'Prüfe unerwartete Anhänge und ihre vollständige Dateiendung genau.'
         },
         {
           id: 'l1-amazon-delivery-sms', art: 'sms', phishing: false,
@@ -1424,8 +1459,7 @@ window.PC_INHALT = {
               text: 'Dieser Kurzlink wird von Amazon verwendet. Ein verkürzter Link ist also nicht automatisch verdächtig. Wenn du unsicher bist, öffne die Amazon-App selbst und prüfe dort deine Lieferung.' }
           ],
           kernTitel: '',
-          kern: 'Phishing kommt auch per SMS – etwa mit angeblichen Zustellproblemen, Zollgebühren oder fehlenden Adressdaten. Diese Nachricht ist jedoch eine echte Amazon-Benachrichtigung.',
-          tipps: ['Ein Absendername allein beweist nichts. Öffne bei Zweifel die Amazon-App selbst und prüfe deine Bestellung.']
+          kern: 'Phishing kommt auch per SMS – etwa mit angeblichen Zustellproblemen, Zollgebühren oder fehlenden Adressdaten. Diese Nachricht ist jedoch eine echte Amazon-Benachrichtigung.'
         },
         {
           id: 'l2-msg-9', art: 'email', phishing: false,
@@ -1454,8 +1488,7 @@ window.PC_INHALT = {
               text: 'Die Absenderadresse verwendet die offizielle Domain linkedin.com. Das ist ein positives Signal – prüfe trotzdem, ob die Anfrage für dich plausibel ist.' }
           ],
           kernTitel: '',
-          kern: 'Absender und Nachricht passen zu LinkedIn. Eine unbekannte Kontaktanfrage allein ist kein Hinweis auf Phishing.',
-          tipps: ['Prüfe bei Kontaktanfragen Profil, gemeinsame Kontakte und Kontext – auch wenn die E-Mail-Domain echt ist.']
+          kern: 'Absender und Nachricht passen zu LinkedIn. Eine unbekannte Kontaktanfrage allein ist kein Hinweis auf Phishing.'
         },
         {
           id: 'l3-msg-2', art: 'sms', phishing: true,
@@ -1472,8 +1505,7 @@ window.PC_INHALT = {
               text: 'Ein hoher Betrag und die Aufforderung, sofort zu handeln, erzeugen gezielt Druck. Lass dich davon nicht zum schnellen Klicken verleiten und prüfe die Meldung über deine Banking-App.' }
           ],
           kernTitel: '',
-          kern: 'Bei verdächtigen Banknachrichten: Öffne deine Banking-App oder die Website selbst, statt dem Link in der Nachricht zu folgen.',
-          tipps: ['Öffne die Banking-App selbst oder nutze eine bekannte Telefonnummer; klicke nicht auf den SMS-Link.']
+          kern: 'Bei verdächtigen Banknachrichten: Öffne deine Banking-App oder die Website selbst, statt dem Link in der Nachricht zu folgen.'
         },
         {
           id: 'l5-msg-10', art: 'email', phishing: false,
@@ -1501,8 +1533,7 @@ window.PC_INHALT = {
               text: 'Die Nachricht kann echt sein, obwohl du den Code nicht selbst angefordert hast. Nutze oder teile den Code nicht und prüfe dein Konto über den bekannten Zugang.' }
           ],
           kernTitel: '',
-          kern: 'Die E-Mail selbst ist echt. Hast du den Code nicht angefordert, kann das aber auf einen fremden Anmeldeversuch hindeuten. Teile den Code niemals mit anderen.',
-          tipps: ['Sicherheitscodes nie weitergeben – auch nicht an angebliche IT-Mitarbeitende.']
+          kern: 'Die E-Mail selbst ist echt. Hast du den Code nicht angefordert, kann das aber auf einen fremden Anmeldeversuch hindeuten. Teile den Code niemals mit anderen.'
         }
       ]
     },
@@ -1542,8 +1573,7 @@ window.PC_INHALT = {
               text: 'Im Link steht zwar paypal.com, die tatsächliche Domain ist aber security-dispute-resolution.com. Sie gehört nicht zu PayPal.' }
           ],
           kernTitel: 'Hier lohnt sich ein genauer Blick auf die Domain.',
-          kern: 'Gefälschte Adressen können bekannten Domains täuschend ähnlich sehen. Prüfe deshalb Absender und Link-Ziel genau.',
-          tipps: ['Lies die eigentliche Domain inklusive Endung – nicht nur bekannte Markennamen davor.']
+          kern: 'Gefälschte Adressen können bekannten Domains täuschend ähnlich sehen. Prüfe deshalb Absender und Link-Ziel genau.'
         },
         {
           id: 'ai-img-1790147331698', art: 'email', phishing: false,
@@ -1584,8 +1614,7 @@ window.PC_INHALT = {
               text: 'Der Link führt zu einer offiziellen Microsoft-Adresse unter sharepoint.com. Das spricht hier zusammen mit Absender und Anlass für eine legitime Freigabe.' }
           ],
           kernTitel: '',
-          kern: 'Absender, Link-Ziel und Anlass sind plausibel und passen zusammen. Nicht jede unerwartete Dateifreigabe ist Phishing.',
-          tipps: ['Bei Microsoft 365 ist sharepoint.com ein typisches Link-Ziel für SharePoint.']
+          kern: 'Absender, Link-Ziel und Anlass sind plausibel und passen zusammen. Nicht jede unerwartete Dateifreigabe ist Phishing.'
         },
         {
           id: 'l3-msg-9', art: 'email', phishing: false,
@@ -1606,8 +1635,7 @@ window.PC_INHALT = {
               text: 'Der Link führt zum internen Portal auf der bekannten Unternehmens-Domain {{domain}}. Das passt zum Anlass der Nachricht.' }
           ],
           kernTitel: '',
-          kern: 'Der Anlass passt zu deiner Situation. Auch Absender und Link-Ziel sind plausibel und gehören zum Unternehmen.',
-          tipps: ['Interne Portale solltest du über bereits bekannte Intranet-Adressen öffnen.']
+          kern: 'Der Anlass passt zu deiner Situation. Auch Absender und Link-Ziel sind plausibel und gehören zum Unternehmen.'
         },
         {
           id: 'ai-img-1790160787284', art: 'email', phishing: true,
@@ -1647,13 +1675,7 @@ window.PC_INHALT = {
               text: 'Logo, Farben und Gestaltung lassen sich leicht nachahmen. Verlasse dich deshalb nicht allein darauf, dass eine Nachricht wie ein bekanntes Tool aussieht.' }
           ],
           kernTitel: 'Auch vertraute Tools können als Köder dienen.',
-          kern: 'Schauen wir uns das genauer an.',
-          // Korrektur: Tipps auf „du“ umgestellt; „Verträge“ passte nicht zur Sommerfest-Gruppe.
-          tipps: [
-            'Navigiere bei Benachrichtigungen direkt über die offizielle Teams-App oder die gewohnte Lesezeichen-URL, anstatt auf Links in E-Mails zu klicken.',
-            'Prüfe Links vor dem Anklicken immer, indem du mit dem Mauszeiger über der Schaltfläche verharrst (Hover-Funktion).',
-            'Melde unerwartete Einladungen zu neuen Gruppen der IT-Sicherheit deines Unternehmens.'
-          ]
+          kern: 'Schauen wir uns das genauer an.'
         },
         {
           id: 'l4-msg-3', art: 'email', phishing: true,
@@ -1688,8 +1710,7 @@ window.PC_INHALT = {
               text: 'Eine ausländische IBAN ist nicht automatisch verdächtig. Der unerwartete Wechsel in ein anderes Land ist hier aber ein zusätzlicher Grund, die neuen Zahlungsdaten unabhängig zu bestätigen.' }
           ],
           kernTitel: 'Bei geänderten Bankdaten ist besondere Vorsicht geboten.',
-          kern: 'Bestätige geänderte Bankdaten immer über einen bereits bekannten Kontaktweg – nicht über Kontaktdaten aus der Nachricht selbst.',
-          tipps: ['Änderungen von Bankverbindungen telefonisch über bereits bekannte Kontaktdaten verifizieren.']
+          kern: 'Bestätige geänderte Bankdaten immer über einen bereits bekannten Kontaktweg – nicht über Kontaktdaten aus der Nachricht selbst.'
         }
       ]
     },
@@ -1728,8 +1749,7 @@ window.PC_INHALT = {
               text: 'Eine unerwartete Aufforderung, die Zwei-Faktor-Authentifizierung über einen zugesandten QR-Code neu einzurichten, ist ein Warnsignal. Starte die Einrichtung stattdessen über das bekannte Portal oder kläre sie mit der IT.' }
           ],
           kernTitel: 'Bei unerwarteten Aufforderungen zur Zwei-Faktor-Authentifizierung ist Vorsicht geboten.',
-          kern: 'Richte die Zwei-Faktor-Authentifizierung nur über bekannte und vertrauenswürdige Wege ein. Prüfe unerwartete Aufforderungen über das bekannte Portal oder direkt bei der IT.',
-          tipps: ['QR-Codes nicht blind scannen; ungewöhnliche MFA-Änderungen über den IT-Kanal bestätigen.']
+          kern: 'Richte die Zwei-Faktor-Authentifizierung nur über bekannte und vertrauenswürdige Wege ein. Prüfe unerwartete Aufforderungen über das bekannte Portal oder direkt bei der IT.'
         },
         {
           id: 'l4-msg-1', art: 'email', phishing: true,
@@ -1758,8 +1778,7 @@ window.PC_INHALT = {
               text: 'Eine ungewöhnlich hohe Zahlung im Namen der Geschäftsführung solltest du nicht allein aufgrund einer E-Mail ausführen. Bestätige den Auftrag über einen bekannten, unabhängigen Kontaktweg.' }
           ],
           kernTitel: 'Hier sprechen mehrere Warnsignale für Betrug.',
-          kern: 'Ungewöhnliche Zahlungsanweisung, Autorität und Geheimhaltung sind eine riskante Kombination.',
-          tipps: ['Zahlungsaufträge der Geschäftsführung immer über einen zweiten bekannten Kanal bestätigen.']
+          kern: 'Ungewöhnliche Zahlungsanweisung, Autorität und Geheimhaltung sind eine riskante Kombination.'
         },
         {
           id: 'l4-msg-9', art: 'teams', phishing: true,
@@ -1775,8 +1794,7 @@ window.PC_INHALT = {
               text: 'Einmalcodes bestätigen deine Anmeldung. Auch ein Administrator braucht diesen Code nicht von dir.' }
           ],
           kernTitel: 'Anmeldecodes gehören nur dir.',
-          kern: 'Einmalcodes bestätigen deine Anmeldung. Gib sie niemals an andere Personen weiter – auch nicht an vermeintliche Administratoren.',
-          tipps: ['OTP- und MFA-Codes niemals teilen.']
+          kern: 'Einmalcodes bestätigen deine Anmeldung. Gib sie niemals an andere Personen weiter – auch nicht an vermeintliche Administratoren.'
         },
         {
           id: 'l3-msg-6', art: 'email', phishing: false,
@@ -1801,8 +1819,7 @@ window.PC_INHALT = {
               text: 'Die Nachricht verwendet die offizielle Docusign-Domain. Zusätzlich passt die Signaturanfrage zum erwarteten Projektkontext.' }
           ],
           kernTitel: '',
-          kern: 'Auch externe Signaturanfragen können echt sein. Entscheidend ist, ob Absender, Link-Ziel und der erwartete Geschäftskontext zusammenpassen.',
-          tipps: ['Bei Signaturanfragen prüfen, ob du das Dokument erwartest und ob das Link-Ziel auf docusign.net liegt.']
+          kern: 'Auch externe Signaturanfragen können echt sein. Entscheidend ist, ob Absender, Link-Ziel und der erwartete Geschäftskontext zusammenpassen.'
         },
         {
           id: 'l3-hotel-payment-phishing', art: 'email', phishing: true,
@@ -1834,8 +1851,7 @@ window.PC_INHALT = {
               text: 'Der Link führt zu gast-zahlung.host. Das ist eine andere Domain als hotel-seeblick.ch. Prüfe die Anfrage über deine ursprüngliche Buchung.' }
           ],
           kernTitel: 'Echte Buchungsdaten sind kein Echtheitsbeweis.',
-          kern: 'Die Zahlungsaufforderung passt nicht zu deiner Buchung. Lass dich nicht unter Druck setzen und frage über die Kontaktdaten aus deiner Buchungsbestätigung nach.',
-          tipps: ['Auch Betrüger können echte Buchungsdaten kennen. Prüfe neue Zahlungsforderungen über die ursprüngliche Buchung.']
+          kern: 'Die Zahlungsaufforderung passt nicht zu deiner Buchung. Lass dich nicht unter Druck setzen und frage über die Kontaktdaten aus deiner Buchungsbestätigung nach.'
         }
       ]
     }
@@ -2092,7 +2108,7 @@ window.PC_INHALT = {
 <script>
 /* klang-daten.js – erzeugt von tools/sfx/bouw_klang.py aus tools/sfx/picks.json.
    Nicht von Hand ändern. Leer = alle Klänge live erzeugt (js/klang.js). */
-window.KLANG_DATEN = {"hacker":"AAAAHGZ0eXBNNEEgAAAAAE00QSBtcDQyaXNvbQAAA6Jtb292AAAAbG12aGQAAAAA5vgiAub4IgIAAKxEAABgAAABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACNHRyYWsAAABcdGtoZAAAAAfm+CIC5vgiAgAAAAEAAAAAAABgAAAAAAAAAAAAAAAAAAEAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAdBtZGlhAAAAIG1kaGQAAAAA5vgiAub4IgIAAKxEAABgAAAAAAAAAAAiaGRscgAAAAAAAAAAc291bgAAAAAAAAAAAAAAAAAAAAABhm1pbmYAAAAQc21oZAAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAABSnN0YmwAAAB2c3RzZAAAAAAAAAABAAAAZm1wNGEAAAAAAAAAAQAAAAAAAAAAAAIAEAAAAACsRAAAAAAAM2VzZHMAAAAAA4CAgCIAAAAEgICAFEAUABgAAAAJsAAA+gAFgICAAhIIBoCAgAECAAAAD3NidGQAAAAASTE2AAAAGHN0dHMAAAAAAAAAAQAAABgAAAQAAAAAKHN0c2MAAAAAAAAAAgAAAAEAAAAWAAAAAQAAAAIAAAACAAAAAQAAAHRzdHN6AAAAAAAAAAAAAAAYAAAABAAAAGsAAADHAAAAxgAAAN4AAACeAAAAlwAAAJIAAAB+AAAAbAAAAFsAAABYAAAAUQAAAEsAAAAvAAAAJQAAAB4AAAANAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAAGHN0Y28AAAAAAAAAAgAAEAAAABdpAAAA+nVkdGEAAADybWV0YQAAAAAAAAAiaGRscgAAAAAAAAAAbWRpcmFwcGwAAAAAAAAAAAAAAAAAxGlsc3QAAAC8LS0tLQAAABxtZWFuAAAAAGNvbS5hcHBsZS5pVHVuZXMAAAAUbmFtZQAAAABpVHVuU01QQgAAAIRkYXRhAAAAAQAAAAAgMDAwMDAwMDAgMDAwMDA4NDAgMDAwMDAxOUUgMDAwMDAwMDAwMDAwNTYyMiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMAAADDpmcmVlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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"};
+window.KLANG_DATEN = {"hacker":"AAAAHGZ0eXBNNEEgAAAAAE00QSBtcDQyaXNvbQAAA6Jtb292AAAAbG12aGQAAAAA5vt20ub7dtIAAKxEAABgAAABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACNHRyYWsAAABcdGtoZAAAAAfm+3bS5vt20gAAAAEAAAAAAABgAAAAAAAAAAAAAAAAAAEAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAdBtZGlhAAAAIG1kaGQAAAAA5vt20ub7dtIAAKxEAABgAAAAAAAAAAAiaGRscgAAAAAAAAAAc291bgAAAAAAAAAAAAAAAAAAAAABhm1pbmYAAAAQc21oZAAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAABSnN0YmwAAAB2c3RzZAAAAAAAAAABAAAAZm1wNGEAAAAAAAAAAQAAAAAAAAAAAAIAEAAAAACsRAAAAAAAM2VzZHMAAAAAA4CAgCIAAAAEgICAFEAUABgAAAAJsAAA+gAFgICAAhIIBoCAgAECAAAAD3NidGQAAAAASTE2AAAAGHN0dHMAAAAAAAAAAQAAABgAAAQAAAAAKHN0c2MAAAAAAAAAAgAAAAEAAAAWAAAAAQAAAAIAAAACAAAAAQAAAHRzdHN6AAAAAAAAAAAAAAAYAAAABAAAAGsAAADHAAAAxgAAAN4AAACeAAAAlwAAAJIAAAB+AAAAbAAAAFsAAABYAAAAUQAAAEsAAAAvAAAAJQAAAB4AAAANAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAAGHN0Y28AAAAAAAAAAgAAEAAAABdpAAAA+nVkdGEAAADybWV0YQAAAAAAAAAiaGRscgAAAAAAAAAAbWRpcmFwcGwAAAAAAAAAAAAAAAAAxGlsc3QAAAC8LS0tLQAAABxtZWFuAAAAAGNvbS5hcHBsZS5pVHVuZXMAAAAUbmFtZQAAAABpVHVuU01QQgAAAIRkYXRhAAAAAQAAAAAgMDAwMDAwMDAgMDAwMDA4NDAgMDAwMDAxOUUgMDAwMDAwMDAwMDAwNTYyMiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMAAADDpmcmVlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAd5bWRhdADQAAcBDBWtjEQYYfrxJx4nXi3q8si5V1ph/4h4CQTZjx5NM0njKX/kQMygHE6GIJUKpDo3XiHHHzO4hNvkLZybqhPY6cnkMQTmWyd6bg0chSmEITSDVfhSZ2VOfPikhZMCqJQllflOLMB8CO6vgAEUFayUi1MNCiUEIZiM9nx8Ky5DZhAA1Jcj675zacT3u9Vq7r7/t9EyyydiZdX4vDYyNvndS6Azd4D+fJrPUyiA3EFPIBHUrP+GdyejzuogFHglUUZTnFHiHhRVilb++oBcPE6ufDf7/1OVIeiuMN6RCjnZoRhUdwZIj7Jbh2H6x8ZOZF1ZUXZFwX5Z20FdlCXb4AfHV7dNR04ij/X9vbpA+McEt2OnUjXkAA9Od7KLaH8e9l1mXQgtgvtaaZmhS49sBVf52lwBFBWtrPQ4iAzwgquIUu3DfVyLIQB8nU4BYq94vqCIzDHj1f9dNt/a1WzZ7+/7D1/2fseY7LfjFPGxEkUbsvLl1ItvZm2vtztCNjRntv6Z/Ibf22LbQsCt75X9U91tA3ZjVlP1f6xBdittDthZKoKsvEXhWIDAbxVW0jbcj0XbJq8c64bPxFDuRY+u8UsGFjAcRHifndPlnQM8f8doZLcIF6lmQDr/R4+8foD9GB7uASgCCXE/QqsSEU6dxFH26zXu4V27brcBNBWstLaKEEQEffAxmW6mlNNRqZdmqLYE5v623G305zX986kdf9nwCzoW5bfPbdlNWN37pOyETEhoiGAKNy7AMS1rbRJTb7vHDF7xZbTFBo7MJpysXOtHKntx8Q6cbhogwaLLEUOdZ1iVyFYPjZyse+TYZqe7r4ZWFBuymIgQzi6DRZgo3AxWg0LpKLILqzlnvQIocSuCAmlMrJQA4XfO4Dk1jsGPQ3O6RfF5zz0gEs4GqBDCRu6DxLevLqWGPSBCN3ljo2MvA+3I/1/FxRDzMLNB3QbX4Q/OjRPtz4ABMhWo7HQjCQZMEgEfXbvSKS3N9TosLLWuNYEHXf4ObzTGKssKFV0z8ZF9/k0NJLswXjjjszvDXOMEjjguqua2xoxWvUyAD64ty0qDws/djg+LVNtPssUM7qi4oOiEnzc3qlKE+45znfoZjCIJeCzMW6YXFkDN2xZrJY2oS/zj7YCs6H/cqiXx94WvRBE0LRIiD4Yo3Z4WB7sI1+5HgAEaFakstCEVAigClchWS9N8L0lrC+CQULn7tc1UHzGkaj0Wchtk1TXv1/G6oK+oatUXduHczI4uDy3+FOuBQXA2DudxYDpQHaqmKgCWTGW10X96wUan5PtzAwcTl5mAxRFn0h8xwPwKhom6pzYoKbij/mp2xU0fb+JG1pZq+JZ62L7YX9Y+7SyebqPMjrhEkxxMoXmYJuABHBWprERghQQkA76em7RZaM6R0RIkMBUp9yGo9jzorGug3IW078mpl8yWZaH2XEqIbAtVgxIvUdOM0bMO7V10kjd2LgsWCXZgQyuKaauJeSgPClF4AtKaOK4mfNQEKG1vrU0KlWTZsirTL0xpEahG45WFLqHXJJL4O6sGbYo9TT4359F8cP9S420YF5Fil0xccAEiFa0shEEYSAh/M9UpZqDRLlrQKZYNHpxRZ4KSGuZqe2JzNTGoPikivm7qWOu1Of0V2KzLE79czQzVvSRmqcaFDgorcaE29yMpUkplOpOToF/TraHoFGlWqa4wymvtrEkNGJMgBoW3TmAhAZW0pDRc+7UZ6IkwO84RAFVCLgEAFawwhlkYTgpnZtLL31edRqlima3rYuoVVaiPC3nXHBt25s5hi+GpIaNGI4XjelJopzOjniaENHacXgwTzMJiKV1MLhnvh77wmJzglKjPZ6XPuXNuiglrS3BZUvYAejclbGAQox2l9+AHFwEQFaksRFCcGvvOW8M87+McFgUALAgrVQdCzGAjPU1krnr6mbDCEx6vDJCcu6xhs3N/Xjf6B/mHY/NdgJhRQzWZtvCY8A4YC0cZwQrSERQ2nmkDyA0FWoG6teABEBWpMEZApBr8bqws4QF7DAATmz+QwrNLgMXsrHImgX1RPCwhM20k0oOaQ5JdAsW55Abk1E73TFBku5DqJxBocL0dVhSCFybmll3zz86yrKQDNVAABIQ4AQwVoigxMAxCDX31vITXBSjAYoAPSb0dDgZsal2Ae6lVSaUiaa1SSJhoIURFXFyF6qdA0I6IApLZRDN/vnkGXMw+r7V73pRJk1p+yMAIJhMOAPIVgDB2OSRIDydmPgGIBuAqTBwfc2fDxWq0hmQ/A0+BH2zTZeF1YmjaWc5QFTZfnrTRk9mTnSepdPE7lI/iqAckgOhaas0mZdZwAQoVmcIw0+iOERhhcrMkIkkEE4MTr+80XVduGjLx30yFjd0CLpGaJjBbg3Smg4AA+hWIkFIYfAvTSHYuVl5iIIAiXkD36/ca0ox6UzffkEmWOnjwAPgVkYHwJqwyC5WRGTAPD4h54hukhtV3qmjsNWHgATIVg+xcqoHEh8BD3ADQAAcA0AAHANAABwDQAAcA0AAHANAABw==","nachricht":"AAAAHGZ0eXBNNEEgAAAAAE00QSBtcDQyaXNvbQAAA/5tb292AAAAbG12aGQAAAAA5vt20ub7dtIAAKxEAAC4AAABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACkHRyYWsAAABcdGtoZAAAAAfm+3bS5vt20gAAAAEAAAAAAAC4AAAAAAAAAAAAAAAAAAEAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAixtZGlhAAAAIG1kaGQAAAAA5vt20ub7dtIAAKxEAAC4AAAAAAAAAAAiaGRscgAAAAAAAAAAc291bgAAAAAAAAAAAAAAAAAAAAAB4m1pbmYAAAAQc21oZAAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAABpnN0YmwAAAB2c3RzZAAAAAAAAAABAAAAZm1wNGEAAAAAAAAAAQAAAAAAAAAAAAIAEAAAAACsRAAAAAAAM2VzZHMAAAAAA4CAgCIAAAAEgICAFEAUABgAAABUYAAA+gAFgICAAhIIBoCAgAECAAAAD3NidGQAAAAASTE2AAAAGHN0dHMAAAAAAAAAAQAAAC4AAAQAAAAAKHN0c2MAAAAAAAAAAgAAAAEAAAAWAAAAAQAAAAMAAAACAAAAAQAAAMxzdHN6AAAAAAAAAAAAAAAuAAAABAAAAC8AAABRAAAAYgAAAGEAAABxAAAAcQAAAG4AAABuAAAAgQAAAH4AAACgAAAArQAAAKYAAACdAAAAkQAAAHQAAABpAAAAXQAAAFQAAABeAAAAYAAAAGsAAABcAAAAVAAAAFUAAABMAAAATwAAAFIAAABIAAAASAAAAEQAAAA8AAAAQQAAADIAAAAvAAAAMQAAADMAAAArAAAAMAAAADAAAAArAAAAJwAAABkAAAAEAAAABAAAABxzdGNvAAAAAAAAAAMAABAAAAAZcQAAHtoAAAD6dWR0YQAAAPJtZXRhAAAAAAAAACJoZGxyAAAAAAAAAABtZGlyYXBwbAAAAAAAAAAAAAAAAADEaWxzdAAAALwtLS0tAAAAHG1lYW4AAAAAY29tLmFwcGxlLmlUdW5lcwAAABRuYW1lAAAAAGlUdW5TTVBCAAAAhGRhdGEAAAABAAAAACAwMDAwMDAwMCAwMDAwMDg0MCAwMDAwMDM3QyAwMDAwMDAwMDAwMDBBQzQ0IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwAAAL3mZyZWUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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"};
 
 </script>
 <script>
@@ -2100,7 +2116,7 @@ window.KLANG_DATEN = {"hacker":"AAAAHGZ0eXBNNEEgAAAAAE00QSBtcDQyaXNvbQAAA6Jtb292
    Klang – kleine UI-Geräusche, live erzeugt mit Web Audio.
    Keine Audiodateien: nichts kann im LMS fehlen, nichts muss laden.
    Optional: ausgewählte Aufnahmen (ElevenLabs) aus js/klang-daten.js
-   ersetzen einzelne Rollen (aankomst, post, knop, hacker, joker);
+   ersetzen einzelne Rollen (aankomst, nachricht, post, knop, hacker, joker);
    fehlt eine, klingt der live erzeugte Ton.
    Der AudioContext startet erst beim ersten Klick (Autoplay-Regeln).
    ------------------------------------------------------------------ */
@@ -2222,6 +2238,8 @@ window.Klang = (function () {
     }),
     // Bildschirmwechsel
     wisch: spiel(function () { if (!probe('aankomst')) rauschen(0, 0.32, { von: 500, bis: 2600, vol: 0.05 }); }),
+    // neue Nachricht fliegt herein (Whoosh aus der ursprünglichen Challenge)
+    nachricht: spiel(function () { if (!probe('nachricht')) rauschen(0, 0.5, { von: 300, bis: 2200, vol: 0.06 }); }),
     // Sprechblase / Chat-Nachricht
     blase: spiel(function () { ton(620, 0, 0.09, { typ: 'sine', vol: 0.07, nach: 900 }); }),
     richtig: spiel(function () {
@@ -2297,14 +2315,17 @@ window.Klang = (function () {
 </script>
 <script>
 /* ------------------------------------------------------------------
-   Feier – Konfetti (Level geschafft) und Feuerwerk (Quiz geschafft)
-   auf einer Leinwand über allem. Konfetti schießt aus zwei Kanonen hoch,
-   wird von der Luft gebremst und flattert dann taumelnd zu Boden.
+   Feier – Konfetti auf einer Leinwand über allem.
+   konfetti():        Level geschafft – zwei Kanonen unten, Schnipsel
+                      werden von der Luft gebremst und flattern taumelnd zu Boden.
+   konfettiFinale():  Quiz geschafft – drei Salven, dazu ein Regen von oben
+                      mit Sternen und Luftschlangen, mehr Gold.
    ------------------------------------------------------------------ */
 window.Feier = (function () {
   'use strict';
   var FARBEN = ['#17FFC0', '#FF5C93', '#FFCF4A', '#8B6EFF', '#5CC8FF', '#FFFFFF', '#FF8278'];
-  var cv = null, ctx = null, teile = [], raketen = [], lauf = 0, letzte = 0, w = 0, h = 0, dpr = 1;
+  var FARBEN_FINALE = ['#FFCF4A', '#FFE27A', '#FFB020', '#17FFC0', '#FF5C93', '#8B6EFF', '#FFFFFF'];
+  var cv = null, ctx = null, teile = [], lauf = 0, letzte = 0, w = 0, h = 0, dpr = 1;
   var ruhig = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function leinwand() {
@@ -2316,67 +2337,67 @@ window.Feier = (function () {
     return true;
   }
   var r = function (a, b) { return a + Math.random() * (b - a); };
-  var farbe = function () { return FARBEN[Math.floor(Math.random() * FARBEN.length)]; };
+  var aus = function (l) { return l[Math.floor(Math.random() * l.length)]; };
 
-  /* ---------- Konfetti ---------- */
-  function schnipsel(x, y, winkel, tempo, s) {
+  function schnipsel(x, y, winkel, tempo, s, o) {
+    o = o || {};
+    var zufallForm = Math.random();
     return {
-      art: 'k', x: x, y: y, a: winkel, v: tempo,
-      fall: r(1.7, 2.6) * s,            // Sinkgeschwindigkeit, wenn die Luft gebremst hat
+      x: x, y: y, a: winkel, v: tempo,
+      fall: r(1.7, 2.6) * s * (o.langsam || 1),   // Sinkgeschwindigkeit, wenn die Luft gebremst hat
       wind: r(-0.5, 0.5),
-      wob: r(0, 6.28), wobV: r(0.04, 0.1),   // Taumeln
+      wob: r(0, 6.28), wobV: r(0.04, 0.1),         // Taumeln
       kipp: r(0, 6.28), kippV: r(0.06, 0.14) * (Math.random() < 0.5 ? -1 : 1),   // Drehen um die eigene Achse
-      gr: r(6, 11) * s, rund: Math.random() < 0.18, c: farbe(),
-      t: 0, dauer: r(230, 300)
+      gr: r(6, 11) * s,
+      form: o.formen ? (zufallForm < o.formen.stern ? 'stern' : zufallForm < o.formen.stern + o.formen.band ? 'band' : zufallForm < 0.82 ? 'rechteck' : 'rund')
+        : (zufallForm < 0.18 ? 'rund' : 'rechteck'),
+      c: aus(o.farben || FARBEN),
+      t: -(o.verz || 0), dauer: r(230, 300) * (o.laenger || 1)
     };
   }
+  function salve(menge, s, o) {
+    for (var i = 0; i < menge; i++) {
+      var links = i % 2 === 0;
+      var winkel = (links ? -62 : -118) + r(-24, 24);
+      teile.push(schnipsel(links ? w * 0.08 : w * 0.92, h + 10, winkel * Math.PI / 180, r(24, 50) * s, s, o));
+    }
+  }
+  function regen(menge, s, o) {
+    for (var j = 0; j < menge; j++) {
+      var p = schnipsel(r(w * 0.05, w * 0.95), -20, r(70, 110) * Math.PI / 180, r(2, 6), s, o);
+      p.t -= r(10, 90); teile.push(p);
+    }
+  }
+
   function konfetti(menge) {
     if (ruhig || !leinwand()) return;
     menge = menge || 100;
     var s = Math.max(0.7, Math.min(1.2, h / 820));
-    for (var i = 0; i < menge; i++) {
-      var links = i % 2 === 0;
-      var x = links ? w * 0.08 : w * 0.92, y = h + 10;
-      var winkel = (links ? -62 : -118) + r(-24, 24);
-      teile.push(schnipsel(x, y, winkel * Math.PI / 180, r(24, 50) * s, s));
-    }
-    // zweite, kleinere Welle aus der Mitte oben – füllt den Himmel
-    for (var j = 0; j < menge * 0.35; j++) {
-      var p = schnipsel(r(w * 0.2, w * 0.8), -20, r(70, 110) * Math.PI / 180, r(2, 6), s);
-      p.t = -r(20, 70); teile.push(p);
-    }
+    salve(menge, s);
+    regen(menge * 0.35, s);
     starten();
   }
 
-  /* ---------- Feuerwerk ---------- */
-  function rakete(verz) {
-    var s = Math.max(0.7, Math.min(1.25, Math.min(w, h * 1.4) / 900));
-    raketen.push({
-      x: r(w * 0.15, w * 0.85), y: h + 10, ziel: r(h * 0.14, h * 0.42),
-      v: r(10, 13) * Math.sqrt(h / 800), t: -verz, s: s,
-      c1: farbe(), c2: farbe()
-    });
-  }
-  function explodiere(k) {
-    var n = Math.round(r(56, 80)), ring = Math.random() < 0.35;
-    for (var i = 0; i < n; i++) {
-      var a = (i / n) * Math.PI * 2 + r(-0.05, 0.05);
-      var v = (ring ? r(4.6, 5.2) : r(1.2, 5.6)) * k.s;
-      teile.push({ art: 'f', x: k.x, y: k.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, c: i % 3 ? k.c1 : k.c2,
-        t: 0, dauer: r(60, 95), gr: r(1.6, 2.6) * k.s, funkel: Math.random() < 0.4 });
-    }
-    // kurzer Blitz in der Mitte
-    teile.push({ art: 'b', x: k.x, y: k.y, t: 0, dauer: 14, gr: 46 * k.s, c: k.c1 });
-    if (window.Klang && Klang.knall) Klang.knall();
-  }
-  function feuerwerk(anzahl) {
+  // Ende des Quiz: drei Salven nacheinander, dazu Sterne und Luftschlangen von oben
+  function konfettiFinale(menge) {
     if (ruhig || !leinwand()) return;
-    anzahl = anzahl || 7;
-    for (var i = 0; i < anzahl; i++) rakete(i * r(22, 34) + (i ? 6 : 0));
+    menge = menge || 130;
+    var s = Math.max(0.7, Math.min(1.2, h / 820));
+    var o = { farben: FARBEN_FINALE, formen: { stern: 0.22, band: 0.2 } };
+    [0, 34, 68].forEach(function (verz) { salve(Math.round(menge * 0.4), s, { farben: o.farben, formen: o.formen, verz: verz }); });
+    regen(menge * 0.7, s, { farben: o.farben, formen: o.formen, langsam: 0.8, laenger: 1.3 });
     starten();
   }
 
-  /* ---------- Schleife ---------- */
+  function stern(rad) {
+    ctx.beginPath();
+    for (var k = 0; k < 10; k++) {
+      var rr = k % 2 ? rad * 0.45 : rad, a = k * Math.PI / 5 - Math.PI / 2;
+      ctx[k ? 'lineTo' : 'moveTo'](Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    ctx.closePath(); ctx.fill();
+  }
+
   function starten() {
     if (lauf) return;
     cv.classList.add('an');
@@ -2386,65 +2407,36 @@ window.Feier = (function () {
   function schritt(jetzt) {
     var k = Math.min(3, (jetzt - letzte) / 16.667); letzte = jetzt;
     ctx.clearRect(0, 0, w, h);
-    ctx.globalCompositeOperation = 'lighter';
-    for (var i = raketen.length - 1; i >= 0; i--) {
-      var q = raketen[i];
-      q.t += k;
-      if (q.t < 0) continue;
-      q.y -= q.v * k; q.v *= Math.pow(0.985, k);
-      ctx.fillStyle = q.c1; ctx.globalAlpha = 0.9;
-      ctx.beginPath(); ctx.arc(q.x, q.y, 2.2 * q.s, 0, 6.283); ctx.fill();
-      ctx.globalAlpha = 0.35; ctx.fillRect(q.x - 1, q.y, 2, 22 * q.s);
-      if (q.y <= q.ziel || q.v < 2) { explodiere(q); raketen.splice(i, 1); }
-    }
     for (var j = teile.length - 1; j >= 0; j--) {
-      var p = teile[j];
-      p.t += k;
-      if (p.t < 0) continue;
-      var rest = 1 - p.t / p.dauer;
-      if (rest <= 0) { teile.splice(j, 1); continue; }
-      if (p.art === 'f') {
-        p.vx *= Math.pow(0.955, k); p.vy = p.vy * Math.pow(0.955, k) + 0.07 * k;
-        p.x += p.vx * k; p.y += p.vy * k;
-        ctx.globalAlpha = Math.min(1, rest * 1.6) * (p.funkel && Math.random() < 0.3 ? 0.25 : 1);
-        ctx.fillStyle = p.c;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.gr, 0, 6.283); ctx.fill();
-      } else if (p.art === 'b') {
-        var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.gr);
-        g.addColorStop(0, 'rgba(255,255,255,' + (0.55 * rest) + ')'); g.addColorStop(1, 'rgba(255,255,255,0)');
-        ctx.globalAlpha = 1; ctx.fillStyle = g;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.gr, 0, 6.283); ctx.fill();
-      }
-    }
-    ctx.globalCompositeOperation = 'source-over';
-    for (var m = 0; m < teile.length; m++) {
-      var c = teile[m];
-      if (c.art !== 'k' || c.t < 0) continue;
+      var c = teile[j];
+      c.t += k;
+      if (c.t < 0) continue;
+      if (c.t >= c.dauer || c.y > h + 40) { teile.splice(j, 1); continue; }
       // Flug: Abschuss wird von der Luft gebremst, danach sinkt das Stück langsam und taumelt
       c.x += (Math.cos(c.a) * c.v + c.wind) * k;
       c.y += (Math.sin(c.a) * c.v + c.fall) * k;
       c.v *= Math.pow(0.915, k);
       c.wob += c.wobV * k; c.kipp += c.kippV * k;
-      var wx = Math.cos(c.wob) * 9, wy = Math.sin(c.wob) * 3;
-      var breite = c.gr, flach = Math.cos(c.kipp);   // Drehung um die Längsachse: mal ganz, mal nur eine Kante
+      var b = c.gr, flach = Math.cos(c.kipp);   // Drehung um die Längsachse: mal ganz, mal nur eine Kante
       ctx.globalAlpha = Math.min(1, (1 - c.t / c.dauer) * 3);
       ctx.fillStyle = c.c;
       ctx.save();
-      ctx.translate(c.x + wx, c.y + wy);
+      ctx.translate(c.x + Math.cos(c.wob) * 9, c.y + Math.sin(c.wob) * 3);
       ctx.rotate(c.kipp * 0.5 + c.wob * 0.3);
       ctx.scale(1, Math.max(0.12, Math.abs(flach)));
-      if (c.rund) { ctx.beginPath(); ctx.arc(0, 0, breite * 0.45, 0, 6.283); ctx.fill(); }
-      else ctx.fillRect(-breite / 2, -breite * 0.32, breite, breite * 0.64);
+      if (c.form === 'rund') { ctx.beginPath(); ctx.arc(0, 0, b * 0.45, 0, 6.283); ctx.fill(); }
+      else if (c.form === 'stern') stern(b * 0.75);
+      else if (c.form === 'band') ctx.fillRect(-b * 0.16, -b * 1.1, b * 0.32, b * 2.2);
+      else ctx.fillRect(-b / 2, -b * 0.32, b, b * 0.64);
       ctx.restore();
-      if (c.y > h + 40) c.t = c.dauer;
     }
     ctx.globalAlpha = 1;
-    if (teile.length || raketen.length) lauf = requestAnimationFrame(schritt);
+    if (teile.length) lauf = requestAnimationFrame(schritt);
     else { lauf = 0; ctx.clearRect(0, 0, w, h); cv.classList.remove('an'); }
   }
 
   function stopp() {
-    teile = []; raketen = [];
+    teile = [];
     if (lauf) cancelAnimationFrame(lauf);
     lauf = 0;
     if (ctx) ctx.clearRect(0, 0, w, h);
@@ -2452,7 +2444,7 @@ window.Feier = (function () {
   }
   window.addEventListener('resize', function () { if (lauf) leinwand(); });
 
-  return { konfetti: konfetti, feuerwerk: feuerwerk, stopp: stopp };
+  return { konfetti: konfetti, konfettiFinale: konfettiFinale, stopp: stopp };
 })();
 
 </script>
@@ -2798,7 +2790,7 @@ window.LMS = (function () {
 
   /* ================= Bildschirmwechsel ================= */
   let aktuell = null;
-  function wechsel(el, name) {
+  function wechsel(el, name, klang) {
     tooltip.aus(); hacker.weg();
     if (FB && FB.sp) FB.sp.ro.disconnect();
     FB = null; NA = null;
@@ -2815,7 +2807,7 @@ window.LMS = (function () {
     void el.offsetWidth;
     requestAnimationFrame(() => el.classList.remove('rein'));
     hud();
-    K.wisch();
+    (klang || K.wisch)();
   }
 
   /* ================= HUD ================= */
@@ -3005,7 +2997,7 @@ window.LMS = (function () {
         el.classList.add('da');
         K.hackerWusch();
         t2 = setTimeout(() => (stimmung === 'erwischt' ? K.hackerHaha : K.hackerGrr)(), T(650));
-        t = setTimeout(() => el.classList.remove('da'), T(dauer || 4800));
+        t = setTimeout(() => el.classList.remove('da'), T(dauer || 3800));
       },
       weg() { clearTimeout(t); clearTimeout(t2); el.classList.remove('da'); }
     };
@@ -3652,7 +3644,7 @@ window.LMS = (function () {
     $('.m-rahmen', el).appendChild(g);
     const blasen = $$('.b-anim', g);
     if (!ruhig) blasen.forEach(b => b.classList.add('wartet'));   // Platz bleibt reserviert
-    wechsel(el, 'nachricht');
+    wechsel(el, 'nachricht', K.nachricht);
     telefonPlanen(g);
     NA = { el, m, g, phase: 'antwort', bereit: false };
     const na = NA;
@@ -3747,7 +3739,6 @@ window.LMS = (function () {
 
     // Schritt 1: Ergebnis
     const liste = hinweisZiele(na.g, m);
-    const hatTipp = !!(m.tipps && m.tipps.length);   // der Tipp ist der letzte Schritt (ohne Stelle in der Nachricht)
     const titel = richtig ? U.ergebnis.richtig : m.phishing ? U.ergebnis.falschPhishing : U.ergebnis.falschEcht;
     const seite = bau(`<div class="seite fb ${richtig ? 'fb-ja' : 'fb-nein'}" data-stufe="1">
       <div class="fb-kopf">
@@ -3757,7 +3748,7 @@ window.LMS = (function () {
       </div>
       <p class="fb-kern">${m.kernTitel ? `<b>${f(m.kernTitel)}</b> ` : ''}${f(m.kern)}</p>
       <div class="fb-hinweise">
-        <div class="fb-zaehler"><span class="fb-zaehler-text"></span><span class="fb-dots">${liste.map(() => '<i></i>').join('')}${hatTipp ? '<i></i>' : ''}</span></div>
+        <div class="fb-zaehler"><span class="fb-zaehler-text"></span><span class="fb-dots">${liste.map(() => '<i></i>').join('')}</span></div>
         <ol class="h-liste">${liste.map((x, i) => {
           const h = x.h;
           const ziel = x.el.dataset.ziel ? urlChip(x.el.dataset.ziel) : '';
@@ -3766,11 +3757,7 @@ window.LMS = (function () {
               <span class="h-kopf-text"><small class="h-art">${esc(U.hinweisArt[h.art] || '')}</small><b class="h-titel">${f(h.titel)}</b></span>${ICO.chevron}</button>
             <div class="h-body"><div class="h-body-innen"><div class="h-body-pad"><p>${f(h.text)}</p>${ziel}${h.klartext ? klartext(h.klartext) : ''}</div></div></div>
           </li>`;
-        }).join('')}${hatTipp ? `<li class="h-karte h-schulung" style="--i:${liste.length}">
-            <button class="h-kopf" type="button" aria-expanded="false"><span class="h-nr">${ICO.birne}</span>
-              <span class="h-kopf-text"><small class="h-art">${esc(U.schulungstipp)}</small><b class="h-titel">${esc(U.tippTitel)}</b></span>${ICO.chevron}</button>
-            <div class="h-body"><div class="h-body-innen"><div class="h-body-pad">${m.tipps.map(t => `<p>${f(t)}</p>`).join('')}</div></div></div>
-          </li>` : ''}</ol>
+        }).join('')}</ol>
       </div>
       <div class="fb-aktionen">
         <button class="btn btn-gross btn-primaer btn-weiter" type="button"><span>${esc(U.detailsAnzeigen)}</span>${ICO.pfeil}</button>
@@ -3786,7 +3773,7 @@ window.LMS = (function () {
     (richtig ? K.richtig : K.falsch)();
     ansage(titel + ' ' + (m.phishing ? U.ergebnis.istPhishing : U.ergebnis.istEcht));
 
-    FB = { na, liste, schritte: liste.length + (hatTipp ? 1 : 0), i: -1, stufe: 1, gesehen: new Set(), seite, sp: null, spalte: $('.m-spalte', na.el) };
+    FB = { na, liste, schritte: liste.length, i: -1, stufe: 1, gesehen: new Set(), seite, sp: null, spalte: $('.m-spalte', na.el) };
     const fb = FB;
     $('.btn-weiter', seite).addEventListener('click', () => { K.klick(); weiter(); });
     const skip = $('.fb-skip', seite);
@@ -3855,7 +3842,7 @@ window.LMS = (function () {
     $$('.h-kopf', seite).forEach((k, i) => k.addEventListener('click', () => { K.klick(); aktiviere(i); }));
     na.g.classList.add('zeigen');
     if (!fb.schritte) { aktiviereLeer(fb); return; }
-    if (fb.liste.length) fb.sp = spotBauen(na.g, fb.liste);
+    fb.sp = spotBauen(na.g, fb.liste);
     setTimeout(() => { if (FB === fb) aktiviere(0); }, T(220));
   }
   // Nachricht ohne markierte Stelle: gleich weiter
@@ -3907,9 +3894,9 @@ window.LMS = (function () {
     const skip = $('.fb-skip', fb.seite);
     if (skip) skip.classList.toggle('weg', letzter);
 
-    const x = { karte: fb.karten[i], h: i < fb.liste.length ? fb.liste[i].h : { art: 'schulung' } };
-    if (i < fb.liste.length) { zoomZu(fb, fb.liste[i].el); spotZiel(fb.sp, i); }
-    else spotAus(fb);   // Tipp: keine Stelle – die ganze Nachricht ist wieder hell
+    const x = { karte: fb.karten[i], h: fb.liste[i].h };
+    zoomZu(fb, fb.liste[i].el);
+    spotZiel(fb.sp, i);
     // Panel so scrollen, dass der Weiter-Knopf gleich wieder zu sehen ist – außer der aktive Hinweis
     // würde dabei oben verschwinden; dann so weit, dass er oben im Panel steht.
     // (Nur das Panel scrollen – scrollIntoView würde im LMS auch die Seite um das iframe verschieben.)
@@ -3922,15 +3909,7 @@ window.LMS = (function () {
       if (Math.abs(ziel - pk.scrollTop) > 1) pk.scrollTo({ top: ziel, behavior: ruhig ? 'auto' : 'smooth' });
     }, T(450));
     if (!still) K.tipp();
-    ansage(f(U.hinweisZaehler, { n: i + 1, gesamt: n }) + '. ' + (U.hinweisArt[x.h.art] || U.schulungstipp) + ': ' + x.karte.textContent.replace(/\s+/g, ' ').trim());
-  }
-  function spotAus(fb) {
-    const sp = fb.sp, r = $('.m-rahmen', fb.na.el);
-    if (r) r.style.transform = '';
-    if (!sp) return;
-    cancelAnimationFrame(sp.anim); sp.anim = 0;
-    sp.aktiv = -1; sp.loecher = [];
-    sp.lay.classList.remove('an');
+    ansage(f(U.hinweisZaehler, { n: i + 1, gesamt: n }) + '. ' + (U.hinweisArt[x.h.art] || '') + ': ' + x.karte.textContent.replace(/\s+/g, ' ').trim());
   }
 
   function weiter() {
@@ -4084,8 +4063,9 @@ window.LMS = (function () {
         <div class="n-text"><h2><span class="n-nr">${i + 1}</span>${esc(fo.titel)}</h2><p>${esc(fo.text)}</p>
           ${fo.punkte ? `<ul>${fo.punkte.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
           ${fo.schutz ? `<p class="n-schutz">${ICO.schutz}<span>${esc(fo.schutz)}</span></p>` : ''}
-          ${i === n - 1 ? `<p class="n-merke">${ICO.birne}<span><b>${esc(U2.merke)}:</b> ${esc(nu.merke)}</span></p>` : ''}</div>
-        <div class="n-bild"><img src="${esc(fo.bild)}" alt=""></div></article>`).join('')}</div>
+          </div>
+        <div class="n-rechts"><div class="n-bild"><img src="${esc(fo.bild)}" alt=""></div>
+          ${i === n - 1 ? `<p class="n-merke">${ICO.birne}<span><b>${esc(U2.merke)}:</b> ${esc(nu.merke)}</span></p>` : ''}</div></article>`).join('')}</div>
       <div class="n-fuss">
         <div class="n-nav"><button class="n-zurueck" type="button" aria-label="${esc(U2.zurueck)}">${ICO.zurueck}</button><span class="n-dots">${nu.folien.map(() => '<i></i>').join('')}</span></div>
         <button class="btn btn-gross btn-mint" id="n-weiter" type="button"><span>${esc(U2.weiter)}</span> ${ICO.pfeil}</button>
@@ -4148,7 +4128,7 @@ window.LMS = (function () {
     wechsel(el, 'finale');
     messerStarten(el);
     setTimeout(() => K.finale(), T(300));
-    if (bestanden) setTimeout(() => { if (el.isConnected && window.Feier) Feier.feuerwerk(prozent >= 90 ? 9 : 6); }, T(1300));
+    if (bestanden) setTimeout(() => { if (el.isConnected && window.Feier) Feier.konfettiFinale(prozent >= 90 ? 160 : 120); }, T(1300));
     setTimeout(() => {
       if (el.isConnected) hacker.zeige(r >= n - 2 ? 'durchschaut' : 'erwischt', r >= n - 2 ? U.hacker.finaleGut : U.hacker.finale, 3400);
     }, T(2300));
@@ -4186,7 +4166,7 @@ window.LMS = (function () {
     rt = setTimeout(() => {
       const g = (FB && FB.na.g) || (NA && NA.g);
       if (g) telefonPlanen(g);
-      if (FB && FB.stufe === 2 && FB.i >= 0 && FB.i < FB.liste.length) zoomZu(FB, FB.liste[FB.i].el);
+      if (FB && FB.stufe === 2 && FB.i >= 0) zoomZu(FB, FB.liste[FB.i].el);
     }, 160);
   });
 

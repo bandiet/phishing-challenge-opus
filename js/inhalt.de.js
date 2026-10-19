@@ -130,12 +130,10 @@ window.PC_INHALT = {
     },
     hinweisArt: { warn: 'Warnsignal', ok: 'Spricht für echt', tipp: 'Gut zu wissen' },
     hinweisZaehler: 'Hinweis {{n}} von {{gesamt}}',
-    schulungstipp: 'Tipp',
-    tippTitel: 'Für deinen Arbeitsalltag',
     weiter: 'Weiter',
     detailsAnzeigen: 'Details anzeigen',
     stempel: { phishing: 'Phishing', echt: 'Echt' },
-    naechsteNachricht: 'Nächste Frage',
+    naechsteNachricht: 'Nächste Nachricht',
     zurAuswertung: 'Level-Auswertung anzeigen',
     ueberspringen: 'Hinweise überspringen',
 
@@ -246,8 +244,7 @@ window.PC_INHALT = {
           ],
           // Korrektur: Original-Titel „Phishing-Versuch vereitelt!“ passte nicht, wenn man falsch geantwortet hat.
           kernTitel: 'Getarnter Anhang von einer fremden Domain.',
-          kern: 'Prüfe unerwartete Anhänge und ihre vollständige Dateiendung genau.',
-          tipps: ['Öffne keine ausführbaren Dateien (.exe), wenn du eigentlich ein Dokument erwartest.']
+          kern: 'Prüfe unerwartete Anhänge und ihre vollständige Dateiendung genau.'
         },
         {
           id: 'l1-amazon-delivery-sms', art: 'sms', phishing: false,
@@ -264,8 +261,7 @@ window.PC_INHALT = {
               text: 'Dieser Kurzlink wird von Amazon verwendet. Ein verkürzter Link ist also nicht automatisch verdächtig. Wenn du unsicher bist, öffne die Amazon-App selbst und prüfe dort deine Lieferung.' }
           ],
           kernTitel: '',
-          kern: 'Phishing kommt auch per SMS – etwa mit angeblichen Zustellproblemen, Zollgebühren oder fehlenden Adressdaten. Diese Nachricht ist jedoch eine echte Amazon-Benachrichtigung.',
-          tipps: ['Ein Absendername allein beweist nichts. Öffne bei Zweifel die Amazon-App selbst und prüfe deine Bestellung.']
+          kern: 'Phishing kommt auch per SMS – etwa mit angeblichen Zustellproblemen, Zollgebühren oder fehlenden Adressdaten. Diese Nachricht ist jedoch eine echte Amazon-Benachrichtigung.'
         },
         {
           id: 'l2-msg-9', art: 'email', phishing: false,
@@ -294,8 +290,7 @@ window.PC_INHALT = {
               text: 'Die Absenderadresse verwendet die offizielle Domain linkedin.com. Das ist ein positives Signal – prüfe trotzdem, ob die Anfrage für dich plausibel ist.' }
           ],
           kernTitel: '',
-          kern: 'Absender und Nachricht passen zu LinkedIn. Eine unbekannte Kontaktanfrage allein ist kein Hinweis auf Phishing.',
-          tipps: ['Prüfe bei Kontaktanfragen Profil, gemeinsame Kontakte und Kontext – auch wenn die E-Mail-Domain echt ist.']
+          kern: 'Absender und Nachricht passen zu LinkedIn. Eine unbekannte Kontaktanfrage allein ist kein Hinweis auf Phishing.'
         },
         {
           id: 'l3-msg-2', art: 'sms', phishing: true,
@@ -312,8 +307,7 @@ window.PC_INHALT = {
               text: 'Ein hoher Betrag und die Aufforderung, sofort zu handeln, erzeugen gezielt Druck. Lass dich davon nicht zum schnellen Klicken verleiten und prüfe die Meldung über deine Banking-App.' }
           ],
           kernTitel: '',
-          kern: 'Bei verdächtigen Banknachrichten: Öffne deine Banking-App oder die Website selbst, statt dem Link in der Nachricht zu folgen.',
-          tipps: ['Öffne die Banking-App selbst oder nutze eine bekannte Telefonnummer; klicke nicht auf den SMS-Link.']
+          kern: 'Bei verdächtigen Banknachrichten: Öffne deine Banking-App oder die Website selbst, statt dem Link in der Nachricht zu folgen.'
         },
         {
           id: 'l5-msg-10', art: 'email', phishing: false,
@@ -341,8 +335,7 @@ window.PC_INHALT = {
               text: 'Die Nachricht kann echt sein, obwohl du den Code nicht selbst angefordert hast. Nutze oder teile den Code nicht und prüfe dein Konto über den bekannten Zugang.' }
           ],
           kernTitel: '',
-          kern: 'Die E-Mail selbst ist echt. Hast du den Code nicht angefordert, kann das aber auf einen fremden Anmeldeversuch hindeuten. Teile den Code niemals mit anderen.',
-          tipps: ['Sicherheitscodes nie weitergeben – auch nicht an angebliche IT-Mitarbeitende.']
+          kern: 'Die E-Mail selbst ist echt. Hast du den Code nicht angefordert, kann das aber auf einen fremden Anmeldeversuch hindeuten. Teile den Code niemals mit anderen.'
         }
       ]
     },
@@ -382,8 +375,7 @@ window.PC_INHALT = {
               text: 'Im Link steht zwar paypal.com, die tatsächliche Domain ist aber security-dispute-resolution.com. Sie gehört nicht zu PayPal.' }
           ],
           kernTitel: 'Hier lohnt sich ein genauer Blick auf die Domain.',
-          kern: 'Gefälschte Adressen können bekannten Domains täuschend ähnlich sehen. Prüfe deshalb Absender und Link-Ziel genau.',
-          tipps: ['Lies die eigentliche Domain inklusive Endung – nicht nur bekannte Markennamen davor.']
+          kern: 'Gefälschte Adressen können bekannten Domains täuschend ähnlich sehen. Prüfe deshalb Absender und Link-Ziel genau.'
         },
         {
           id: 'ai-img-1790147331698', art: 'email', phishing: false,
@@ -424,8 +416,7 @@ window.PC_INHALT = {
               text: 'Der Link führt zu einer offiziellen Microsoft-Adresse unter sharepoint.com. Das spricht hier zusammen mit Absender und Anlass für eine legitime Freigabe.' }
           ],
           kernTitel: '',
-          kern: 'Absender, Link-Ziel und Anlass sind plausibel und passen zusammen. Nicht jede unerwartete Dateifreigabe ist Phishing.',
-          tipps: ['Bei Microsoft 365 ist sharepoint.com ein typisches Link-Ziel für SharePoint.']
+          kern: 'Absender, Link-Ziel und Anlass sind plausibel und passen zusammen. Nicht jede unerwartete Dateifreigabe ist Phishing.'
         },
         {
           id: 'l3-msg-9', art: 'email', phishing: false,
@@ -446,8 +437,7 @@ window.PC_INHALT = {
               text: 'Der Link führt zum internen Portal auf der bekannten Unternehmens-Domain {{domain}}. Das passt zum Anlass der Nachricht.' }
           ],
           kernTitel: '',
-          kern: 'Der Anlass passt zu deiner Situation. Auch Absender und Link-Ziel sind plausibel und gehören zum Unternehmen.',
-          tipps: ['Interne Portale solltest du über bereits bekannte Intranet-Adressen öffnen.']
+          kern: 'Der Anlass passt zu deiner Situation. Auch Absender und Link-Ziel sind plausibel und gehören zum Unternehmen.'
         },
         {
           id: 'ai-img-1790160787284', art: 'email', phishing: true,
@@ -487,13 +477,7 @@ window.PC_INHALT = {
               text: 'Logo, Farben und Gestaltung lassen sich leicht nachahmen. Verlasse dich deshalb nicht allein darauf, dass eine Nachricht wie ein bekanntes Tool aussieht.' }
           ],
           kernTitel: 'Auch vertraute Tools können als Köder dienen.',
-          kern: 'Schauen wir uns das genauer an.',
-          // Korrektur: Tipps auf „du“ umgestellt; „Verträge“ passte nicht zur Sommerfest-Gruppe.
-          tipps: [
-            'Navigiere bei Benachrichtigungen direkt über die offizielle Teams-App oder die gewohnte Lesezeichen-URL, anstatt auf Links in E-Mails zu klicken.',
-            'Prüfe Links vor dem Anklicken immer, indem du mit dem Mauszeiger über der Schaltfläche verharrst (Hover-Funktion).',
-            'Melde unerwartete Einladungen zu neuen Gruppen der IT-Sicherheit deines Unternehmens.'
-          ]
+          kern: 'Schauen wir uns das genauer an.'
         },
         {
           id: 'l4-msg-3', art: 'email', phishing: true,
@@ -528,8 +512,7 @@ window.PC_INHALT = {
               text: 'Eine ausländische IBAN ist nicht automatisch verdächtig. Der unerwartete Wechsel in ein anderes Land ist hier aber ein zusätzlicher Grund, die neuen Zahlungsdaten unabhängig zu bestätigen.' }
           ],
           kernTitel: 'Bei geänderten Bankdaten ist besondere Vorsicht geboten.',
-          kern: 'Bestätige geänderte Bankdaten immer über einen bereits bekannten Kontaktweg – nicht über Kontaktdaten aus der Nachricht selbst.',
-          tipps: ['Änderungen von Bankverbindungen telefonisch über bereits bekannte Kontaktdaten verifizieren.']
+          kern: 'Bestätige geänderte Bankdaten immer über einen bereits bekannten Kontaktweg – nicht über Kontaktdaten aus der Nachricht selbst.'
         }
       ]
     },
@@ -568,8 +551,7 @@ window.PC_INHALT = {
               text: 'Eine unerwartete Aufforderung, die Zwei-Faktor-Authentifizierung über einen zugesandten QR-Code neu einzurichten, ist ein Warnsignal. Starte die Einrichtung stattdessen über das bekannte Portal oder kläre sie mit der IT.' }
           ],
           kernTitel: 'Bei unerwarteten Aufforderungen zur Zwei-Faktor-Authentifizierung ist Vorsicht geboten.',
-          kern: 'Richte die Zwei-Faktor-Authentifizierung nur über bekannte und vertrauenswürdige Wege ein. Prüfe unerwartete Aufforderungen über das bekannte Portal oder direkt bei der IT.',
-          tipps: ['QR-Codes nicht blind scannen; ungewöhnliche MFA-Änderungen über den IT-Kanal bestätigen.']
+          kern: 'Richte die Zwei-Faktor-Authentifizierung nur über bekannte und vertrauenswürdige Wege ein. Prüfe unerwartete Aufforderungen über das bekannte Portal oder direkt bei der IT.'
         },
         {
           id: 'l4-msg-1', art: 'email', phishing: true,
@@ -598,8 +580,7 @@ window.PC_INHALT = {
               text: 'Eine ungewöhnlich hohe Zahlung im Namen der Geschäftsführung solltest du nicht allein aufgrund einer E-Mail ausführen. Bestätige den Auftrag über einen bekannten, unabhängigen Kontaktweg.' }
           ],
           kernTitel: 'Hier sprechen mehrere Warnsignale für Betrug.',
-          kern: 'Ungewöhnliche Zahlungsanweisung, Autorität und Geheimhaltung sind eine riskante Kombination.',
-          tipps: ['Zahlungsaufträge der Geschäftsführung immer über einen zweiten bekannten Kanal bestätigen.']
+          kern: 'Ungewöhnliche Zahlungsanweisung, Autorität und Geheimhaltung sind eine riskante Kombination.'
         },
         {
           id: 'l4-msg-9', art: 'teams', phishing: true,
@@ -615,8 +596,7 @@ window.PC_INHALT = {
               text: 'Einmalcodes bestätigen deine Anmeldung. Auch ein Administrator braucht diesen Code nicht von dir.' }
           ],
           kernTitel: 'Anmeldecodes gehören nur dir.',
-          kern: 'Einmalcodes bestätigen deine Anmeldung. Gib sie niemals an andere Personen weiter – auch nicht an vermeintliche Administratoren.',
-          tipps: ['OTP- und MFA-Codes niemals teilen.']
+          kern: 'Einmalcodes bestätigen deine Anmeldung. Gib sie niemals an andere Personen weiter – auch nicht an vermeintliche Administratoren.'
         },
         {
           id: 'l3-msg-6', art: 'email', phishing: false,
@@ -641,8 +621,7 @@ window.PC_INHALT = {
               text: 'Die Nachricht verwendet die offizielle Docusign-Domain. Zusätzlich passt die Signaturanfrage zum erwarteten Projektkontext.' }
           ],
           kernTitel: '',
-          kern: 'Auch externe Signaturanfragen können echt sein. Entscheidend ist, ob Absender, Link-Ziel und der erwartete Geschäftskontext zusammenpassen.',
-          tipps: ['Bei Signaturanfragen prüfen, ob du das Dokument erwartest und ob das Link-Ziel auf docusign.net liegt.']
+          kern: 'Auch externe Signaturanfragen können echt sein. Entscheidend ist, ob Absender, Link-Ziel und der erwartete Geschäftskontext zusammenpassen.'
         },
         {
           id: 'l3-hotel-payment-phishing', art: 'email', phishing: true,
@@ -674,8 +653,7 @@ window.PC_INHALT = {
               text: 'Der Link führt zu gast-zahlung.host. Das ist eine andere Domain als hotel-seeblick.ch. Prüfe die Anfrage über deine ursprüngliche Buchung.' }
           ],
           kernTitel: 'Echte Buchungsdaten sind kein Echtheitsbeweis.',
-          kern: 'Die Zahlungsaufforderung passt nicht zu deiner Buchung. Lass dich nicht unter Druck setzen und frage über die Kontaktdaten aus deiner Buchungsbestätigung nach.',
-          tipps: ['Auch Betrüger können echte Buchungsdaten kennen. Prüfe neue Zahlungsforderungen über die ursprüngliche Buchung.']
+          kern: 'Die Zahlungsaufforderung passt nicht zu deiner Buchung. Lass dich nicht unter Druck setzen und frage über die Kontaktdaten aus deiner Buchungsbestätigung nach.'
         }
       ]
     }

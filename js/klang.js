@@ -2,7 +2,7 @@
    Klang – kleine UI-Geräusche, live erzeugt mit Web Audio.
    Keine Audiodateien: nichts kann im LMS fehlen, nichts muss laden.
    Optional: ausgewählte Aufnahmen (ElevenLabs) aus js/klang-daten.js
-   ersetzen einzelne Rollen (aankomst, post, knop, hacker, joker);
+   ersetzen einzelne Rollen (aankomst, nachricht, post, knop, hacker, joker);
    fehlt eine, klingt der live erzeugte Ton.
    Der AudioContext startet erst beim ersten Klick (Autoplay-Regeln).
    ------------------------------------------------------------------ */
@@ -124,6 +124,8 @@ window.Klang = (function () {
     }),
     // Bildschirmwechsel
     wisch: spiel(function () { if (!probe('aankomst')) rauschen(0, 0.32, { von: 500, bis: 2600, vol: 0.05 }); }),
+    // neue Nachricht fliegt herein (Whoosh aus der ursprünglichen Challenge)
+    nachricht: spiel(function () { if (!probe('nachricht')) rauschen(0, 0.5, { von: 300, bis: 2200, vol: 0.06 }); }),
     // Sprechblase / Chat-Nachricht
     blase: spiel(function () { ton(620, 0, 0.09, { typ: 'sine', vol: 0.07, nach: 900 }); }),
     richtig: spiel(function () {

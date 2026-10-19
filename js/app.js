@@ -152,7 +152,7 @@
 
   /* ================= Bildschirmwechsel ================= */
   let aktuell = null;
-  function wechsel(el, name) {
+  function wechsel(el, name, klang) {
     tooltip.aus(); hacker.weg();
     if (FB && FB.sp) FB.sp.ro.disconnect();
     FB = null; NA = null;
@@ -169,7 +169,7 @@
     void el.offsetWidth;
     requestAnimationFrame(() => el.classList.remove('rein'));
     hud();
-    K.wisch();
+    (klang || K.wisch)();
   }
 
   /* ================= HUD ================= */
@@ -359,7 +359,7 @@
         el.classList.add('da');
         K.hackerWusch();
         t2 = setTimeout(() => (stimmung === 'erwischt' ? K.hackerHaha : K.hackerGrr)(), T(650));
-        t = setTimeout(() => el.classList.remove('da'), T(dauer || 4800));
+        t = setTimeout(() => el.classList.remove('da'), T(dauer || 3800));
       },
       weg() { clearTimeout(t); clearTimeout(t2); el.classList.remove('da'); }
     };
@@ -1006,7 +1006,7 @@
     $('.m-rahmen', el).appendChild(g);
     const blasen = $$('.b-anim', g);
     if (!ruhig) blasen.forEach(b => b.classList.add('wartet'));   // Platz bleibt reserviert
-    wechsel(el, 'nachricht');
+    wechsel(el, 'nachricht', K.nachricht);
     telefonPlanen(g);
     NA = { el, m, g, phase: 'antwort', bereit: false };
     const na = NA;
@@ -1101,7 +1101,6 @@
 
     // Schritt 1: Ergebnis
     const liste = hinweisZiele(na.g, m);
-    const hatTipp = !!(m.tipps && m.tipps.length);   // der Tipp ist der letzte Schritt (ohne Stelle in der Nachricht)
     const titel = richtig ? U.ergebnis.richtig : m.phishing ? U.ergebnis.falschPhishing : U.ergebnis.falschEcht;
     const seite = bau(`<div class="seite fb ${richtig ? 'fb-ja' : 'fb-nein'}" data-stufe="1">
       <div class="fb-kopf">
@@ -1111,7 +1110,7 @@
       </div>
       <p class="fb-kern">${m.kernTitel ? `<b>${f(m.kernTitel)}</b> ` : ''}${f(m.kern)}</p>
       <div class="fb-hinweise">
-        <div class="fb-zaehler"><span class="fb-zaehler-text"></span><span class="fb-dots">${liste.map(() => '<i></i>').join('')}${hatTipp ? '<i></i>' : ''}</span></div>
+        <div class="fb-zaehler"><span class="fb-zaehler-text"></span><span class="fb-dots">${liste.map(() => '<i></i>').join('')}</span></div>
         <ol class="h-liste">${liste.map((x, i) => {
           const h = x.h;
           const ziel = x.el.dataset.ziel ? urlChip(x.el.dataset.ziel) : '';
@@ -1120,11 +1119,7 @@
               <span class="h-kopf-text"><small class="h-art">${esc(U.hinweisArt[h.art] || '')}</small><b class="h-titel">${f(h.titel)}</b></span>${ICO.chevron}</button>
             <div class="h-body"><div class="h-body-innen"><div class="h-body-pad"><p>${f(h.text)}</p>${ziel}${h.klartext ? klartext(h.klartext) : ''}</div></div></div>
           </li>`;
-        }).join('')}${hatTipp ? `<li class="h-karte h-schulung" style="--i:${liste.length}">
-            <button class="h-kopf" type="button" aria-expanded="false"><span class="h-nr">${ICO.birne}</span>
-              <span class="h-kopf-text"><small class="h-art">${esc(U.schulungstipp)}</small><b class="h-titel">${esc(U.tippTitel)}</b></span>${ICO.chevron}</button>
-            <div class="h-body"><div class="h-body-innen"><div class="h-body-pad">${m.tipps.map(t => `<p>${f(t)}</p>`).join('')}</div></div></div>
-          </li>` : ''}</ol>
+        }).join('')}</ol>
       </div>
       <div class="fb-aktionen">
         <button class="btn btn-gross btn-primaer btn-weiter" type="button"><span>${esc(U.detailsAnzeigen)}</span>${ICO.pfeil}</button>
@@ -1140,7 +1135,7 @@
     (richtig ? K.richtig : K.falsch)();
     ansage(titel + ' ' + (m.phishing ? U.ergebnis.istPhishing : U.ergebnis.istEcht));
 
-    FB = { na, liste, schritte: liste.length + (hatTipp ? 1 : 0), i: -1, stufe: 1, gesehen: new Set(), seite, sp: null, spalte: $('.m-spalte', na.el) };
+    FB = { na, liste, schritte: liste.length, i: -1, stufe: 1, gesehen: new Set(), seite, sp: null, spalte: $('.m-spalte', na.el) };
     const fb = FB;
     $('.btn-weiter', seite).addEventListener('click', () => { K.klick(); weiter(); });
     const skip = $('.fb-skip', seite);
@@ -1209,7 +1204,7 @@
     $$('.h-kopf', seite).forEach((k, i) => k.addEventListener('click', () => { K.klick(); aktiviere(i); }));
     na.g.classList.add('zeigen');
     if (!fb.schritte) { aktiviereLeer(fb); return; }
-    if (fb.liste.length) fb.sp = spotBauen(na.g, fb.liste);
+    fb.sp = spotBauen(na.g, fb.liste);
     setTimeout(() => { if (FB === fb) aktiviere(0); }, T(220));
   }
   // Nachricht ohne markierte Stelle: gleich weiter
@@ -1261,9 +1256,9 @@
     const skip = $('.fb-skip', fb.seite);
     if (skip) skip.classList.toggle('weg', letzter);
 
-    const x = { karte: fb.karten[i], h: i < fb.liste.length ? fb.liste[i].h : { art: 'schulung' } };
-    if (i < fb.liste.length) { zoomZu(fb, fb.liste[i].el); spotZiel(fb.sp, i); }
-    else spotAus(fb);   // Tipp: keine Stelle – die ganze Nachricht ist wieder hell
+    const x = { karte: fb.karten[i], h: fb.liste[i].h };
+    zoomZu(fb, fb.liste[i].el);
+    spotZiel(fb.sp, i);
     // Panel so scrollen, dass der Weiter-Knopf gleich wieder zu sehen ist – außer der aktive Hinweis
     // würde dabei oben verschwinden; dann so weit, dass er oben im Panel steht.
     // (Nur das Panel scrollen – scrollIntoView würde im LMS auch die Seite um das iframe verschieben.)
@@ -1276,15 +1271,7 @@
       if (Math.abs(ziel - pk.scrollTop) > 1) pk.scrollTo({ top: ziel, behavior: ruhig ? 'auto' : 'smooth' });
     }, T(450));
     if (!still) K.tipp();
-    ansage(f(U.hinweisZaehler, { n: i + 1, gesamt: n }) + '. ' + (U.hinweisArt[x.h.art] || U.schulungstipp) + ': ' + x.karte.textContent.replace(/\s+/g, ' ').trim());
-  }
-  function spotAus(fb) {
-    const sp = fb.sp, r = $('.m-rahmen', fb.na.el);
-    if (r) r.style.transform = '';
-    if (!sp) return;
-    cancelAnimationFrame(sp.anim); sp.anim = 0;
-    sp.aktiv = -1; sp.loecher = [];
-    sp.lay.classList.remove('an');
+    ansage(f(U.hinweisZaehler, { n: i + 1, gesamt: n }) + '. ' + (U.hinweisArt[x.h.art] || '') + ': ' + x.karte.textContent.replace(/\s+/g, ' ').trim());
   }
 
   function weiter() {
@@ -1438,8 +1425,9 @@
         <div class="n-text"><h2><span class="n-nr">${i + 1}</span>${esc(fo.titel)}</h2><p>${esc(fo.text)}</p>
           ${fo.punkte ? `<ul>${fo.punkte.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : ''}
           ${fo.schutz ? `<p class="n-schutz">${ICO.schutz}<span>${esc(fo.schutz)}</span></p>` : ''}
-          ${i === n - 1 ? `<p class="n-merke">${ICO.birne}<span><b>${esc(U2.merke)}:</b> ${esc(nu.merke)}</span></p>` : ''}</div>
-        <div class="n-bild"><img src="${esc(fo.bild)}" alt=""></div></article>`).join('')}</div>
+          </div>
+        <div class="n-rechts"><div class="n-bild"><img src="${esc(fo.bild)}" alt=""></div>
+          ${i === n - 1 ? `<p class="n-merke">${ICO.birne}<span><b>${esc(U2.merke)}:</b> ${esc(nu.merke)}</span></p>` : ''}</div></article>`).join('')}</div>
       <div class="n-fuss">
         <div class="n-nav"><button class="n-zurueck" type="button" aria-label="${esc(U2.zurueck)}">${ICO.zurueck}</button><span class="n-dots">${nu.folien.map(() => '<i></i>').join('')}</span></div>
         <button class="btn btn-gross btn-mint" id="n-weiter" type="button"><span>${esc(U2.weiter)}</span> ${ICO.pfeil}</button>
@@ -1502,7 +1490,7 @@
     wechsel(el, 'finale');
     messerStarten(el);
     setTimeout(() => K.finale(), T(300));
-    if (bestanden) setTimeout(() => { if (el.isConnected && window.Feier) Feier.feuerwerk(prozent >= 90 ? 9 : 6); }, T(1300));
+    if (bestanden) setTimeout(() => { if (el.isConnected && window.Feier) Feier.konfettiFinale(prozent >= 90 ? 160 : 120); }, T(1300));
     setTimeout(() => {
       if (el.isConnected) hacker.zeige(r >= n - 2 ? 'durchschaut' : 'erwischt', r >= n - 2 ? U.hacker.finaleGut : U.hacker.finale, 3400);
     }, T(2300));
@@ -1540,7 +1528,7 @@
     rt = setTimeout(() => {
       const g = (FB && FB.na.g) || (NA && NA.g);
       if (g) telefonPlanen(g);
-      if (FB && FB.stufe === 2 && FB.i >= 0 && FB.i < FB.liste.length) zoomZu(FB, FB.liste[FB.i].el);
+      if (FB && FB.stufe === 2 && FB.i >= 0) zoomZu(FB, FB.liste[FB.i].el);
     }, 160);
   });
 
