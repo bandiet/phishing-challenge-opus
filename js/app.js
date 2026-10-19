@@ -1449,6 +1449,10 @@
       K.wisch();
     };
     zeige(0);
+    // die Knopfzeile hängt unten fest; einen Hintergrund braucht sie nur, wenn wirklich Inhalt darunter liegt
+    const ueberlauf = () => { if (el.isConnected) el.classList.toggle('ueberlauf', el.scrollHeight > el.clientHeight + 2); };
+    setTimeout(ueberlauf, T(120)); setTimeout(ueberlauf, T(900));
+    const ro = new ResizeObserver(ueberlauf); ro.observe(el); ro.observe($('.n-buehne', el));
     btn.addEventListener('click', () => { K.klick(); if (i < n - 1) zeige(i + 1); else naechstesLevel(); });
     zur.addEventListener('click', () => { if (i > 0) { K.klick(); zeige(i - 1, true); } });
     el.addEventListener('keydown', e => {
@@ -1484,7 +1488,8 @@
         <section class="f-block karte"><h2>${esc(fi.mitnehmen)}</h2>
           <ul class="f-merke">${fi.merksaetze.map((s, i) => `<li style="--i:${i}">${ICO.check}<span>${esc(s)}</span></li>`).join('')}</ul></section>
       </div>
-      ${lmsOk ? `<p class="f-lms">${ICO.check}${esc(fi.lms)}</p>` : ''}
+      ${lmsOk ? `<p class="f-lms">${ICO.check}${esc(fi.lms)}</p>
+        <p class="f-schliessen">${esc(bestanden ? fi.schliessen : f(fi.nochNicht, { grenze: E.bestehensgrenze }))}</p>` : ''}
       <button class="btn btn-sekundaer" id="f-nochmal" type="button">${ICO.nochmal}${esc(fi.nochmal)}</button>
     </div></section>`);
     wechsel(el, 'finale');

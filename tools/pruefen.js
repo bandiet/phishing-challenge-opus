@@ -14,7 +14,7 @@
   const PLATZ = ['vorname', 'nachname', 'name', 'email', 'privat', 'firma', 'firmakurz', 'domain', 'tenant',
     'fake_doppel', 'fake_doppel_m', 'fake_tausch', 'fake_tausch_m', 'fake_glyph', 'fake_glyph_m', 'glyph_info',
     'fake_weg', 'fake_weg_m', 'fake_zusatz', 'fake_zusatz_m', 'fake_tld', 'fake_tld_m',
-    'n', 'gesamt', 'ziel', 'badge', 'level', 'nr', 'richtig'];
+    'n', 'gesamt', 'ziel', 'badge', 'level', 'nr', 'richtig', 'grenze'];
 
   function pruefe(I, referenz) {
     const fehler = [], warn = [];

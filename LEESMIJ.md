@@ -17,6 +17,8 @@ Pro Nachricht (E-Mail wie in einem echten Postfach, SMS wie auf dem iPhone, Team
 
 **Täusch-Domains** (`js/domains.js`): die unauffälligsten Kniffe zuerst – Doppelgänger-Zeichen (rn/m, vv/w, cl/d, I/l, g/q, lc/k), fehlender Doppelbuchstabe, doppelter Bindestrich; vertauschte Buchstaben nur, wenn nichts anderes passt.
 
+**Hintergrund** ruhig ohne Linien: im Quiz zwei schwache Lichter (Petrol links, Magenta rechts), beim Sicherheitstipp Navy mit blauem Schimmer wie in der ursprünglichen Schulung (Überblendung über `data-screen`).
+
 **Hacker** wie im Original (SVG, ca. 3,8 s sichtbar): lugt von links herein, zwinkert mit Funkeln (hat dich erwischt) oder bekommt große Augen und Schweiß (durchschaut). **Konfetti** nach einem geschafften Level, am Ende eine festlichere Variante mit drei Salven, Sternen und Luftschlangen (beides `js/feier.js`, eine Leinwand). Neue Nachrichten kommen mit dem Whoosh aus der ursprünglichen Challenge (`tools/sfx/raw/message_whosh.mp3`, Lautstärke wie die Synth-Klänge).
 
 ## Ordner

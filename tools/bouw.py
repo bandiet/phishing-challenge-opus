@@ -116,8 +116,8 @@ with open(os.path.join(ziel, 'index.html'), 'w', encoding='utf-8') as f:
 inhalt = lies(f'js/inhalt.{SPRACHE}.js')
 produkt = re.search(r"produkt:\s*'([^']+)'", inhalt).group(1)
 grenze = int(re.search(r'bestehensgrenze:\s*(\d+)', inhalt).group(1))
-titel = f'{produkt} ({SPRACHE.upper()})'
-kennung = f'CCT_PHISHING_CHALLENGE_OPUS_{SPRACHE.upper()}'
+titel = produkt                                              # wie im LMS angezeigt: „Phishing Challenge“
+kennung = f'CCT_PHISHING_CHALLENGE_2026_{SPRACHE.upper()}'     # neue Kurs-ID (nicht die des alten Pakets)
 
 
 def xml(s):

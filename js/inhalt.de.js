@@ -172,6 +172,8 @@ window.PC_INHALT = {
         'Persönliche Details sind kein Beweis für Echtheit.'
       ],
       lms: 'Dein Fortschritt wurde erfolgreich an das LMS übermittelt.',
+      schliessen: 'Du kannst dieses Fenster jetzt schließen, um die Schulung zu beenden.',
+      nochNicht: 'Für einen erfolgreichen Abschluss brauchst du mindestens {{grenze}} %. Starte das Quiz einfach noch einmal.',
       nochmal: 'Quiz erneut starten'
     },
 
