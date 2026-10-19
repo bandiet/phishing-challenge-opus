@@ -24,9 +24,15 @@ window.Klang = (function () {
       master.connect(komp); komp.connect(ctx.destination);
     } catch (e) { ctx = null; }
   }
+  var geweckt = false;
   function wecken() {
     init();
-    if (ctx && ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
+    if (!ctx) return;
+    if (ctx.state !== 'running') { try { ctx.resume(); } catch (e) {} }
+    // ältere iPhones: ein stiller Puffer innerhalb der Geste schaltet die Ausgabe frei
+    if (!geweckt) {
+      try { var b = ctx.createBuffer(1, 1, 22050), q = ctx.createBufferSource(); q.buffer = b; q.connect(ctx.destination); q.start(0); geweckt = true; } catch (e) {}
+    }
     probenLaden();
   }
 
@@ -51,7 +57,8 @@ window.Klang = (function () {
     var q = ctx.createBufferSource(); q.buffer = b; q.connect(master); q.start();
     return true;
   }
-  ['pointerdown', 'keydown', 'touchstart'].forEach(function (t) {
+  // Safari (iPhone/iPad) schaltet Audio nur bei touchend/click/keydown frei – touchstart/pointerdown reichen dort nicht
+  ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'click', 'keydown'].forEach(function (t) {
     document.addEventListener(t, wecken, { capture: true, passive: true });
   });
 

@@ -1,14 +1,16 @@
 /* ------------------------------------------------------------------
    Feier – Konfetti auf einer Leinwand über allem.
-   konfetti():        Level geschafft – zwei Kanonen unten, Schnipsel
-                      werden von der Luft gebremst und flattern taumelnd zu Boden.
-   konfettiFinale():  Quiz geschafft – drei Salven, dazu ein Regen von oben
-                      mit Sternen und Luftschlangen, mehr Gold.
+   konfetti(menge, farben): zwei Kanonen unten, Schnipsel werden von der Luft
+   gebremst und flattern taumelnd zu Boden.
+     farben 'cct'  – Level geschafft: CCT-Farben (Mint, Magenta, Violett, Weiß)
+     farben 'bunt' – Quiz geschafft: kunterbunt
    ------------------------------------------------------------------ */
 window.Feier = (function () {
   'use strict';
-  var FARBEN = ['#17FFC0', '#FF5C93', '#FFCF4A', '#8B6EFF', '#5CC8FF', '#FFFFFF', '#FF8278'];
-  var FARBEN_FINALE = ['#FFCF4A', '#FFE27A', '#FFB020', '#17FFC0', '#FF5C93', '#8B6EFF', '#FFFFFF'];
+  var PALETTEN = {
+    bunt: ['#17FFC0', '#FF5C93', '#FFCF4A', '#8B6EFF', '#5CC8FF', '#FFFFFF', '#FF8278'],
+    cct: ['#17FFC0', '#00D8A7', '#FF2D87', '#FF5C93', '#7B5CFF', '#B9A8FF', '#FFFFFF']
+  };
   var cv = null, ctx = null, teile = [], lauf = 0, letzte = 0, w = 0, h = 0, dpr = 1;
   var ruhig = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -33,9 +35,8 @@ window.Feier = (function () {
       wob: r(0, 6.28), wobV: r(0.04, 0.1),         // Taumeln
       kipp: r(0, 6.28), kippV: r(0.06, 0.14) * (Math.random() < 0.5 ? -1 : 1),   // Drehen um die eigene Achse
       gr: r(6, 11) * s,
-      form: o.formen ? (zufallForm < o.formen.stern ? 'stern' : zufallForm < o.formen.stern + o.formen.band ? 'band' : zufallForm < 0.82 ? 'rechteck' : 'rund')
-        : (zufallForm < 0.18 ? 'rund' : 'rechteck'),
-      c: aus(o.farben || FARBEN),
+      form: zufallForm < 0.18 ? 'rund' : 'rechteck',
+      c: aus(o.farben || PALETTEN.bunt),
       t: -(o.verz || 0), dauer: r(230, 300) * (o.laenger || 1)
     };
   }
@@ -53,33 +54,14 @@ window.Feier = (function () {
     }
   }
 
-  function konfetti(menge) {
+  function konfetti(menge, farben) {
     if (ruhig || !leinwand()) return;
     menge = menge || 100;
     var s = Math.max(0.7, Math.min(1.2, h / 820));
-    salve(menge, s);
-    regen(menge * 0.35, s);
+    var o = { farben: PALETTEN[farben] || PALETTEN.bunt };
+    salve(menge, s, o);
+    regen(menge * 0.35, s, o);
     starten();
-  }
-
-  // Ende des Quiz: drei Salven nacheinander, dazu Sterne und Luftschlangen von oben
-  function konfettiFinale(menge) {
-    if (ruhig || !leinwand()) return;
-    menge = menge || 130;
-    var s = Math.max(0.7, Math.min(1.2, h / 820));
-    var o = { farben: FARBEN_FINALE, formen: { stern: 0.22, band: 0.2 } };
-    [0, 34, 68].forEach(function (verz) { salve(Math.round(menge * 0.4), s, { farben: o.farben, formen: o.formen, verz: verz }); });
-    regen(menge * 0.7, s, { farben: o.farben, formen: o.formen, langsam: 0.8, laenger: 1.3 });
-    starten();
-  }
-
-  function stern(rad) {
-    ctx.beginPath();
-    for (var k = 0; k < 10; k++) {
-      var rr = k % 2 ? rad * 0.45 : rad, a = k * Math.PI / 5 - Math.PI / 2;
-      ctx[k ? 'lineTo' : 'moveTo'](Math.cos(a) * rr, Math.sin(a) * rr);
-    }
-    ctx.closePath(); ctx.fill();
   }
 
   function starten() {
@@ -109,8 +91,6 @@ window.Feier = (function () {
       ctx.rotate(c.kipp * 0.5 + c.wob * 0.3);
       ctx.scale(1, Math.max(0.12, Math.abs(flach)));
       if (c.form === 'rund') { ctx.beginPath(); ctx.arc(0, 0, b * 0.45, 0, 6.283); ctx.fill(); }
-      else if (c.form === 'stern') stern(b * 0.75);
-      else if (c.form === 'band') ctx.fillRect(-b * 0.16, -b * 1.1, b * 0.32, b * 2.2);
       else ctx.fillRect(-b / 2, -b * 0.32, b, b * 0.64);
       ctx.restore();
     }
@@ -128,5 +108,5 @@ window.Feier = (function () {
   }
   window.addEventListener('resize', function () { if (lauf) leinwand(); });
 
-  return { konfetti: konfetti, konfettiFinale: konfettiFinale, stopp: stopp };
+  return { konfetti: konfetti, stopp: stopp };
 })();

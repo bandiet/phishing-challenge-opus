@@ -172,15 +172,16 @@ window.PC_INHALT = {
         'Persönliche Details sind kein Beweis für Echtheit.'
       ],
       lms: 'Dein Fortschritt wurde erfolgreich an das LMS übermittelt.',
-      schliessen: 'Du kannst dieses Fenster jetzt schließen, um die Schulung zu beenden.',
+      schliessen: 'Du kannst dieses Fenster jetzt schließen, um das Training zu beenden.',
       nochNicht: 'Für einen erfolgreichen Abschluss brauchst du mindestens {{grenze}} %. Starte das Quiz einfach noch einmal.',
       nochmal: 'Quiz erneut starten'
     },
 
     // wie im Original: eine Zeile wird zufällig gewählt
     hacker: {
-      erwischt: ['I love to phish 🎣', 'Direkt ins Netz gegangen! 🎯', 'Ein Klick zu viel... 😈'],
-      durchschaut: ['You got me! 🕶️', 'Mist, durchschaut! 💨', 'Gutes Auge! 👏'],
+      // die ersten drei je Zeile stammen aus der ursprünglichen Challenge; in einer Sitzung wiederholt sich nichts, bis alle dran waren
+      erwischt: ['I love to phish 🎣', 'Direkt ins Netz gegangen! 🎯', 'Ein Klick zu viel... 😈', 'Angebissen! 🐟', 'Danke für den Klick! 🙃', 'Das lief ja wie geschmiert! 😏', 'Zu leicht … 🤭'],
+      durchschaut: ['You got me! 🕶️', 'Mist, durchschaut! 💨', 'Gutes Auge! 👏', 'Hmpf. Nicht schlecht. 😒', 'Nächstes Mal krieg ich dich! 😤', 'Zu aufmerksam für mich! 🧐', 'Wieder nichts … 🙄'],
       finaleGut: 'Ich geb’s auf … 🏳️',
       finale: 'Bis zum nächsten Mal! 😏'
     },
@@ -387,6 +388,7 @@ window.PC_INHALT = {
           von: { name: 'Müller, Anna', adresse: 'Anna.Mueller@{{domain}}' },
           an: '{{email}}', zeit: 'Heute, 07:08',
           betreff: 'Monatsabschluss_Q2_Vertraulich.pdf wurde für Sie freigegeben',
+          // Korrektur: PDF-Kästchen schrumpfte auf dem Handy zu untereinander stehenden Buchstaben.
           inhalt: `
 <div style="background-color:#f3f3f3;color:#323130;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;padding:30px 20px;border-radius:8px;">
   <div style="max-width:550px;margin:0 auto;background-color:#ffffff;border:1px solid #d2d0ce;border-radius:8px;overflow:hidden;">
@@ -398,7 +400,7 @@ window.PC_INHALT = {
       <p style="color:#605e5c;font-size:.933em;margin:25px 0;">Anna Müller (Finance) hat das folgende Dokument für Sie freigegeben.</p>
       <div style="border:1px solid #d2d0ce;border-radius:6px;padding:15px;margin-bottom:25px;display:flex;align-items:center;justify-content:center;background-color:#ffffff;">
         <div style="display:flex;align-items:center;gap:12px;">
-          <div style="background-color:#d13438;color:white;padding:5px 7px;border-radius:3px;font-weight:bold;font-size:.733em;">PDF</div>
+          <div style="background-color:#d13438;color:white;padding:6px 9px;border-radius:4px;font-weight:bold;font-size:.8em;flex:0 0 auto;">PDF</div>
           <span style="color:#323130;font-weight:500;">Monatsabschluss_Q2_Vertraulich.pdf</span>
         </div>
       </div>

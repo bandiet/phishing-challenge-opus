@@ -19,7 +19,7 @@ Pro Nachricht (E-Mail wie in einem echten Postfach, SMS wie auf dem iPhone, Team
 
 **Hintergrund** ruhig ohne Linien: im Quiz zwei schwache Lichter (Petrol links, Magenta rechts), beim Sicherheitstipp Navy mit blauem Schimmer wie in der ursprünglichen Schulung (Überblendung über `data-screen`).
 
-**Hacker** wie im Original (SVG, ca. 3,8 s sichtbar): lugt von links herein, zwinkert mit Funkeln (hat dich erwischt) oder bekommt große Augen und Schweiß (durchschaut). **Konfetti** nach einem geschafften Level, am Ende eine festlichere Variante mit drei Salven, Sternen und Luftschlangen (beides `js/feier.js`, eine Leinwand). Neue Nachrichten kommen mit dem Whoosh aus der ursprünglichen Challenge (`tools/sfx/raw/message_whosh.mp3`, Lautstärke wie die Synth-Klänge).
+**Hacker** wie im Original (SVG, ca. 3,3 s sichtbar; Sprüche aus einem gemischten Beutel – in einer Sitzung keine Wiederholung, bis alle dran waren): lugt von links herein, zwinkert mit Funkeln (hat dich erwischt) oder bekommt große Augen und Schweiß (durchschaut). **Konfetti** nach einem geschafften Level in CCT-Farben, am Ende kunterbunt (`js/feier.js`, eine Leinwand). Neue Nachrichten kommen mit dem Whoosh aus der ursprünglichen Challenge (`tools/sfx/raw/message_whosh.mp3`, Lautstärke wie die Synth-Klänge).
 
 ## Ordner
 
@@ -76,6 +76,10 @@ Die Täusch-Domains (`fake1`, `fake2`) und Beispielnamen können je Sprache/Kund
 ## Neue Runde mit anderen Nachrichten
 
 Nur `js/inhalt.de.js` austauschen. Jede Nachricht braucht: `id`, `art` (email, sms, whatsapp, teams, linkedin), `phishing`, `titel`, `lage`, `kern` und 2–4 Hinweise (am besten 3). Eine Textstelle wird mit `<mark data-h="b">…</mark>` markiert, ein Link mit `<a data-ziel="https://…" data-h="c">…</a>`, Kopf-Felder mit `bei: 'absender' | 'anhang' | 'banner'`. Die Prüfung meldet fehlende oder doppelte Markierungen.
+
+## LMS-Fortschritt
+
+SCORM 2004: nach jeder Level-Auswertung `cmi.progress_measure` = bestandene Level / alle Level (0,33 · 0,67 · 1). SCORM 1.2 hat dafür kein Feld; dort gibt es nur „incomplete“ bzw. am Ende Punktzahl und passed/failed.
 
 ## Einstellungen (`einstellungen` in der Inhaltsdatei)
 

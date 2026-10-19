@@ -151,6 +151,13 @@ window.LMS = (function () {
       commit();
     },
 
+    // Fortschritt 0…1 (z. B. bestandene Level / alle Level). Nur SCORM 2004 hat dafür ein Feld.
+    fortschritt: function (anteil) {
+      if (!api || ver !== '2004') return;
+      setze('cmi.progress_measure', String(Math.round(Math.max(0, Math.min(1, anteil)) * 100) / 100));
+      commit();
+    },
+
     // Ende der Challenge: Punktzahl + Status
     abschliessen: function (prozent, bestanden) {
       if (!api) return false;

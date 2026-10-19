@@ -161,6 +161,10 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .screen { position: absolute; inset: 0; transition: opacity .45s var(--ease), transform .55s var(--ease); }
 .screen.rein { opacity: 0; transform: translateY(18px) scale(.99); }
 .screen.raus { opacity: 0; transform: translateY(-12px) scale(.99); pointer-events: none; transition-duration: .3s; }
+/* neue Nachricht: alte gleitet ruhig nach links weg, neue kommt von rechts – man spürt, dass etwas Neues beginnt */
+.screen.langsam { transition: opacity .6s var(--ease) .12s, transform .75s var(--ease) .12s; }
+.screen.langsam.rein { opacity: 0; transform: translateX(34px); }
+.screen.langsam.raus { transform: translateX(-26px); transition: opacity .4s var(--ease), transform .45s var(--ease); }
 .zentriert { overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .18) transparent; }
 .zentriert > .inhalt { position: relative; min-height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
   margin: 0 auto; padding: clamp(16px, 3vh, 40px) clamp(16px, 4vw, 48px) clamp(28px, 5vh, 56px); }
@@ -496,7 +500,7 @@ mark { background: none; color: inherit; }
 .g-anhang b { display: block; font-weight: 600; overflow-wrap: anywhere; }
 .g-anhang small { color: #6B7280; }
 .mail-body { padding: 1.35em 1.5em 1.7em; background: #fff; color: #1D2230; overflow-wrap: anywhere; }
-.mail-body div, .mail-body span, .mail-body a { min-width: 0; }   /* Flex-Kinder dürfen schrumpfen, sonst läuft ein langer Dateiname hinaus */
+.mail-body span, .mail-body a { min-width: 0; }   /* Text darf schrumpfen und umbrechen, sonst läuft ein langer Dateiname hinaus */
 .mail-body p { margin: 0 0 .85em; }
 .mail-body p:last-child { margin-bottom: 0; }
 .li-msg .g-anhang { background: #F3F2EF; color: #242424; box-shadow: none; }
@@ -969,7 +973,7 @@ mark { background: none; color: inherit; }
 .schmal .fb-aktionen .btn-gross { min-height: 54px; }
 .schmal .mail { border-radius: 14px; }
 .schmal .mail-kopf { padding: .9em 1em .8em; }
-.schmal .mail-body { padding: 1.1em 1em 1.3em; }
+.schmal .mail-body { padding: 1em .8em 1.2em; }
 .schmal .ml-k span { display: none; }
 .schmal .stempel { font-size: .85rem; padding: 6px 11px 6px 8px; }
 .schmal .mail-meta { grid-template-columns: auto minmax(0, 1fr); }
@@ -1033,7 +1037,7 @@ mark { background: none; color: inherit; }
 }
 /* schmale Telefone: Messer-Beschriftung oben rechts im Kasten, damit sie nicht aus dem Bild läuft */
 @media (max-width: 480px) {
-  .le-fuss { flex-direction: column-reverse; align-items: stretch; gap: 2px; padding-top: 10px; padding-bottom: 10px; }
+  .le-fuss { flex-direction: column-reverse; align-items: stretch; gap: 2px; padding-top: 12px; padding-bottom: 12px; }
   .le-fuss .btn { width: 100%; }
   .le-fuss .text-btn { align-self: center; padding: 6px 10px; font-size: .84rem; }
   .m-label { left: auto !important; right: 0; top: 0 !important; transform: none !important; align-items: flex-end !important; font-size: .6rem; }

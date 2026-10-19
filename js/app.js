@@ -158,10 +158,13 @@
     FB = null; NA = null;
     app.dataset.screen = name;
     el.classList.add('screen', 'rein');
+    const langsam = name === 'nachricht';   // neue Nachricht: etwas ruhiger, damit man den Wechsel spürt
+    if (langsam) el.classList.add('langsam');
     buehne.appendChild(el);
     const alt = aktuell;
     aktuell = el;
     if (alt) {
+      if (langsam) alt.classList.add('langsam');
       alt.classList.add('raus');
       alt.setAttribute('aria-hidden', 'true');
       setTimeout(() => alt.remove(), T(500));
@@ -234,6 +237,18 @@
     };
   })();
   const zufall = l => l[Math.floor(Math.random() * l.length)];
+  // gemischter Beutel: jede Zeile kommt einmal dran, dann wird neu gemischt (nie zweimal hintereinander dieselbe)
+  const beutel = {};
+  function ausBeutel(name, liste) {
+    let b = beutel[name];
+    if (!b || !b.rest.length) {
+      const neu = liste.slice().sort(() => Math.random() - .5);
+      if (b && neu.length > 1 && neu[0] === b.zuletzt) neu.push(neu.shift());
+      b = beutel[name] = { rest: neu, zuletzt: b && b.zuletzt };
+    }
+    b.zuletzt = b.rest.shift();
+    return b.zuletzt;
+  }
 
   // Chips (Serie, Joker) gleiten auf und zu statt zu springen
   const chipBox = (el, an) => el.closest('.chip-box').classList.toggle('zu', !an);
@@ -291,6 +306,7 @@
     if (!neu) return;
     el.classList.remove('kommt'); void el.offsetWidth; el.classList.add('kommt');
     if (!sprechen) { K.joker(); return; }
+    S.ohneJoker = 0;   // die Ansage zählt als Erinnerung – die nächste kommt frühestens 4 Nachrichten später
     if (!(S.erklaert & ERKL.joker)) { S.erklaert |= ERKL.joker; speichere(); sprecher.sag('joker', U.joker.erster, 5600, { ton: K.joker }); }
     else sprecher.sag('joker', f(zufall(U.joker.neu), { n: S.joker }), 3600, { ton: K.joker });
   }
@@ -353,19 +369,19 @@
     return {
       zeige(stimmung, text, dauer) {
         clearTimeout(t); clearTimeout(t2);
-        blase.textContent = text || zufall(U.hacker[stimmung]);
+        blase.textContent = text || ausBeutel('hacker-' + stimmung, U.hacker[stimmung]);
         el.className = 'hacker ' + (stimmung === 'erwischt' ? 'freut' : 'aergert');
         void el.offsetWidth;
         el.classList.add('da');
         K.hackerWusch();
         t2 = setTimeout(() => (stimmung === 'erwischt' ? K.hackerHaha : K.hackerGrr)(), T(650));
-        t = setTimeout(() => el.classList.remove('da'), T(dauer || 3800));
+        t = setTimeout(() => el.classList.remove('da'), T(dauer || 3300));
       },
       weg() { clearTimeout(t); clearTimeout(t2); el.classList.remove('da'); }
     };
   })();
 
-  const konfetti = menge => window.Feier && Feier.konfetti(menge);
+  const konfetti = (menge, farben) => window.Feier && Feier.konfetti(menge, farben);
 
   /* ================= Deko-QR-Code (nicht scannbar) ================= */
   function qrSvg(saat) {
@@ -1040,8 +1056,10 @@
 
     // Ankunft: Nachricht springt herein, Chats tippen Blase für Blase
     (async () => {
+      await warte(T(220));
+      if (!el.isConnected) return;
       g.classList.add('kommt');
-      await warte(T(320));
+      await warte(T(380));
       K.ping();
       if (!ruhig && blasen.length) {
         await warte(250);
@@ -1065,7 +1083,7 @@
       el.classList.add('bereit');
       // lange nicht genutzt? Der Joker erinnert einmal daran, dass er helfen kann
       if (S.joker > 0) S.ohneJoker = (S.ohneJoker || 0) + 1;
-      if (S.joker > 0 && S.ohneJoker >= 4 && !(S.erklaert & ERKL.erinnert) && !testModus) {
+      if (S.joker > 0 && S.ohneJoker >= 4 && letzterSprecher !== 'joker' && !(S.erklaert & ERKL.erinnert) && !testModus) {
         S.erklaert |= ERKL.erinnert; speichere();
         setTimeout(() => { if (NA === na && na.phase === 'antwort') sprecher.sag('joker', f(U.joker.erinnerung, { n: S.joker }), 5000, { ton: K.tipp }); }, T(700));
       }
@@ -1146,13 +1164,15 @@
     // Hacker (reingefallen; sonst ab und zu), Joker (nur über den Joker), Serie (nur über die Serie).
     const neu = S.serie > alteSerie, verloren = !richtig && alteSerie >= 2;
     const meld = serieMeldung(neu, verloren);
+    // nach der allerletzten Nachricht braucht niemand mehr einen Joker – dann verdient er sich still
+    const jokerNuetzlich = !(S.level === N_LV - 1 && S.nr === LV[S.level].nachrichten.length - 1);
     let wer = 'keiner';
     if (m.phishing && !richtig) wer = 'hacker';                                         // reingefallen: der Hacker freut sich
-    else if (jokerNeu && !(S.erklaert & ERKL.joker)) wer = 'joker';                      // erster Joker: stellt sich vor
+    else if (jokerNeu && jokerNuetzlich && !(S.erklaert & ERKL.joker)) wer = 'joker';    // erster Joker: stellt sich vor
     else if (meld && meld.erkl) wer = 'serie';                                           // erste Serie: kurz erklärt
     else {
       const moeglich = [];
-      if (jokerNeu) moeglich.push('joker');
+      if (jokerNeu && jokerNuetzlich) moeglich.push('joker');
       if (meld) moeglich.push('serie');
       if (m.phishing) moeglich.push('hacker');
       wer = moeglich.find(x => x !== letzterSprecher) || 'keiner';                       // wer zuletzt sprach, setzt aus
@@ -1382,14 +1402,15 @@
             <span class="tag ${m.phishing ? 'tag-phishing' : 'tag-echt'}">${esc(m.phishing ? le.warPhishing : le.warEcht)}</span></li>`).join('')}</ol></details>
         <div class="le-fuss${weiterOk ? '' : ' allein'}">
           ${!perfekt ? `<button class="${weiterOk ? 'text-btn' : 'btn btn-gross btn-mint'}" id="le-nochmal" type="button">${ICO.nochmal}${esc(f(le.wiederholen, { n: S.level + 1 }))}</button>` : '<span></span>'}
-          ${weiterOk ? `<button class="btn btn-mint" id="le-weiter" type="button">${esc(weiterText)} ${ICO.pfeil}</button>` : ''}
+          ${weiterOk ? `<button class="btn btn-gross btn-mint" id="le-weiter" type="button">${esc(weiterText)} ${ICO.pfeil}</button>` : ''}
         </div>
       </div>
     </div></section>`);
     wechsel(el, 'levelende');
     messerStarten(el);
+    if (!testModus) LMS.fortschritt(LV.filter((l, i) => summe(S.erg[i]) >= zielFuer(i)).length / N_LV);
     setTimeout(() => (geschafft ? K.level() : K.levelNein()), T(300));
-    if (geschafft) setTimeout(() => konfetti(perfekt ? 120 : 80), T(1500));
+    if (geschafft) setTimeout(() => konfetti(perfekt ? 120 : 80, 'cct'), T(1500));
 
     const w = $('#le-weiter', el);
     if (w) w.addEventListener('click', () => {
@@ -1495,7 +1516,7 @@
     wechsel(el, 'finale');
     messerStarten(el);
     setTimeout(() => K.finale(), T(300));
-    if (bestanden) setTimeout(() => { if (el.isConnected && window.Feier) Feier.konfettiFinale(prozent >= 90 ? 160 : 120); }, T(1300));
+    if (bestanden) setTimeout(() => { if (el.isConnected) konfetti(prozent >= 90 ? 140 : 110, 'bunt'); }, T(1300));
     setTimeout(() => {
       if (el.isConnected) hacker.zeige(r >= n - 2 ? 'durchschaut' : 'erwischt', r >= n - 2 ? U.hacker.finaleGut : U.hacker.finale, 3400);
     }, T(2300));
