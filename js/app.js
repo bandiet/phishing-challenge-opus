@@ -994,6 +994,13 @@
   let letzterSprecher = '';   // Hacker, Joker und Serie wechseln sich ab (wer zuletzt sprach, setzt aus)
   let FB = null;   // Feedback (Hinweisphase)
 
+  // Gibt es in der Nachricht etwas, über das man fahren kann (Link mit Ziel, Absender mit Antwortadresse)? QR-Codes zählen nicht.
+  const hatLinks = m => {
+    const html = (m.inhalt || '') + (m.nachrichten || []).join('');
+    const ziele = html.match(/<[a-z]+\b[^>]*data-ziel="[^>]*>/g) || [];
+    return ziele.some(t => !/m-qr/.test(t)) || !!m.von.hover;
+  };
+
   function zeigeNachricht() {
     const lv = LV[S.level], m = lv.nachrichten[S.nr];
     const lage = `<span class="pille-kicker">${esc(U.situation)}</span><h2 class="lage-titel">${f(m.titel)}</h2><p class="lage-text">${f(m.lage)}</p>`;
@@ -1013,7 +1020,7 @@
               <button class="antwort a-phishing" data-antwort="phishing" type="button" disabled>${ICO.schildWarn}<span>${esc(U.phishing)}</span><kbd>P</kbd></button>
               <button class="antwort a-echt" data-antwort="echt" type="button" disabled>${ICO.schildCheck}<span>${esc(U.echt)}</span><kbd>E</kbd></button>
             </div>
-            <p class="mini-tipp">${maus ? ICO.maus : ICO.finger}<span>${esc(maus ? U.linkTipp : U.linkTippTouch)}</span></p>
+            ${hatLinks(m) ? `<p class="mini-tipp">${maus ? ICO.maus : ICO.finger}<span>${esc(maus ? U.linkTipp : U.linkTippTouch)}</span></p>` : ''}
           </div>
         </div>
       </div></aside>
