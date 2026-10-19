@@ -120,6 +120,9 @@ window.PC_INHALT = {
     textnachricht: 'Textnachricht',
     nachrichtSchreiben: 'Nachricht schreiben …',
     inmail: 'InMail',
+    // Beschriftungen in den nachgebauten Programmen (Mail, Teams, LinkedIn)
+    geraet: { antworten: 'Antworten', allenAntworten: 'Allen antworten', weiterleiten: 'Weiterleiten', suchen: 'Suchen',
+      aktivitaet: 'Aktivität', chat: 'Chat', teams: 'Teams', kalender: 'Kalender', anrufe: 'Anrufe', freigegeben: 'Freigegeben', nachrichten: 'Nachrichten' },
 
     ergebnis: {
       richtig: 'Richtig!',
@@ -150,7 +153,8 @@ window.PC_INHALT = {
       zumErgebnis: 'Quiz abgeschlossen',
       wiederholen: 'Level {{n}} wiederholen',
       warPhishing: 'Phishing',
-      warEcht: 'Echt'
+      warEcht: 'Echt',
+      details: 'Details'
     },
 
     nugget: { kicker: 'Sicherheitstipp', merke: 'Merke', zurueck: 'Zurück', weiter: 'Weiter' },

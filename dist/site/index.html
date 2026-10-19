@@ -1309,6 +1309,9 @@ window.PC_INHALT = {
     textnachricht: 'Textnachricht',
     nachrichtSchreiben: 'Nachricht schreiben …',
     inmail: 'InMail',
+    // Beschriftungen in den nachgebauten Programmen (Mail, Teams, LinkedIn)
+    geraet: { antworten: 'Antworten', allenAntworten: 'Allen antworten', weiterleiten: 'Weiterleiten', suchen: 'Suchen',
+      aktivitaet: 'Aktivität', chat: 'Chat', teams: 'Teams', kalender: 'Kalender', anrufe: 'Anrufe', freigegeben: 'Freigegeben', nachrichten: 'Nachrichten' },
 
     ergebnis: {
       richtig: 'Richtig!',
@@ -1339,7 +1342,8 @@ window.PC_INHALT = {
       zumErgebnis: 'Quiz abgeschlossen',
       wiederholen: 'Level {{n}} wiederholen',
       warPhishing: 'Phishing',
-      warEcht: 'Echt'
+      warEcht: 'Echt',
+      details: 'Details'
     },
 
     nugget: { kicker: 'Sicherheitstipp', merke: 'Merke', zurueck: 'Zurück', weiter: 'Weiter' },
@@ -3071,8 +3075,8 @@ window.LMS = (function () {
     };
     return `<article class="geraet mail">
       <div class="mail-leiste" aria-hidden="true">
-        <span class="ml-k">${IC.antw}<span>Antworten</span></span><span class="ml-k">${IC.alle}<span>Allen antworten</span></span>
-        <span class="ml-k">${IC.weiter}<span>Weiterleiten</span></span><span class="ml-mehr">${IC.mehr}</span>
+        <span class="ml-k">${IC.antw}<span>${esc(U.geraet.antworten)}</span></span><span class="ml-k">${IC.alle}<span>${esc(U.geraet.allenAntworten)}</span></span>
+        <span class="ml-k">${IC.weiter}<span>${esc(U.geraet.weiterleiten)}</span></span><span class="ml-mehr">${IC.mehr}</span>
       </div>
       <div class="mail-kopf">
         <h2 class="g-betreff" data-bei="betreff">${f(m.betreff)}</h2>
@@ -3138,20 +3142,20 @@ window.LMS = (function () {
     const ini = esc(m.von.initialen || initialen(m.von.name));
     const farbe = avFarbe(m.von.name);
     const RAIL = [
-      ['Aktivität', '<path d="M12 4a5 5 0 0 0-5 5v3.5L5.5 15h13L17 12.5V9a5 5 0 0 0-5-5ZM10 18a2 2 0 0 0 4 0"/>'],
-      ['Chat', '<path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v6a2.5 2.5 0 0 1-2.5 2.5H11l-4 3.5V15h0a2 2 0 0 1-2-2Z"/>', true],
-      ['Teams', '<circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.3"/><path d="M3.5 18.5a5.5 5.5 0 0 1 11 0M14 18.5h6.5a4 4 0 0 0-5.6-3.7"/>'],
-      ['Kalender', '<rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>'],
-      ['Anrufe', '<path d="M6 4h3l1.6 4-2 1.3a10 10 0 0 0 4.2 4.2l1.3-2 4 1.6v3a2 2 0 0 1-2 2A14 14 0 0 1 4 6a2 2 0 0 1 2-2Z"/>']
+      [U.geraet.aktivitaet, '<path d="M12 4a5 5 0 0 0-5 5v3.5L5.5 15h13L17 12.5V9a5 5 0 0 0-5-5ZM10 18a2 2 0 0 0 4 0"/>'],
+      [U.geraet.chat, '<path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v6a2.5 2.5 0 0 1-2.5 2.5H11l-4 3.5V15h0a2 2 0 0 1-2-2Z"/>', true],
+      [U.geraet.teams, '<circle cx="9" cy="9" r="3"/><circle cx="16.5" cy="10" r="2.3"/><path d="M3.5 18.5a5.5 5.5 0 0 1 11 0M14 18.5h6.5a4 4 0 0 0-5.6-3.7"/>'],
+      [U.geraet.kalender, '<rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>'],
+      [U.geraet.anrufe, '<path d="M6 4h3l1.6 4-2 1.3a10 10 0 0 0 4.2 4.2l1.3-2 4 1.6v3a2 2 0 0 1-2 2A14 14 0 0 1 4 6a2 2 0 0 1 2-2Z"/>']
     ];
     return `<article class="geraet fenster teams">
-      <div class="teams-top" aria-hidden="true"><span class="tt-punkte"><i></i><i></i><i></i></span><span class="tt-suche"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></svg>Suchen</span><span class="m-av tt-ich">${esc(initialen(V.name ? V.name.replace(/&amp;/g, '&') : 'Du'))}</span></div>
+      <div class="teams-top" aria-hidden="true"><span class="tt-punkte"><i></i><i></i><i></i></span><span class="tt-suche"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/></svg>${esc(U.geraet.suchen)}</span><span class="m-av tt-ich">${esc(initialen(V.name ? V.name.replace(/&amp;/g, '&') : 'Du'))}</span></div>
       <div class="teams-body">
-        <nav class="teams-rail" aria-hidden="true">${RAIL.map(([n, d, an]) => `<span class="tr-k${an ? ' an' : ''}"><svg viewBox="0 0 24 24">${d}</svg><small>${n}</small></span>`).join('')}</nav>
+        <nav class="teams-rail" aria-hidden="true">${RAIL.map(([n, d, an]) => `<span class="tr-k${an ? ' an' : ''}"><svg viewBox="0 0 24 24">${d}</svg><small>${esc(n)}</small></span>`).join('')}</nav>
         <div class="teams-haupt">
           <div class="teams-kopf"><span class="m-av teams-av" style="--c:${farbe}">${ini}<i class="presence"></i></span>
             <div class="teams-wer" data-bei="absender"><b>${f(m.von.name)}</b><small>${f(m.von.info || '')}</small></div>
-            <span class="teams-tabs"><b>Chat</b><span>Freigegeben</span></span></div>
+            <span class="teams-tabs"><b>${esc(U.geraet.chat)}</b><span>${esc(U.geraet.freigegeben)}</span></span></div>
           <div class="chat teams-chat">
             <p class="chat-datum">${esc(U.heute)}</p>
             <div class="teams-msg"><span class="m-av teams-av klein" style="--c:${farbe}">${ini}</span>
@@ -3167,7 +3171,7 @@ window.LMS = (function () {
   function geraetLinkedin(m) {
     const ini = esc(m.von.initialen || initialen(m.von.name));
     return `<article class="geraet fenster li-msg">
-      <div class="li-leiste"><span class="li-logo">in</span><span>Nachrichten</span></div>
+      <div class="li-leiste"><span class="li-logo">in</span><span>${esc(U.geraet.nachrichten)}</span></div>
       <div class="li-kopf"><span class="m-av li-av">${ini}</span>
         <div class="li-wer" data-bei="absender"><b>${f(m.von.name)}</b><small>${f(m.von.info || '')}</small></div>
         <span class="li-inmail">${esc(U.inmail)}</span></div>
@@ -4031,7 +4035,7 @@ window.LMS = (function () {
         ${messer(n ? r / n : 0, (E.zielProzent || 70) / 100, mitte, le.bestandenAb)}
         <div class="le-kacheln">${erg.map((e, i) => `<span class="le-kachel ${e ? 'ja' : 'nein'}" style="--i:${i}" title="${f(lv.nachrichten[i].titel)}">${e ? ICO.check : ICO.kreuz}</span>`).join('')}</div>
         ${geschafft ? `<div class="abzeichen-zeile"><div class="badge-wrap an">${abzeichen(S.level, true)}</div><div><small>${esc(le.abzeichen)}</small><b>${esc(lv.badge)}</b></div></div>` : ''}
-        <details class="le-details"><summary>${ICO.chevron}Details</summary>
+        <details class="le-details"><summary>${ICO.chevron}${esc(U.levelEnde.details)}</summary>
           <ol class="le-liste">${lv.nachrichten.map((m, i) => `<li class="${erg[i] ? 'ja' : 'nein'}">${erg[i] ? ICO.check : ICO.kreuz}<span class="le-titel">${f(m.titel)}</span>
             <span class="tag ${m.phishing ? 'tag-phishing' : 'tag-echt'}">${esc(m.phishing ? le.warPhishing : le.warEcht)}</span></li>`).join('')}</ol></details>
         <div class="le-fuss${weiterOk ? '' : ' allein'}">
