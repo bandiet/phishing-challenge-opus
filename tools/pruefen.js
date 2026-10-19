@@ -16,7 +16,7 @@
     'fake_weg', 'fake_weg_m', 'fake_zusatz', 'fake_zusatz_m', 'fake_tld', 'fake_tld_m',
     'n', 'gesamt', 'ziel', 'badge', 'level', 'nr', 'richtig', 'grenze'];
 
-  function pruefe(I, referenz) {
+  function pruefe(I, referenz, linkziele) {
     const fehler = [], warn = [];
     const F = (ort, text) => fehler.push(ort + ': ' + text);
     const W = (ort, text) => warn.push(ort + ': ' + text);
@@ -168,8 +168,20 @@
         ['art', 'phishing', 'extern'].forEach(k => { if (m[k] !== rm[k]) F(O, k + ' weicht vom Original ab'); });
         const sig = x => (x.hinweise || []).map(h => h.id + ':' + h.art + ':' + (h.bei || '')).join(',');
         if (sig(m) !== sig(rm)) F(O, 'Hinweise (id/art/bei) weichen vom Original ab');
-        const zh = x => ((x.inhalt || (x.nachrichten || []).join(' ')).match(/data-(h|ziel)="[^"]+"/g) || []).sort().join(' ');
-        if (zh(m) !== zh(rm)) F(O, 'Markierungen oder Link-Ziele weichen vom Original ab');
+        const basis = `levels[${li}].nachrichten[${mi}]`;
+        const zh = (x, lokal) => {
+          const felder = x.inhalt ? [['inhalt', x.inhalt]] : (x.nachrichten || []).map((s, i) => [`nachrichten[${i}]`, s]);
+          return felder.map(([feld, html]) => {
+            const erlaubt = linkziele && linkziele[I.sprache] && linkziele[I.sprache][basis + '.' + feld];
+            if (lokal && erlaubt) {
+              const ziele = (html.match(/data-ziel="[^"]+"/g) || []).map(z => z.slice(11, -1));
+              if (JSON.stringify(ziele) !== JSON.stringify(erlaubt)) F(O, 'Link-Ziele weichen von der Excel ab');
+            }
+            const muster = erlaubt ? /data-h="[^"]+"/g : /data-(h|ziel)="[^"]+"/g;
+            return (html.match(muster) || []).sort().join(' ');
+          }).join(' ');
+        };
+        if (zh(m, true) !== zh(rm, false)) F(O, 'Markierungen oder Link-Ziele weichen vom Original ab');
       }));
     }
 
@@ -190,7 +202,9 @@
   if (typeof require !== 'undefined' && typeof module !== 'undefined' && require.main === module) {
     const fs = require('fs'), vm = require('vm');
     const lade = datei => { const w = {}; vm.runInNewContext(fs.readFileSync(datei, 'utf8'), { window: w }); return w.PC_INHALT; };
-    const r = pruefe(lade(process.argv[2]), process.argv[3] ? lade(process.argv[3]) : null);
+    const pfad = require('path').join(__dirname, '../lokalisierung/linkziele.json');
+    const linkziele = fs.existsSync(pfad) ? JSON.parse(fs.readFileSync(pfad, 'utf8')) : null;
+    const r = pruefe(lade(process.argv[2]), process.argv[3] ? lade(process.argv[3]) : null, linkziele);
     r.warnungen.forEach(x => console.log('  Warnung: ' + x));
     r.fehler.forEach(x => console.log('  FEHLER:  ' + x));
     console.log(`  ${r.info.level} Level, ${r.info.nachrichten} Nachrichten (${r.info.phishing} Phishing), ${r.info.hinweise} Hinweise – ` +

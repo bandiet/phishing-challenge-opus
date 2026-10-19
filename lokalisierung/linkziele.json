@@ -1,0 +1,98 @@
+{
+  "en": {
+    "levels[0].nachrichten[1].nachrichten[0]": [
+      "https://amzn.eu/d/01Wc5tkv"
+    ],
+    "levels[0].nachrichten[2].inhalt": [
+      "https://www.linkedin.com/comm/mynetwork/invite-accept/7389216054"
+    ],
+    "levels[0].nachrichten[3].nachrichten[0]": [
+      "https://hsbc-security-service.com/cancel"
+    ],
+    "levels[1].nachrichten[0].inhalt": [
+      "https://www.paypal.com.security-dispute-resolution.com/login"
+    ],
+    "levels[1].nachrichten[1].inhalt": [
+      "https://{{tenant}}.sharepoint.com/sites/finance/Shared%20Documents/Q2_Financial_Close_Confidential.pdf"
+    ],
+    "levels[1].nachrichten[2].inhalt": [
+      "https://intranet.{{domain}}/hr/travel-expenses"
+    ],
+    "levels[1].nachrichten[3].inhalt": [
+      "https://microsoft-teams.{{fake_tausch}}/join/summer-party"
+    ],
+    "levels[2].nachrichten[0].inhalt": [
+      "https://m365-login-proxy.auth-setup.app/qr-auth"
+    ],
+    "levels[2].nachrichten[3].inhalt": [
+      "https://na3.docusign.net/Signing/StartInSequence.aspx?g=88123-998"
+    ],
+    "levels[2].nachrichten[4].inhalt": [
+      "https://guest-payment.host/booking/HB-72941"
+    ]
+  },
+  "fr": {
+    "levels[0].nachrichten[1].nachrichten[0]": [
+      "https://amzn.eu/d/01Wc5tkv"
+    ],
+    "levels[0].nachrichten[2].inhalt": [
+      "https://www.linkedin.com/comm/mynetwork/invite-accept/7389216054"
+    ],
+    "levels[0].nachrichten[3].nachrichten[0]": [
+      "https://ubs-securite-service.com/annulation"
+    ],
+    "levels[1].nachrichten[0].inhalt": [
+      "https://www.paypal.com.security-dispute-resolution.com/login"
+    ],
+    "levels[1].nachrichten[1].inhalt": [
+      "https://{{tenant}}.sharepoint.com/sites/finance/Documents%20partages/Cloture_mensuelle_Q2_Confidentiel.pdf"
+    ],
+    "levels[1].nachrichten[2].inhalt": [
+      "https://intranet.{{domain}}/rh/frais-de-deplacement"
+    ],
+    "levels[1].nachrichten[3].inhalt": [
+      "https://microsoft-teams.{{fake_tausch}}/join/fete-ete"
+    ],
+    "levels[2].nachrichten[0].inhalt": [
+      "https://m365-login-proxy.auth-setup.app/qr-auth"
+    ],
+    "levels[2].nachrichten[3].inhalt": [
+      "https://na3.docusign.net/Signing/StartInSequence.aspx?g=88123-998"
+    ],
+    "levels[2].nachrichten[4].inhalt": [
+      "https://paiement-client.host/reservation/HB-72941"
+    ]
+  },
+  "it": {
+    "levels[0].nachrichten[1].nachrichten[0]": [
+      "https://amzn.eu/d/01Wc5tkv"
+    ],
+    "levels[0].nachrichten[2].inhalt": [
+      "https://www.linkedin.com/comm/mynetwork/invite-accept/7389216054"
+    ],
+    "levels[0].nachrichten[3].nachrichten[0]": [
+      "https://ubs-sicurezza-servizio.com/annullamento"
+    ],
+    "levels[1].nachrichten[0].inhalt": [
+      "https://www.paypal.com.security-dispute-resolution.com/login"
+    ],
+    "levels[1].nachrichten[1].inhalt": [
+      "https://{{tenant}}.sharepoint.com/sites/finance/Documenti%20condivisi/Chiusura_mensile_Q2_Riservato.pdf"
+    ],
+    "levels[1].nachrichten[2].inhalt": [
+      "https://intranet.{{domain}}/hr/note-spese"
+    ],
+    "levels[1].nachrichten[3].inhalt": [
+      "https://microsoft-teams.{{fake_tausch}}/join/festa-estate"
+    ],
+    "levels[2].nachrichten[0].inhalt": [
+      "https://m365-login-proxy.auth-setup.app/qr-auth"
+    ],
+    "levels[2].nachrichten[3].inhalt": [
+      "https://na3.docusign.net/Signing/StartInSequence.aspx?g=88123-998"
+    ],
+    "levels[2].nachrichten[4].inhalt": [
+      "https://pagamento-ospiti.host/prenotazione/HB-72941"
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""Generate EN/FR/IT content from the keyed Excel table (stdlib + Node).
+
+Run from any directory: python3 tools/lokalisiere.py [workbook.xlsx]
+The workbook and German source are never modified.
+"""
+import copy
+import json
+from pathlib import Path
+import re
+import subprocess
+import sys
+import xml.etree.ElementTree as ET
+import zipfile
+
+ROOT = Path(__file__).resolve().parent.parent
+NS = {'s': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main',
+      'r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'}
+
+
+def read_rows(path):
+    with zipfile.ZipFile(path) as archive:
+        strings = []
+        if 'xl/sharedStrings.xml' in archive.namelist():
+            strings = [''.join(e.itertext()) for e in ET.fromstring(
+                archive.read('xl/sharedStrings.xml')).findall('s:si', NS)]
+        workbook = ET.fromstring(archive.read('xl/workbook.xml'))
+        sheet = next(s for s in workbook.findall('s:sheets/s:sheet', NS)
+                     if s.attrib['name'] == 'Texte')
+        rels = ET.fromstring(archive.read('xl/_rels/workbook.xml.rels'))
+        target = next(r.attrib['Target'] for r in rels
+                      if r.attrib['Id'] == sheet.attrib['{' + NS['r'] + '}id'])
+        target = target.lstrip('/') if target.startswith('/') else 'xl/' + target
+        for row in ET.fromstring(archive.read(target)).findall('s:sheetData/s:row', NS):
+            cells = {}
+            for cell in row.findall('s:c', NS):
+                value = cell.findtext('s:v', default='', namespaces=NS)
+                if cell.attrib.get('t') == 's':
+                    value = strings[int(value)]
+                elif cell.attrib.get('t') == 'inlineStr':
+                    inline = cell.find('s:is', NS)
+                    value = ''.join(inline.itertext()) if inline is not None else ''
+                cells[re.sub(r'\d', '', cell.attrib['r'])] = value
+            yield int(row.attrib['r']), cells
+
+
+def parts(key):
+    if not re.fullmatch(r'[A-Za-z_]\w*(?:(?:\.[A-Za-z_]\w*)|(?:\[\d+\]))*', key):
+        raise ValueError('Invalid key: ' + key)
+    return [int(p) if p.isdigit() else p for p in re.findall(r'[A-Za-z_]\w*|\d+', key)]
+
+
+def locate(obj, key):
+    path = parts(key)
+    for part in path[:-1]:
+        obj = obj[part]
+    return obj, path[-1]
+
+
+def js(value, depth=0):
+    indent = '  ' * depth
+    if isinstance(value, str):
+        return "'" + value.replace('\\', '\\\\').replace("'", "\\'").replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t').replace('\u2028', '\\u2028').replace('\u2029', '\\u2029') + "'"
+    if isinstance(value, list):
+        return '[\n' + ',\n'.join('  ' + indent + js(v, depth + 1) for v in value) + '\n' + indent + ']'
+    if isinstance(value, dict):
+        return '{\n' + ',\n'.join('  ' + indent + k + ': ' + js(v, depth + 1) for k, v in value.items()) + '\n' + indent + '}'
+    return json.dumps(value)
+
+
+def main():
+    workbook = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / 'lokalisierung/Phishing_Challenge_Texte_DE_EN_FR_IT.xlsx'
+    loader = "const fs=require('fs'),vm=require('vm'),window={};vm.runInNewContext(fs.readFileSync(process.argv[1],'utf8'),{window},{timeout:1000});process.stdout.write(JSON.stringify(window.PC_INHALT));"
+    reference = json.loads(subprocess.check_output(['node', '-e', loader, str(ROOT / 'js/inhalt.de.js')], text=True))
+    rows = [(n, r) for n, r in read_rows(workbook) if n > 1 and r.get('D')]
+    seen = set()
+    for n, row in rows:
+        key = row['D']
+        if key in seen:
+            raise ValueError(f'Row {n}: duplicate key {key}')
+        seen.add(key)
+        parent, field = locate(reference, key)
+        if parent[field] != row.get('E'):
+            raise ValueError(f'Row {n}: German source differs: {key}')
+        for column in ('F', 'G', 'H'):
+            value = row.get(column, '')
+            if not value.strip():
+                raise ValueError(f'Row {n}, {column}: missing translation')
+            if sorted(re.findall(r'\{\{\w+\}\}', value)) != sorted(re.findall(r'\{\{\w+\}\}', parent[field])):
+                raise ValueError(f'Row {n}, {column}: changed placeholders')
+            tags = lambda s: re.findall(r'<[^>]+>', re.sub(r'\b(?:data-ziel|alt)="[^"]*"', '', s))
+            if tags(value) != tags(parent[field]):
+                raise ValueError(f'Row {n}, {column}: changed HTML structure or protected attributes')
+    link_targets = {}
+    for language, column in [('en', 'F'), ('fr', 'G'), ('it', 'H')]:
+        content = copy.deepcopy(reference)
+        link_targets[language] = {}
+        for _, row in rows:
+            parent, field = locate(content, row['D'])
+            parent[field] = row[column]
+            if 'data-ziel=' in row[column]:
+                link_targets[language][row['D']] = re.findall(r'data-ziel="([^"]+)"', row[column])
+        content['sprache'] = language
+        target = ROOT / f'js/inhalt.{language}.js'
+        target.write_text('// Generated by tools/lokalisiere.py from the translation workbook.\nwindow.PC_INHALT = ' + js(content) + ';\n', encoding='utf-8')
+        print(f'{target.name}: {len(rows)} translated fields')
+    (ROOT / 'lokalisierung/linkziele.json').write_text(json.dumps(link_targets, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+
+if __name__ == '__main__':
+    main()
