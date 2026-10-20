@@ -1,0 +1,1628 @@
+{
+ "lokalisierung": [
+  [
+   "Element",
+   "Deutsch (DE)",
+   "Englisch (UK)",
+   "Französisch (CH)",
+   "Italienisch (CH)"
+  ],
+  [
+   "Beispielperson",
+   "Max Mustermann",
+   "John Smith",
+   "Jean Dupont",
+   "Mario Rossi"
+  ],
+  [
+   "Beispiel-Firmendomain",
+   "firma.de",
+   "company.co.uk",
+   "entreprise.ch",
+   "azienda.ch"
+  ],
+  [
+   "Bank (SMS)",
+   "Commerzbank, 1.250,00 EUR, +49 174 …, commerzbank-sicherheit-service.com",
+   "HSBC, £1,250.00, +44 7700 …, hsbc-security-service.com",
+   "UBS, CHF 1’250.00, +41 77 …, ubs-securite-service.com",
+   "UBS, CHF 1’250.00, +41 77 …, ubs-servizio-sicurezza.com"
+  ],
+  [
+   "PayPal-Zahlung",
+   "TechStore GmbH, 489,00 €",
+   "TechStore Ltd, £489.00",
+   "TechStore SA, CHF 489.00",
+   "TechStore SA, CHF 489.00"
+  ],
+  [
+   "LinkedIn-Kontakt",
+   "Dr. Stefan Weber",
+   "Michael Turner",
+   "Julien Morel",
+   "Marco Ferrari"
+  ],
+  [
+   "SharePoint-Absenderin",
+   "Anna Müller",
+   "Anna Clarke",
+   "Anna Favre",
+   "Anna Bernasconi"
+  ],
+  [
+   "Lieferant (IBAN-Wechsel)",
+   "Auenberg Baustoffe GmbH",
+   "Northfield Office Supplies Ltd (Manchester)",
+   "Matériaux Montvert SA",
+   "Materiali Valdora SA"
+  ],
+  [
+   "Geschäftsführer (CEO-Betrug)",
+   "Dr. Hans Meier, 45.000 €, IBAN DE…",
+   "Richard Hayes, £45,000, IBAN GB…",
+   "Philippe Mercier, CHF 45’000, IBAN CH…",
+   "Paolo Galli, CHF 45’000, IBAN CH…"
+  ],
+  [
+   "Docusign-Absender",
+   "Dr. Markus Bauer",
+   "Laura Bennett",
+   "Nicolas Perret",
+   "Luca Moretti"
+  ],
+  [
+   "Hotel",
+   "Hotel Seeblick, 420 €, hotel-seeblick.ch",
+   "Lakeview Hotel, £420, lakeview-hotel.co.uk",
+   "Hôtel Vue-du-Lac, CHF 420, hotel-vuedulac.ch",
+   "Hotel Vista Lago, CHF 420, hotel-vistalago.ch"
+  ],
+  [
+   "Sicherheitstipp-Beispiele",
+   "zaland0.de, swiscom.ch",
+   "amaz0n.co.uk, barcIays.co.uk",
+   "migr0s.ch, swiscom.ch",
+   "migr0s.ch, swiscom.ch"
+  ],
+  [
+   "Bilder mit Text",
+   "Jetzt anmelden; Protokoll / Subdomain / Domain / Pfad",
+   "eigene Bilddatei",
+   "eigene Bilddatei",
+   "eigene Bilddatei"
+  ]
+ ],
+ "texte": {
+  "firma.name": {
+   "stand": "neu",
+   "hinweis": "Beispiel-Firmendomain, wenn das Feld leer bleibt"
+  },
+  "firma.tld": {
+   "stand": "neu",
+   "hinweis": "Endung für die aus dem Firmennamen gebaute Domain"
+  },
+  "firma.zusatz": {
+   "stand": "neu",
+   "hinweis": "Zusatz für Täusch-Domains (z. B. firma-it.de)"
+  },
+  "person.vorname": {
+   "stand": "neu",
+   "hinweis": "Beispielname wie in der bisherigen Lokalisierung"
+  },
+  "person.nachname": {
+   "stand": "neu",
+   "hinweis": "Beispielname wie in der bisherigen Lokalisierung"
+  },
+  "person.privatDomain": {
+   "stand": "neu",
+   "hinweis": "private Beispiel-Domain"
+  },
+  "ui.marke": {
+   "stand": "neu",
+   "hinweis": "Marke – nicht übersetzen"
+  },
+  "ui.produkt": {
+   "stand": "v1"
+  },
+  "ui.tonAn": {
+   "stand": "neu"
+  },
+  "ui.tonAus": {
+   "stand": "neu"
+  },
+  "ui.levelKurz": {
+   "stand": "neu"
+  },
+  "ui.frageVon": {
+   "stand": "neu"
+  },
+  "ui.start.titel": {
+   "stand": "v1"
+  },
+  "ui.start.text": {
+   "stand": "v1"
+  },
+  "ui.start.los": {
+   "stand": "v1"
+  },
+  "ui.start.fakten[0]": {
+   "stand": "neu"
+  },
+  "ui.start.fakten[1]": {
+   "stand": "neu"
+  },
+  "ui.start.fakten[2]": {
+   "stand": "neu"
+  },
+  "ui.start.fortsetzenTitel": {
+   "stand": "v1"
+  },
+  "ui.start.fortsetzenText": {
+   "stand": "neu"
+  },
+  "ui.start.fortsetzen": {
+   "stand": "neu"
+  },
+  "ui.start.neu": {
+   "stand": "v1"
+  },
+  "ui.start.fertigTitel": {
+   "stand": "neu"
+  },
+  "ui.start.fertigText": {
+   "stand": "neu"
+  },
+  "ui.start.ergebnis": {
+   "stand": "neu"
+  },
+  "ui.start.nochmal": {
+   "stand": "v1"
+  },
+  "ui.briefing.karten[0].titel": {
+   "stand": "v1"
+  },
+  "ui.briefing.karten[0].text": {
+   "stand": "v1"
+  },
+  "ui.briefing.karten[1].titel": {
+   "stand": "v1"
+  },
+  "ui.briefing.karten[1].text": {
+   "stand": "v1"
+  },
+  "ui.briefing.karten[2].titel": {
+   "stand": "v1"
+  },
+  "ui.briefing.karten[2].text": {
+   "stand": "v1"
+  },
+  "ui.briefing.los": {
+   "stand": "v1"
+  },
+  "ui.profil.titel": {
+   "stand": "v1"
+  },
+  "ui.profil.text": {
+   "stand": "neu"
+  },
+  "ui.profil.name": {
+   "stand": "v1"
+  },
+  "ui.profil.namePlatzhalter": {
+   "stand": "v1"
+  },
+  "ui.profil.firma": {
+   "stand": "neu"
+  },
+  "ui.profil.firmaPlatzhalter": {
+   "stand": "neu"
+  },
+  "ui.profil.email": {
+   "stand": "v1"
+  },
+  "ui.profil.emailPlatzhalter": {
+   "stand": "v1 angepasst"
+  },
+  "ui.profil.emailHinweis": {
+   "stand": "neu"
+  },
+  "ui.profil.emailFehler": {
+   "stand": "v1"
+  },
+  "ui.profil.weiter": {
+   "stand": "v1"
+  },
+  "ui.profil.datenschutz": {
+   "stand": "neu"
+  },
+  "ui.hallo.titel": {
+   "stand": "neu"
+  },
+  "ui.hallo.text": {
+   "stand": "neu"
+  },
+  "ui.levelIntro.kicker": {
+   "stand": "neu"
+  },
+  "ui.levelIntro.titel": {
+   "stand": "neu"
+  },
+  "ui.levelIntro.neue": {
+   "stand": "neu"
+  },
+  "ui.levelIntro.ziel": {
+   "stand": "neu"
+  },
+  "ui.levelIntro.los": {
+   "stand": "neu"
+  },
+  "ui.situation": {
+   "stand": "neu"
+  },
+  "ui.frage": {
+   "stand": "v1"
+  },
+  "ui.phishing": {
+   "stand": "neu"
+  },
+  "ui.echt": {
+   "stand": "neu",
+   "hinweis": "Antwort-Knopf (Gegenstück zu „Phishing“)"
+  },
+  "ui.linkTipp": {
+   "stand": "neu"
+  },
+  "ui.linkTippTouch": {
+   "stand": "neu"
+  },
+  "ui.linkZiel": {
+   "stand": "v1"
+  },
+  "ui.echteDomain": {
+   "stand": "neu"
+  },
+  "ui.klartext": {
+   "stand": "neu"
+  },
+  "ui.antwortAn": {
+   "stand": "neu"
+  },
+  "ui.anhangGesperrt": {
+   "stand": "neu"
+  },
+  "ui.qrGesperrt": {
+   "stand": "neu"
+  },
+  "ui.extern": {
+   "stand": "neu",
+   "hinweis": "Banner im Mailprogramm – formell"
+  },
+  "ui.an": {
+   "stand": "v1"
+  },
+  "ui.heute": {
+   "stand": "v1"
+  },
+  "ui.nichtKontakt": {
+   "stand": "neu"
+  },
+  "ui.blockieren": {
+   "stand": "neu"
+  },
+  "ui.hinzufuegen": {
+   "stand": "neu"
+  },
+  "ui.textnachricht": {
+   "stand": "v1"
+  },
+  "ui.nachrichtSchreiben": {
+   "stand": "neu"
+  },
+  "ui.inmail": {
+   "stand": "neu",
+   "hinweis": "LinkedIn-Begriff"
+  },
+  "ui.geraet.antworten": {
+   "stand": "neu",
+   "hinweis": "Beschriftung im nachgebauten Mailprogramm"
+  },
+  "ui.geraet.allenAntworten": {
+   "stand": "neu"
+  },
+  "ui.geraet.weiterleiten": {
+   "stand": "neu"
+  },
+  "ui.geraet.suchen": {
+   "stand": "neu",
+   "hinweis": "Microsoft-Teams-Oberfläche"
+  },
+  "ui.geraet.aktivitaet": {
+   "stand": "neu"
+  },
+  "ui.geraet.chat": {
+   "stand": "neu"
+  },
+  "ui.geraet.teams": {
+   "stand": "neu"
+  },
+  "ui.geraet.kalender": {
+   "stand": "neu"
+  },
+  "ui.geraet.anrufe": {
+   "stand": "neu"
+  },
+  "ui.geraet.freigegeben": {
+   "stand": "neu"
+  },
+  "ui.geraet.nachrichten": {
+   "stand": "neu",
+   "hinweis": "LinkedIn-Oberfläche"
+  },
+  "ui.ergebnis.richtig": {
+   "stand": "v1"
+  },
+  "ui.ergebnis.falschPhishing": {
+   "stand": "neu",
+   "hinweis": "Phishing als echt eingestuft"
+  },
+  "ui.ergebnis.falschEcht": {
+   "stand": "neu"
+  },
+  "ui.ergebnis.istPhishing": {
+   "stand": "neu"
+  },
+  "ui.ergebnis.istEcht": {
+   "stand": "neu"
+  },
+  "ui.hinweisArt.warn": {
+   "stand": "neu"
+  },
+  "ui.hinweisArt.ok": {
+   "stand": "neu"
+  },
+  "ui.hinweisArt.tipp": {
+   "stand": "neu"
+  },
+  "ui.hinweisZaehler": {
+   "stand": "neu"
+  },
+  "ui.weiter": {
+   "stand": "v1"
+  },
+  "ui.detailsAnzeigen": {
+   "stand": "v1"
+  },
+  "ui.stempel.phishing": {
+   "stand": "neu"
+  },
+  "ui.stempel.echt": {
+   "stand": "neu",
+   "hinweis": "Stempel auf der Nachricht"
+  },
+  "ui.naechsteNachricht": {
+   "stand": "neu"
+  },
+  "ui.zurAuswertung": {
+   "stand": "v1"
+  },
+  "ui.ueberspringen": {
+   "stand": "neu"
+  },
+  "ui.levelEnde.kicker": {
+   "stand": "neu"
+  },
+  "ui.levelEnde.perfekt": {
+   "stand": "v1"
+  },
+  "ui.levelEnde.bestanden": {
+   "stand": "neu"
+  },
+  "ui.levelEnde.knapp": {
+   "stand": "v1"
+  },
+  "ui.levelEnde.bestandenAb": {
+   "stand": "neu",
+   "hinweis": "Beschriftung an der Markierung im Halbkreis, darunter z. B. „70 %“"
+  },
+  "ui.levelEnde.richtig": {
+   "stand": "neu"
+  },
+  "ui.levelEnde.abzeichen": {
+   "stand": "neu"
+  },
+  "ui.levelEnde.zumNugget": {
+   "stand": "v1"
+  },
+  "ui.levelEnde.naechstesLevel": {
+   "stand": "neu"
+  },
+  "ui.levelEnde.zumErgebnis": {
+   "stand": "v1"
+  },
+  "ui.levelEnde.wiederholen": {
+   "stand": "neu"
+  },
+  "ui.levelEnde.warPhishing": {
+   "stand": "v1"
+  },
+  "ui.levelEnde.warEcht": {
+   "stand": "neu"
+  },
+  "ui.levelEnde.details": {
+   "stand": "neu"
+  },
+  "ui.nugget.kicker": {
+   "stand": "v1"
+  },
+  "ui.nugget.merke": {
+   "stand": "neu"
+  },
+  "ui.nugget.zurueck": {
+   "stand": "v1"
+  },
+  "ui.nugget.weiter": {
+   "stand": "v1"
+  },
+  "ui.finale.kicker": {
+   "stand": "v1"
+  },
+  "ui.finale.titelTop": {
+   "stand": "v1"
+  },
+  "ui.finale.titelGut": {
+   "stand": "v1"
+  },
+  "ui.finale.titelMittel": {
+   "stand": "v1"
+  },
+  "ui.finale.titel": {
+   "stand": "v1"
+  },
+  "ui.finale.text": {
+   "stand": "neu"
+  },
+  "ui.finale.absatz": {
+   "stand": "v1"
+  },
+  "ui.finale.abzeichen": {
+   "stand": "neu"
+  },
+  "ui.finale.mitnehmen": {
+   "stand": "neu"
+  },
+  "ui.finale.merksaetze[0]": {
+   "stand": "neu"
+  },
+  "ui.finale.merksaetze[1]": {
+   "stand": "neu"
+  },
+  "ui.finale.merksaetze[2]": {
+   "stand": "neu"
+  },
+  "ui.finale.merksaetze[3]": {
+   "stand": "neu"
+  },
+  "ui.finale.lms": {
+   "stand": "neu"
+  },
+  "ui.finale.schliessen": {
+   "stand": "neu"
+  },
+  "ui.finale.nochNicht": {
+   "stand": "neu"
+  },
+  "ui.finale.nochmal": {
+   "stand": "v1"
+  },
+  "ui.hacker.erwischt[0]": {
+   "stand": "neu",
+   "hinweis": "im Original auch auf Deutsch englisch"
+  },
+  "ui.hacker.erwischt[1]": {
+   "stand": "neu"
+  },
+  "ui.hacker.erwischt[2]": {
+   "stand": "neu"
+  },
+  "ui.hacker.erwischt[3]": {
+   "stand": "neu"
+  },
+  "ui.hacker.erwischt[4]": {
+   "stand": "neu"
+  },
+  "ui.hacker.erwischt[5]": {
+   "stand": "neu"
+  },
+  "ui.hacker.erwischt[6]": {
+   "stand": "neu"
+  },
+  "ui.hacker.durchschaut[0]": {
+   "stand": "neu",
+   "hinweis": "im Original auch auf Deutsch englisch"
+  },
+  "ui.hacker.durchschaut[1]": {
+   "stand": "neu"
+  },
+  "ui.hacker.durchschaut[2]": {
+   "stand": "neu"
+  },
+  "ui.hacker.durchschaut[3]": {
+   "stand": "neu"
+  },
+  "ui.hacker.durchschaut[4]": {
+   "stand": "neu"
+  },
+  "ui.hacker.durchschaut[5]": {
+   "stand": "neu"
+  },
+  "ui.hacker.durchschaut[6]": {
+   "stand": "neu"
+  },
+  "ui.hacker.finaleGut": {
+   "stand": "neu"
+  },
+  "ui.hacker.finale": {
+   "stand": "neu"
+  },
+  "ui.serie.label": {
+   "stand": "neu"
+  },
+  "ui.serie.titel": {
+   "stand": "neu"
+  },
+  "ui.serie.erklaerung": {
+   "stand": "neu"
+  },
+  "ui.serie.lob[0]": {
+   "stand": "neu"
+  },
+  "ui.serie.lob[1]": {
+   "stand": "neu"
+  },
+  "ui.serie.lob[2]": {
+   "stand": "neu"
+  },
+  "ui.serie.lob[3]": {
+   "stand": "neu"
+  },
+  "ui.serie.verloren": {
+   "stand": "neu"
+  },
+  "ui.serie.bisJokerEins": {
+   "stand": "neu"
+  },
+  "ui.serie.bisJoker": {
+   "stand": "neu"
+  },
+  "ui.serie.jokerVoll": {
+   "stand": "neu"
+  },
+  "ui.joker.name": {
+   "stand": "neu"
+  },
+  "ui.joker.tippTitel": {
+   "stand": "neu"
+  },
+  "ui.joker.erster": {
+   "stand": "neu"
+  },
+  "ui.joker.neu[0]": {
+   "stand": "neu"
+  },
+  "ui.joker.neu[1]": {
+   "stand": "neu"
+  },
+  "ui.joker.neu[2]": {
+   "stand": "neu"
+  },
+  "ui.joker.erinnerung": {
+   "stand": "neu"
+  },
+  "ui.joker.spaeter": {
+   "stand": "neu"
+  },
+  "ui.joker.schon": {
+   "stand": "neu"
+  },
+  "ui.joker.leer": {
+   "stand": "neu"
+  },
+  "ui.joker.titel": {
+   "stand": "neu"
+  },
+  "levels[0].kicker": {
+   "stand": "v1"
+  },
+  "levels[0].titel": {
+   "stand": "v1"
+  },
+  "levels[0].badge": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].lage": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].von.name": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].von.adresse": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].zeit": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].betreff": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].anhang[0].name": {
+   "stand": "neu",
+   "hinweis": "Endung .docx.exe ist Teil der Übung – nicht ändern."
+  },
+  "levels[0].nachrichten[0].anhang[0].groesse": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[0].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[0].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[0].inhalt#4": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[0].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].hinweise[1].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].hinweise[1].text": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[0].kernTitel": {
+   "stand": "neu"
+  },
+  "levels[0].nachrichten[0].kern": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[0].joker": {
+   "stand": "neu"
+  },
+  "levels[0].nachrichten[1].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[1].lage": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[1].von.name": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[1].zeit": {
+   "stand": "neu"
+  },
+  "levels[0].nachrichten[1].nachrichten[0]#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[1].nachrichten[0]#link1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[1].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[1].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[1].hinweise[1].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[1].hinweise[1].text": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[1].kern": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[1].joker": {
+   "stand": "neu"
+  },
+  "levels[0].nachrichten[2].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[2].lage": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[2].von.name": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[2].von.adresse": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[2].zeit": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[2].betreff": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[2].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[2].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[2].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[2].inhalt#4": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[2].inhalt#5": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[2].inhalt#6": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[2].inhalt#7": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[2].inhalt#link1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[2].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[2].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[2].kern": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[2].joker": {
+   "stand": "neu"
+  },
+  "levels[0].nachrichten[3].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[3].lage": {
+   "stand": "v1 angepasst",
+   "hinweis": "Betrag muss zur SMS passen."
+  },
+  "levels[0].nachrichten[3].von.name": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[3].von.info": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[3].zeit": {
+   "stand": "neu"
+  },
+  "levels[0].nachrichten[3].nachrichten[0]#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[3].nachrichten[0]#link1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[3].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[3].hinweise[0].text": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[3].hinweise[1].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[3].hinweise[1].text": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[3].kern": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[3].joker": {
+   "stand": "neu"
+  },
+  "levels[0].nachrichten[4].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[4].von.name": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[4].von.adresse": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[4].zeit": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[4].betreff": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[4].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[4].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[4].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[4].inhalt#4": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[4].inhalt#5": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[4].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[4].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[4].hinweise[1].titel": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[4].hinweise[1].text": {
+   "stand": "v1 angepasst"
+  },
+  "levels[0].nachrichten[4].kern": {
+   "stand": "v1"
+  },
+  "levels[0].nachrichten[4].joker": {
+   "stand": "neu"
+  },
+  "levels[1].kicker": {
+   "stand": "v1"
+  },
+  "levels[1].titel": {
+   "stand": "v1"
+  },
+  "levels[1].badge": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[0].titel": {
+   "stand": "v1 angepasst",
+   "hinweis": "Betrag in Landeswährung – muss zu Betreff und Mail passen."
+  },
+  "levels[1].nachrichten[0].lage": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[0].von.name": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[0].von.adresse": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[0].zeit": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[0].betreff": {
+   "stand": "v1 angepasst",
+   "hinweis": "Betrag in Landeswährung – muss zu Titel und Mail passen."
+  },
+  "levels[1].nachrichten[0].inhalt#bild1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[0].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[0].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[0].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[0].inhalt#4": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[0].inhalt#5": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[0].inhalt#6": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[0].inhalt#link1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[0].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[0].hinweise[0].klartext": {
+   "stand": "neu",
+   "hinweis": "[ ] markiert die Fälschung – nicht übersetzen"
+  },
+  "levels[1].nachrichten[0].hinweise[0].text": {
+   "stand": "neu"
+  },
+  "levels[1].nachrichten[0].hinweise[1].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[0].hinweise[1].text": {
+   "stand": "neu"
+  },
+  "levels[1].nachrichten[0].kernTitel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[0].kern": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[0].joker": {
+   "stand": "neu"
+  },
+  "levels[1].nachrichten[1].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[1].lage": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[1].von.name": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[1].von.adresse": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[1].zeit": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[1].betreff": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[1].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[1].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[1].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[1].inhalt#4": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[1].inhalt#5": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[1].inhalt#6": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[1].inhalt#link1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[1].inhalt#7": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[1].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[1].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[1].hinweise[1].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[1].hinweise[1].text": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[1].kern": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[1].joker": {
+   "stand": "neu"
+  },
+  "levels[1].nachrichten[2].titel": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[2].lage": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[2].von.name": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[2].von.adresse": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[2].zeit": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[2].betreff": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[2].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[2].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[2].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[2].inhalt#link1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[2].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[2].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[2].kern": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[2].joker": {
+   "stand": "neu"
+  },
+  "levels[1].nachrichten[3].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[3].lage": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[3].von.name": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[3].von.adresse": {
+   "stand": "neu",
+   "hinweis": "{{…}} nicht übersetzen"
+  },
+  "levels[1].nachrichten[3].zeit": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[3].betreff": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[3].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[3].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[3].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[3].inhalt#4": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[3].inhalt#5": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[3].inhalt#6": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[3].inhalt#7": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[3].inhalt#link1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[3].hinweise[0].titel": {
+   "stand": "neu"
+  },
+  "levels[1].nachrichten[3].hinweise[0].text": {
+   "stand": "neu"
+  },
+  "levels[1].nachrichten[3].hinweise[1].titel": {
+   "stand": "neu"
+  },
+  "levels[1].nachrichten[3].hinweise[1].text": {
+   "stand": "neu"
+  },
+  "levels[1].nachrichten[3].hinweise[2].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[3].hinweise[2].text": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[3].hinweise[3].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[3].hinweise[3].text": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[3].kernTitel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[3].kern": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[3].joker": {
+   "stand": "neu"
+  },
+  "levels[1].nachrichten[4].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].lage": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].von.name": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].von.adresse": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].an": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].zeit": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].betreff": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[4].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[4].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[4].inhalt#4": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[4].inhalt#5": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[4].inhalt#6": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[4].inhalt#7": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[4].inhalt#8": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[4].inhalt#9": {
+   "stand": "v1 angepasst"
+  },
+  "levels[1].nachrichten[4].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].hinweise[1].titel": {
+   "stand": "neu"
+  },
+  "levels[1].nachrichten[4].hinweise[1].text": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].hinweise[2].titel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].hinweise[2].text": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].kernTitel": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].kern": {
+   "stand": "v1"
+  },
+  "levels[1].nachrichten[4].joker": {
+   "stand": "neu"
+  },
+  "levels[2].kicker": {
+   "stand": "v1"
+  },
+  "levels[2].titel": {
+   "stand": "v1"
+  },
+  "levels[2].badge": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].lage": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].von.name": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].von.adresse": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].zeit": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].betreff": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[0].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[0].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[0].inhalt#4": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[0].inhalt#bild1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[0].inhalt#5": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[0].inhalt#link1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[0].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].hinweise[1].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].hinweise[1].text": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].kernTitel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].kern": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[0].joker": {
+   "stand": "neu"
+  },
+  "levels[2].nachrichten[1].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].lage": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].von.name": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].von.adresse": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].von.hover": {
+   "stand": "neu",
+   "hinweis": "Antwortadresse (Reply-To) – nicht übersetzen"
+  },
+  "levels[2].nachrichten[1].an": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].zeit": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].betreff": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[1].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[1].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[1].inhalt#4": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[1].inhalt#5": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[1].inhalt#6": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[1].inhalt#7": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[1].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].hinweise[1].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].hinweise[1].text": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].hinweise[2].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].hinweise[2].text": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].kernTitel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].kern": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[1].joker": {
+   "stand": "neu"
+  },
+  "levels[2].nachrichten[2].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[2].lage": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[2].von.name": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[2].von.info": {
+   "stand": "neu"
+  },
+  "levels[2].nachrichten[2].von.initialen": {
+   "stand": "neu"
+  },
+  "levels[2].nachrichten[2].zeit": {
+   "stand": "neu"
+  },
+  "levels[2].nachrichten[2].nachrichten[0]#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[2].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[2].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[2].kernTitel": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[2].kern": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[2].joker": {
+   "stand": "neu"
+  },
+  "levels[2].nachrichten[3].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[3].lage": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[3].von.name": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[3].von.adresse": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[3].zeit": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[3].betreff": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[3].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[3].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[3].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[3].inhalt#4": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[3].inhalt#5": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[3].inhalt#link1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[3].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[3].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[3].kern": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[3].joker": {
+   "stand": "neu"
+  },
+  "levels[2].nachrichten[4].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].lage": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].von.name": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].von.adresse": {
+   "stand": "neu",
+   "hinweis": "Endung .host wie im Deutschen (keine echte Hotel-Domain)"
+  },
+  "levels[2].nachrichten[4].zeit": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].betreff": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].inhalt#1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[4].inhalt#2": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[4].inhalt#3": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[4].inhalt#4": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[4].inhalt#5": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[4].inhalt#6": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[4].inhalt#7": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[4].inhalt#8": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[4].inhalt#link1": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[4].inhalt#9": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[4].hinweise[0].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].hinweise[0].text": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].hinweise[1].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].hinweise[1].text": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].hinweise[2].titel": {
+   "stand": "neu"
+  },
+  "levels[2].nachrichten[4].hinweise[2].text": {
+   "stand": "neu"
+  },
+  "levels[2].nachrichten[4].hinweise[3].titel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].hinweise[3].text": {
+   "stand": "v1 angepasst"
+  },
+  "levels[2].nachrichten[4].kernTitel": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].kern": {
+   "stand": "v1"
+  },
+  "levels[2].nachrichten[4].joker": {
+   "stand": "neu"
+  },
+  "nuggets[0].titel": {
+   "stand": "v1"
+  },
+  "nuggets[0].untertitel": {
+   "stand": "v1"
+  },
+  "nuggets[0].folien[0].titel": {
+   "stand": "neu"
+  },
+  "nuggets[0].folien[0].text": {
+   "stand": "neu"
+  },
+  "nuggets[0].folien[0].punkte[0]": {
+   "stand": "neu"
+  },
+  "nuggets[0].folien[0].punkte[1]": {
+   "stand": "neu"
+  },
+  "nuggets[0].folien[1].titel": {
+   "stand": "neu"
+  },
+  "nuggets[0].folien[1].text": {
+   "stand": "neu"
+  },
+  "nuggets[0].folien[1].punkte[0]": {
+   "stand": "neu"
+  },
+  "nuggets[0].folien[2].titel": {
+   "stand": "neu"
+  },
+  "nuggets[0].folien[2].text": {
+   "stand": "neu"
+  },
+  "nuggets[0].folien[2].punkte[0]": {
+   "stand": "neu"
+  },
+  "nuggets[0].folien[2].punkte[1]": {
+   "stand": "neu",
+   "hinweis": "lokales Beispiel: eine Ziffer statt eines Buchstabens"
+  },
+  "nuggets[0].folien[2].punkte[2]": {
+   "stand": "neu",
+   "hinweis": "lokales Beispiel: ein fehlender oder vertauschter Buchstabe"
+  },
+  "nuggets[0].merke": {
+   "stand": "neu"
+  },
+  "nuggets[0].knopf": {
+   "stand": "neu"
+  },
+  "nuggets[1].titel": {
+   "stand": "v1"
+  },
+  "nuggets[1].untertitel": {
+   "stand": "v1"
+  },
+  "nuggets[1].folien[0].titel": {
+   "stand": "v1"
+  },
+  "nuggets[1].folien[0].text": {
+   "stand": "neu"
+  },
+  "nuggets[1].folien[0].schutz": {
+   "stand": "neu"
+  },
+  "nuggets[1].folien[1].titel": {
+   "stand": "v1"
+  },
+  "nuggets[1].folien[1].text": {
+   "stand": "neu"
+  },
+  "nuggets[1].folien[1].schutz": {
+   "stand": "neu"
+  },
+  "nuggets[1].folien[2].titel": {
+   "stand": "v1"
+  },
+  "nuggets[1].folien[2].text": {
+   "stand": "neu"
+  },
+  "nuggets[1].folien[2].schutz": {
+   "stand": "neu"
+  },
+  "nuggets[1].merke": {
+   "stand": "neu"
+  },
+  "nuggets[1].knopf": {
+   "stand": "neu"
+  },
+  "levels[0].nachrichten[2].inhalt": {
+   "hinweis": "Kontaktname lokalisiert (Michael Turner / Julien Morel / Marco Ferrari)"
+  },
+  "levels[0].nachrichten[3].nachrichten[0]": {
+   "hinweis": "Bank lokalisiert: Commerzbank → HSBC (UK) / UBS (CH), Betrag in GBP bzw. CHF; sichtbarer Link und Link-Ziel passen zur lokalen Bank."
+  },
+  "levels[1].nachrichten[1].inhalt": {
+   "hinweis": "Name lokalisiert (Anna Clarke / Anna Favre / Anna Bernasconi), Dateiname und Link-Pfad übersetzt"
+  },
+  "levels[1].nachrichten[4].inhalt": {
+   "hinweis": "Lieferant lokalisiert (Northfield Office Supplies, Manchester / Matériaux Montvert SA / Materiali Valdora SA)"
+  },
+  "levels[2].nachrichten[1].inhalt": {
+   "hinweis": "CEO lokalisiert (Richard Hayes / Philippe Mercier / Paolo Galli); Betrag und IBAN in Landeswährung (Beispiel-IBANs)."
+  },
+  "levels[2].nachrichten[3].inhalt": {
+   "hinweis": "Absender lokalisiert (Laura Bennett / Nicolas Perret / Luca Moretti)"
+  },
+  "levels[2].nachrichten[4].inhalt": {
+   "hinweis": "Hotel lokalisiert (Lakeview Hotel / Hôtel Vue-du-Lac / Hotel Vista Lago), Preis in GBP bzw. CHF"
+  }
+ }
+}

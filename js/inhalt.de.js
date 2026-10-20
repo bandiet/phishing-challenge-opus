@@ -235,7 +235,8 @@ window.PC_INHALT = {
           von: { name: 'HR Personalabteilung', adresse: 'hr-abteilung@{{fake_doppel}}' },
           an: '{{email}}', zeit: 'Heute, 11:00',
           betreff: 'WICHTIG: Neue Gehaltstabelle & Inflationsprämie 2027',
-          anhang: [{ name: 'Gehaltstabelle_2026.docx.exe', groesse: '2,4 MB' }],
+          // Korrektur: Anhang hieß „…_2026“, Betreff und Text sprechen von 2027.
+          anhang: [{ name: 'Gehaltstabelle_2027.docx.exe', groesse: '2,4 MB' }],
           inhalt: `
 <div style="color:#0f766e;font-family:Arial,Helvetica,sans-serif;font-size:.733em;font-weight:700;letter-spacing:.08em;margin:0 0 18px;">INTERNE MITTEILUNG</div>
 <div style="border-left:4px solid #16c7a5;padding-left:14px;font-family:Arial,Helvetica,sans-serif;color:#1f2937;">

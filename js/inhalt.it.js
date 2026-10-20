@@ -1,0 +1,981 @@
+// Erzeugt mit tools/texte.py aus Phishing_Challenge_Texte.xlsx – nicht von Hand ändern.
+// Texte ändern: Excel bearbeiten und mit „python3 tools/texte.py import …“ einlesen.
+window.PC_INHALT = {
+  sprache: 'it',
+  version: 'opus-1',
+  firma: {
+    name: 'azienda.ch',
+    tld: 'ch',
+    zusatz: '-it'
+  },
+  person: {
+    vorname: 'Mario',
+    nachname: 'Rossi',
+    privatDomain: 'bluewin.ch'
+  },
+  einstellungen: {
+    zielProzent: 70,
+    bestehenNoetig: true,
+    hinweiseUeberspringbar: true,
+    bestehensgrenze: 80,
+    interaktionenMelden: true,
+    jokerBei: [3, 6, 8, 10, 12, 14],
+    jokerMax: 9
+  },
+  ui: {
+    marke: 'Cyber Crime Awareness',
+    produkt: 'Phishing Challenge',
+    tonAn: 'Disattiva l’audio',
+    tonAus: 'Attiva l’audio',
+    levelKurz: 'Livello {{n}}',
+    frageVon: 'Domanda {{n}} di {{gesamt}}',
+    start: {
+      titel: 'Sai riconoscere il phishing?',
+      text: 'Metti alla prova il tuo fiuto per i messaggi autentici e falsi.',
+      los: 'Inizia il test',
+      fakten: [
+        '15 messaggi',
+        '3 livelli',
+        'ca. 15 minuti'
+      ],
+      fortsetzenTitel: 'Vuoi riprendere da dove avevi lasciato?',
+      fortsetzenText: 'Eccoti di nuovo, {{vorname}}! Eri al livello {{level}}, domanda {{nr}} di {{gesamt}}.',
+      fortsetzen: 'Continua',
+      neu: 'Ricomincia',
+      fertigTitel: 'Challenge completata',
+      fertigText: 'Il tuo risultato: {{richtig}} su {{gesamt}} riconosciuti correttamente.',
+      ergebnis: 'Vedi il risultato',
+      nochmal: 'Ricomincia il quiz'
+    },
+    briefing: {
+      karten: [
+        {
+          icon: 'postfach',
+          titel: 'La tua casella di posta',
+          text: 'Riceverai diversi messaggi, uno dopo l’altro.'
+        },
+        {
+          icon: 'lupe',
+          titel: 'Guarda con attenzione',
+          text: 'Non tutti i messaggi sono ciò che sembrano.'
+        },
+        {
+          icon: 'entscheid',
+          titel: 'Phishing o autentico?',
+          text: 'Per ogni messaggio, prendi la tua decisione.'
+        }
+      ],
+      los: 'Iniziamo!'
+    },
+    profil: {
+      titel: 'Rendi il quiz più personale.',
+      text: 'Inserisci un nome, la tua azienda e un indirizzo e-mail – veri o inventati. Li usiamo per rendere più realistici i messaggi del quiz.',
+      name: 'Nome',
+      namePlatzhalter: 'Mario Rossi',
+      firma: 'Azienda',
+      firmaPlatzhalter: 'azienda.ch',
+      email: 'Indirizzo e-mail',
+      emailPlatzhalter: 'mario.rossi@azienda.ch',
+      emailHinweis: 'Creato da nome e azienda – puoi modificarlo.',
+      emailFehler: 'Inserisci un indirizzo e-mail valido.',
+      weiter: 'Avanti',
+      datenschutz: 'I tuoi dati vengono usati solo in questo quiz.'
+    },
+    hallo: {
+      titel: 'Ciao {{name}}.',
+      text: 'In questo quiz il tuo indirizzo e-mail è'
+    },
+    levelIntro: {
+      kicker: 'Livello {{n}} di {{gesamt}}',
+      titel: 'Iniziamo il livello {{n}}?',
+      neue: 'nuovi messaggi',
+      ziel: 'Obiettivo: {{ziel}} su {{gesamt}} corrette',
+      los: 'Apri la posta in arrivo'
+    },
+    situation: 'Situazione',
+    frage: 'Phishing o autentico?',
+    phishing: 'Phishing',
+    echt: 'Autentico',
+    linkTipp: 'Passa il mouse su link e pulsanti – come in una vera casella di posta.',
+    linkTippTouch: 'Tocca link e pulsanti per vedere dove portano.',
+    linkZiel: 'Destinazione del link',
+    echteDomain: 'dominio reale',
+    klartext: 'In chiaro',
+    antwortAn: 'La risposta va a',
+    anhangGesperrt: 'In questo quiz non si aprono file.',
+    qrGesperrt: 'Un codice QR non si può verificare in anticipo.',
+    extern: 'ESTERNO: questo messaggio proviene dall’esterno della Sua organizzazione.',
+    an: 'A',
+    heute: 'Oggi',
+    nichtKontakt: 'Non nei tuoi contatti',
+    blockieren: 'Blocca',
+    hinzufuegen: 'Aggiungi',
+    textnachricht: 'SMS',
+    nachrichtSchreiben: 'Scrivi un messaggio…',
+    inmail: 'InMail',
+    geraet: {
+      antworten: 'Rispondi',
+      allenAntworten: 'Rispondi a tutti',
+      weiterleiten: 'Inoltra',
+      suchen: 'Cerca',
+      aktivitaet: 'Attività',
+      chat: 'Chat',
+      teams: 'Team',
+      kalender: 'Calendario',
+      anrufe: 'Chiamate',
+      freigegeben: 'Condivisi',
+      nachrichten: 'Messaggistica'
+    },
+    ergebnis: {
+      richtig: 'Corretto!',
+      falschPhishing: 'Peccato',
+      falschEcht: 'Falso allarme',
+      istPhishing: 'Era phishing.',
+      istEcht: 'Il messaggio è autentico.'
+    },
+    hinweisArt: {
+      warn: 'Segnale d’allarme',
+      ok: 'Segno di autenticità',
+      tipp: 'Buono a sapersi'
+    },
+    hinweisZaehler: 'Indizio {{n}} di {{gesamt}}',
+    weiter: 'Avanti',
+    detailsAnzeigen: 'Mostra dettagli',
+    stempel: {
+      phishing: 'Phishing',
+      echt: 'Autentico'
+    },
+    naechsteNachricht: 'Messaggio successivo',
+    zurAuswertung: 'Mostra il riepilogo del livello',
+    ueberspringen: 'Salta gli indizi',
+    levelEnde: {
+      kicker: 'Livello {{n}} di {{gesamt}}',
+      perfekt: 'Risolto alla perfezione, non ti è sfuggito nessun dettaglio!',
+      bestanden: 'Hai superato il livello {{n}}.',
+      knapp: 'Non mollare e affina lo sguardo per i segnali d’allarme!',
+      bestandenAb: 'Superato dal',
+      richtig: '{{richtig}} su {{gesamt}} corrette',
+      abzeichen: 'Badge sbloccato',
+      zumNugget: 'Vai al consiglio di sicurezza',
+      naechstesLevel: 'Vai al livello {{n}}',
+      zumErgebnis: 'Quiz completato',
+      wiederholen: 'Ripeti il livello {{n}}',
+      warPhishing: 'Phishing',
+      warEcht: 'Autentico',
+      details: 'Dettagli'
+    },
+    nugget: {
+      kicker: 'Consiglio di sicurezza',
+      merke: 'Da ricordare',
+      zurueck: 'Indietro',
+      weiter: 'Avanti'
+    },
+    finale: {
+      kicker: 'Quiz completato',
+      titelTop: 'Prestazione eccellente!',
+      titelGut: 'Ottimo lavoro!',
+      titelMittel: 'Ben fatto!',
+      titel: 'Bel tentativo!',
+      text: 'Hai risposto correttamente a {{richtig}}/{{gesamt}} domande.',
+      absatz: 'La pratica rende perfetti! Più sai a cosa fare attenzione, più sei al sicuro dagli attacchi di phishing.',
+      abzeichen: 'I tuoi badge',
+      mitnehmen: 'Da ricordare',
+      merksaetze: [
+        'Conta il dominio reale, non il nome dell’azienda da qualche parte nel link.',
+        'Controlla mittente, dominio e contesto – anche se il messaggio sembra professionale.',
+        'Conferma le richieste insolite o delicate tramite un secondo canale conosciuto.',
+        'I dettagli personali non provano che un messaggio sia autentico.'
+      ],
+      lms: 'I tuoi progressi sono stati trasmessi correttamente all’LMS.',
+      schliessen: 'Ora puoi chiudere questa finestra per terminare la formazione.',
+      nochNicht: 'Per superarlo ti serve almeno il {{grenze}}%. Basta ricominciare il quiz.',
+      nochmal: 'Ricomincia il quiz'
+    },
+    hacker: {
+      erwischt: [
+        'I love to phish 🎣',
+        'Dritto nella rete! 🎯',
+        'Un clic di troppo... 😈',
+        'Ha abboccato! 🐟',
+        'Grazie per il clic! 🙃',
+        'È filato tutto liscio! 😏',
+        'Troppo facile… 🤭'
+      ],
+      durchschaut: [
+        'You got me! 🕶️',
+        'Accidenti, scoperto! 💨',
+        'Occhio fino! 👏',
+        'Uffa. Niente male. 😒',
+        'La prossima volta ti frego! 😤',
+        'Non ti sfugge niente! 🧐',
+        'Niente da fare… 🙄'
+      ],
+      finaleGut: 'Mi arrendo… 🏳️',
+      finale: 'Alla prossima! 😏'
+    },
+    serie: {
+      label: 'Serie',
+      titel: '{{n}} risposte corrette di fila',
+      erklaerung: 'Ottimo, {{n}} corrette di fila! Questa è la tua serie – ogni altra risposta corretta fa crescere la fiamma.',
+      lob: [
+        '{{n}} corrette di fila – la tua serie cresce!',
+        'Serie {{n}}! La fiamma divampa.',
+        '{{n}} di fila – che serie!',
+        'Continua così: {{n}} risposte corrette di fila!'
+      ],
+      verloren: 'Serie finita – la prossima risposta corretta ne inizia una nuova.',
+      bisJokerEins: 'Ancora una risposta corretta – poi ricevi un jolly!',
+      bisJoker: 'Ancora {{n}} risposte corrette fino al prossimo jolly.',
+      jokerVoll: 'Hai già {{n}} jolly – usane prima uno.'
+    },
+    joker: {
+      name: 'Jolly',
+      tippTitel: 'Suggerimento del jolly',
+      erster: 'Hai guadagnato un jolly! Cliccami quando ti serve un suggerimento su un messaggio.',
+      neu: [
+        'Un altro jolly – ora ne hai {{n}}.',
+        'La tua serie ti fa guadagnare un jolly. Ora: {{n}}.',
+        'Jolly numero {{n}} – tienilo da parte!'
+      ],
+      erinnerung: 'Hai {{n}} jolly. Cliccami quando ti serve un suggerimento su un messaggio.',
+      spaeter: 'Tienimi per il prossimo messaggio – lì ti darò un suggerimento.',
+      schon: 'Il suggerimento per questo messaggio è già visibile.',
+      leer: 'Nessun jolly rimasto. Con una nuova serie ne guadagni altri.',
+      titel: 'Jolly: ancora {{n}} – clicca per un suggerimento'
+    }
+  },
+  levels: [
+    {
+      kicker: 'Riscaldamento',
+      titel: 'Basi e segnali d’allarme tipici',
+      badge: 'Principiante anti-phishing',
+      nachrichten: [
+        {
+          id: 'l2-msg-4',
+          art: 'email',
+          phishing: true,
+          joker: 'Leggi con molta attenzione il mittente e il nome dell’allegato – fino all’ultimo carattere.',
+          titel: 'Mi aumentano lo stipendio?',
+          lage: 'Un’e-mail delle risorse umane annuncia una nuova tabella degli stipendi in allegato.',
+          von: {
+            name: 'Risorse umane',
+            adresse: 'risorse-umane@{{fake_doppel}}'
+          },
+          an: '{{email}}',
+          zeit: 'Oggi, 11:00',
+          betreff: 'IMPORTANTE: nuova tabella degli stipendi e bonus inflazione 2027',
+          anhang: [
+            {
+              name: 'Tabella_stipendi_2027.docx.exe',
+              groesse: '2,4 MB'
+            }
+          ],
+          inhalt: `
+<div style="color:#0f766e;font-family:Arial,Helvetica,sans-serif;font-size:.733em;font-weight:700;letter-spacing:.08em;margin:0 0 18px;">COMUNICAZIONE INTERNA</div>
+<div style="border-left:4px solid #16c7a5;padding-left:14px;font-family:Arial,Helvetica,sans-serif;color:#1f2937;">
+  <div style="margin-bottom:16px;">Care colleghe e cari colleghi,</div>
+  <div>la direzione ha deciso di adeguare la struttura salariale per il 2027. In allegato trovate la panoramica aggiornata e le informazioni sul bonus inflazione.<br><br></div>
+  <div>Vi preghiamo di consultare nel file allegato le informazioni che vi riguardano.</div>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              bei: 'absender',
+              art: 'warn',
+              titel: 'Dominio aziendale sospetto',
+              klartext: '{{fake_doppel_m}}',
+              text: 'Il dominio differisce da {{domain}} solo per una lettera in più. Anche se il mittente ti sembra familiare, fai attenzione alle piccole differenze nel dominio.'
+            },
+            {
+              id: 'b',
+              bei: 'anhang',
+              art: 'warn',
+              titel: 'Verifica l’estensione reale del file',
+              text: 'Nonostante «.docx» nel nome, si tratta di un file eseguibile .exe e non di un documento Word. Ciò che conta è l’estensione reale, alla fine del nome del file.'
+            }
+          ],
+          kernTitel: 'Allegato camuffato da un dominio sconosciuto.',
+          kern: 'Controlla con attenzione gli allegati inattesi e la loro estensione completa.'
+        },
+        {
+          id: 'l1-amazon-delivery-sms',
+          art: 'sms',
+          phishing: false,
+          joker: 'L’SMS è coerente con la tua situazione? Controlla anche dove porta davvero il link.',
+          titel: 'Il corriere mi scrive?',
+          lage: 'Oggi aspetti un pacco Amazon. Poco prima della consegna arriva questo SMS.',
+          von: {
+            name: 'Amazon'
+          },
+          zeit: '09:44',
+          nachrichten: [
+            `Chat con il corriere: <mark data-h="a">un messaggio sulla consegna del tuo pacco Amazon.</mark><br><br>Tocca qui per rispondere: <a data-ziel="https://amzn.eu/d/01Wc5tkv" data-h="b">https://amzn.eu/d/01Wc5tkv</a>`
+          ],
+          hinweise: [
+            {
+              id: 'a',
+              art: 'tipp',
+              titel: 'Contesto coerente',
+              text: 'Stai davvero aspettando una consegna Amazon. Ma attenzione: anche gli SMS di phishing usano gli avvisi di consegna come esca. Un contesto coerente, da solo, non dimostra quindi che un messaggio sia autentico.'
+            },
+            {
+              id: 'b',
+              art: 'ok',
+              titel: 'Link breve di Amazon',
+              text: 'Questo link breve è utilizzato da Amazon. Un link abbreviato non è quindi automaticamente sospetto. Se hai dubbi, apri direttamente l’app di Amazon e controlla lì la tua consegna.'
+            }
+          ],
+          kernTitel: '',
+          kern: 'Il phishing arriva anche via SMS – ad esempio con presunti problemi di consegna, spese doganali o dati dell’indirizzo mancanti. Questo messaggio, però, è una vera notifica di Amazon.'
+        },
+        {
+          id: 'l2-msg-9',
+          art: 'email',
+          phishing: false,
+          joker: 'Guarda da quale dominio arriva l’e-mail e dove porta il pulsante.',
+          titel: 'Marco Ferrari? Lo conosco già?',
+          lage: 'Un’e-mail ti informa di una nuova richiesta di collegamento su LinkedIn.',
+          von: {
+            name: 'LinkedIn Network',
+            adresse: 'messages-noreply@linkedin.com'
+          },
+          an: '{{email}}',
+          zeit: 'Ieri, 17:30',
+          betreff: 'Marco Ferrari desidera collegarsi con Lei su LinkedIn',
+          inhalt: `
+<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.55;color:#1f2937;">
+  <div style="display:flex;align-items:center;gap:10px;margin:0 0 20px 0;"><svg width="30" height="30" viewBox="0 0 24 24" style="display:block;"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="#0A66C2"></path></svg><div style="font-size:1.267em;font-weight:700;color:#0A66C2;">LinkedIn</div></div>
+  <div>Buongiorno {{vorname}},</div>
+  <div style="margin-top:16px;background:#f3f6f8;border:1px solid #e1e6ea;border-radius:10px;padding:16px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:44px;height:44px;border-radius:50%;background:#dbeafe;color:#0A66C2;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">MF</div>
+      <div><div style="font-weight:700;color:#111827;">Marco Ferrari</div><div style="font-size:.8em;color:#64748b;">Senior IT Security Manager presso CyberGuard</div></div>
+    </div>
+    <div style="margin-top:14px;">desidera collegarsi con Lei.</div>
+  </div>
+  <div style="margin-top:18px;"><a data-ziel="https://www.linkedin.com/comm/mynetwork/invite-accept/7389216054" style="display:inline-block;background:#0A66C2;color:#fff;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:18px;">Accetta l’invito</a></div>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              bei: 'absender',
+              art: 'ok',
+              titel: 'Il dominio del mittente corrisponde',
+              text: 'L’indirizzo del mittente usa il dominio ufficiale linkedin.com. È un segnale positivo – verifica comunque se la richiesta è plausibile per te.'
+            }
+          ],
+          kernTitel: '',
+          kern: 'Mittente e messaggio corrispondono a LinkedIn. Una richiesta di collegamento da una persona sconosciuta non è di per sé un segnale di phishing.'
+        },
+        {
+          id: 'l3-msg-2',
+          art: 'sms',
+          phishing: true,
+          joker: 'Passa il mouse sul link: il dominio subito prima dell’estensione appartiene davvero alla tua banca?',
+          titel: 'Questo non è un mio bonifico!',
+          lage: 'Alla cassa del supermercato il tuo telefono vibra. Un SMS segnala un pagamento in sospeso di CHF 1’250.',
+          von: {
+            name: 'UBS Security',
+            info: '+41 77 488 12 93'
+          },
+          zeit: '10:20',
+          nachrichten: [
+            `UBS Info: un bonifico insolito di CHF 1’250.00 a iBanking Ltd è stato registrato. <mark data-h="b">Annullamento immediato</mark> su: <a data-ziel="https://ubs-servizio-sicurezza.com/annullamento" data-h="a">https://ubs-servizio-sicurezza.com/annullamento</a>`
+          ],
+          hinweise: [
+            {
+              id: 'a',
+              art: 'warn',
+              titel: 'Destinazione del link sospetta',
+              text: 'Il dominio fa pensare a UBS, ma non è il dominio ufficiale ubs.com. In caso di messaggi sospetti dalla banca, apri direttamente l’app bancaria o il sito web invece di seguire il link.'
+            },
+            {
+              id: 'b',
+              art: 'warn',
+              titel: 'Pressione tramite un presunto bonifico',
+              text: 'Un importo elevato e l’invito ad agire subito servono a metterti sotto pressione. Non lasciarti spingere a cliccare in fretta e verifica la segnalazione nella tua app bancaria.'
+            }
+          ],
+          kernTitel: '',
+          kern: 'In caso di messaggi sospetti dalla banca: apri direttamente la tua app bancaria o il sito web, invece di seguire il link nel messaggio.'
+        },
+        {
+          id: 'l5-msg-10',
+          art: 'email',
+          phishing: false,
+          joker: 'Controlla il dominio del mittente. E chiediti: il messaggio vuole che tu faccia o riveli qualcosa?',
+          titel: 'Nella tua casella di posta arriva un codice di sicurezza Microsoft.',
+          lage: '',
+          von: {
+            name: 'Team dell’account Microsoft',
+            adresse: 'account-security-noreply@accountprotection.microsoft.com'
+          },
+          an: '{{email}}',
+          zeit: 'Oggi, 14:00',
+          betreff: 'Codice di sicurezza dell’account Microsoft: 849201',
+          inhalt: `
+<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.55;color:#1f2937;">
+  <div style="display:flex;align-items:center;gap:10px;margin:0 0 22px 0;"><svg width="28" height="28" viewBox="0 0 24 24" style="display:block;"><rect x="0" y="0" width="11.3" height="11.3" fill="#F25022"/><rect x="12.7" y="0" width="11.3" height="11.3" fill="#7FBA00"/><rect x="0" y="12.7" width="11.3" height="11.3" fill="#00A4EF"/><rect x="12.7" y="12.7" width="11.3" height="11.3" fill="#FFB900"/></svg><div style="font-size:1.2em;font-weight:600;color:#444;">Microsoft</div></div>
+  <div>Utilizzi il seguente codice di sicurezza per l’account Microsoft:</div>
+  <div style="margin:20px 0;border:1px solid #d9dde3;background:#f7f8fa;border-radius:8px;padding:16px;text-align:center;">
+    <div style="font-size:.733em;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;">Codice di sicurezza</div>
+    <div style="font-size:2em;letter-spacing:6px;color:#0078d4;font-weight:700;margin-top:5px;">849201</div>
+  </div>
+  <div style="color:#4b5563;"><mark data-h="b">Se non ha richiesto questo codice</mark>, può ignorare questa e-mail.</div>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              bei: 'absender',
+              art: 'ok',
+              titel: 'Dominio Microsoft ufficiale',
+              text: 'L’indirizzo appartiene al dominio ufficiale microsoft.com. Questo indica che il messaggio proviene davvero da Microsoft.'
+            },
+            {
+              id: 'b',
+              art: 'tipp',
+              titel: 'Non l’hai richiesto? Fai attenzione',
+              text: 'Il messaggio può essere autentico anche se non hai richiesto tu il codice. Non usare né condividere il codice e controlla il tuo account dal solito accesso.'
+            }
+          ],
+          kernTitel: '',
+          kern: 'L’e-mail in sé è autentica. Ma se non hai richiesto il codice, potrebbe trattarsi di un tentativo di accesso da parte di qualcun altro. Non condividere mai il codice con nessuno.'
+        }
+      ]
+    },
+    {
+      kicker: 'Avanzato',
+      titel: 'Domini, link e contesto',
+      badge: 'Detective dei link',
+      nachrichten: [
+        {
+          id: 'l2-msg-1',
+          art: 'email',
+          phishing: true,
+          joker: 'Leggi l’indirizzo del mittente carattere per carattere e controlla dove porta davvero il pulsante.',
+          titel: '489 franchi? Ma non ho ordinato niente!',
+          lage: 'Controllando la tua casella di posta, scopri una conferma di pagamento per un acquisto che non conosci.',
+          von: {
+            name: 'Servizio clienti PayPal',
+            adresse: 'service@paypaI.com'
+          },
+          an: '{{email}}',
+          zeit: 'Oggi, 09:40',
+          betreff: 'Conferma del Suo acquisto presso TechStore SA (CHF 489.00)',
+          inhalt: `
+<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.55;color:#1f2937;">
+  <div style="text-align:center;margin:0 0 22px 0;"><img src="assets/m-paypal.webp" alt="PayPal" style="display:block;margin:0 auto;max-width:140px;width:auto;height:auto;max-height:60px;object-fit:contain;"></div>
+  <div>Buongiorno,</div>
+  <div style="margin-top:16px;">Ha autorizzato un pagamento a TechStore SA.</div>
+  <div style="margin-top:16px;background:#f4f7fb;border-radius:9px;padding:15px 16px;text-align:center;">
+    <div style="font-size:.8em;color:#64748b;">TechStore SA</div>
+    <div style="font-size:1.8em;font-weight:700;color:#172033;margin-top:3px;">CHF 489.00</div>
+  </div>
+  <div style="margin-top:16px;">Se non riconosce questa transazione, verifichi i dettagli nel Suo centro sicurezza.</div>
+  <div style="margin-top:20px;text-align:center;"><a data-ziel="https://www.paypal.com.security-dispute-resolution.com/login" data-h="b" style="display:inline-block;background:#0070E0;color:#fff;padding:11px 18px;text-decoration:none;border-radius:20px;font-weight:700;">Annulla transazione</a></div>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              bei: 'absender',
+              art: 'warn',
+              titel: 'Dominio ingannevolmente simile',
+              klartext: 'service@paypa[I].com',
+              text: 'La presunta «l» minuscola in paypal.com è in realtà una «I» maiuscola. Caratteri così simili possono far sembrare autentico un dominio falso a prima vista.'
+            },
+            {
+              id: 'b',
+              art: 'warn',
+              titel: 'Conta il dominio reale',
+              text: 'Nel link compare sì paypal.com, ma il dominio reale è security-dispute-resolution.com, che non appartiene a PayPal.'
+            }
+          ],
+          kernTitel: 'Qui vale la pena guardare con attenzione il dominio.',
+          kern: 'Gli indirizzi falsi possono assomigliare in modo ingannevole a domini noti. Controlla quindi con attenzione mittente e destinazione del link.'
+        },
+        {
+          id: 'ai-img-1790147331698',
+          art: 'email',
+          phishing: false,
+          joker: 'La condivisione è coerente con la tua giornata? Controlla se mittente e destinazione del link appartengono a servizi noti.',
+          titel: 'Uno sguardo ai numeri prima della riunione.',
+          lage: 'Ti stai preparando per la riunione finanziaria quando arriva una condivisione di file da Anna Bernasconi.',
+          von: {
+            name: 'Bernasconi, Anna',
+            adresse: 'Anna.Bernasconi@{{domain}}'
+          },
+          an: '{{email}}',
+          zeit: 'Oggi, 07:08',
+          betreff: 'Chiusura_mensile_Q2_Riservato.pdf è stato condiviso con Lei',
+          inhalt: `
+<div style="background-color:#f3f3f3;color:#323130;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;padding:30px 20px;border-radius:8px;">
+  <div style="max-width:550px;margin:0 auto;background-color:#ffffff;border:1px solid #d2d0ce;border-radius:8px;overflow:hidden;">
+    <div style="background-color:#ffffff;text-align:center;padding:28px 24px 36px;">
+      <svg width="48" height="48" viewBox="0 0 64 64" fill="none" aria-hidden="true" style="display:block;margin:0 auto 38px;"><path d="M9 22V55H46V47" stroke="#0078d4" stroke-width="3.5" stroke-linecap="square"></path><path d="M43 9L58 24L43 39V29C32 29 24 33 19 41C19 26 28 17 43 17V9Z" stroke="#0078d4" stroke-width="3.5" stroke-linejoin="miter"></path></svg>
+      <h2 style="color:#323130;font-size:1.467em;font-weight:600;margin:0;line-height:1.4;">Anna Bernasconi (Finanza) ha condiviso un documento SharePoint con Lei</h2>
+    </div>
+    <div style="background-color:#f8f8f8;padding:0 30px 30px;border-top:1px solid #d2d0ce;">
+      <p style="color:#605e5c;font-size:.933em;margin:25px 0;">Anna Bernasconi (Finanza) ha condiviso con Lei il seguente documento.</p>
+      <div style="border:1px solid #d2d0ce;border-radius:6px;padding:15px;margin-bottom:25px;display:flex;align-items:center;justify-content:center;background-color:#ffffff;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="background-color:#d13438;color:white;padding:6px 9px;border-radius:4px;font-weight:bold;font-size:.8em;flex:0 0 auto;">PDF</div>
+          <span style="color:#323130;font-weight:500;">Chiusura_mensile_Q2_Riservato.pdf</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:25px;color:#605e5c;font-size:.8em;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <span>Questo documento è stato condiviso tramite Microsoft SharePoint.</span>
+      </div>
+      <div style="text-align:center;"><a data-ziel="https://{{tenant}}.sharepoint.com/sites/finance/Documenti%20condivisi/Chiusura_mensile_Q2_Riservato.pdf" data-h="b" style="background-color:#0078d4;color:#ffffff;text-decoration:none;padding:10px 32px;border-radius:4px;font-weight:500;font-size:.933em;display:inline-block;">Apri il documento in SharePoint</a></div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:25px;"><p style="color:#605e5c;font-size:.733em;max-width:450px;margin:0 auto;line-height:1.4;">Microsoft 365 · SharePoint</p></div>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              bei: 'absender',
+              art: 'ok',
+              titel: 'Dominio aziendale noto',
+              text: 'L’indirizzo del mittente usa il dominio aziendale noto. Anche la mittente indicata, Anna Bernasconi del reparto Finanza, è coerente con il motivo della condivisione.'
+            },
+            {
+              id: 'b',
+              art: 'ok',
+              titel: 'Destinazione ufficiale del link',
+              text: 'Il link porta a un indirizzo ufficiale Microsoft su sharepoint.com. Insieme al mittente e al contesto, questo indica una condivisione legittima.'
+            }
+          ],
+          kernTitel: '',
+          kern: 'Mittente, destinazione del link e contesto sono plausibili e coerenti tra loro. Non tutte le condivisioni di file inattese sono phishing.'
+        },
+        {
+          id: 'l3-msg-9',
+          art: 'email',
+          phishing: false,
+          joker: 'Ti aspetti questo messaggio, vista la situazione? Controlla verso quale dominio punta il link.',
+          titel: 'C’era ancora qualcosa da fare…',
+          lage: 'La nota spese della tua ultima trasferta è ancora in sospeso. Ora arriva un promemoria via e-mail.',
+          von: {
+            name: 'Risorse umane',
+            adresse: 'hr-benefits@{{domain}}'
+          },
+          an: '{{email}}',
+          zeit: 'Ieri, 11:30',
+          betreff: 'Promemoria: invio delle note spese di viaggio',
+          inhalt: `
+<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.55;color:#1f2937;">
+  <div style="font-size:.733em;font-weight:700;letter-spacing:.08em;color:#64748b;margin-bottom:18px;">PROMEMORIA INTERNO</div>
+  <div>Buongiorno {{name}},<br><br>Le ricordiamo di inserire nel portale HR, entro la fine del trimestre, le note spese di viaggio ancora in sospeso relative al mese scorso.</div>
+  <div style="margin-top:18px;">Link al portale:<br><a data-ziel="https://intranet.{{domain}}/hr/note-spese" data-h="a" style="color:#2563eb;font-weight:700;word-break:break-word;">https://intranet.{{domain}}/hr/note-spese</a></div>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              art: 'ok',
+              titel: 'Destinazione del link coerente',
+              text: 'Il link porta al portale interno sul dominio aziendale noto {{domain}}. Questo è coerente con il motivo del messaggio.'
+            }
+          ],
+          kernTitel: '',
+          kern: 'Il motivo corrisponde alla tua situazione. Anche mittente e destinazione del link sono plausibili e appartengono all’azienda.'
+        },
+        {
+          id: 'ai-img-1790160787284',
+          art: 'email',
+          phishing: true,
+          joker: 'Confronta lettera per lettera il dominio del mittente con quello della tua azienda – e passa il mouse sul link.',
+          titel: 'Ci sono anch’io nelle foto?',
+          lage: 'Dopo la festa d’estate ricevi un invito a un nuovo gruppo Teams. Lì verranno condivise le foto della festa.',
+          von: {
+            name: 'Microsoft Teams',
+            adresse: 'teams@{{fake_tausch}}'
+          },
+          an: '{{email}}',
+          zeit: 'Oggi, 10:53',
+          betreff: 'È stato aggiunto a un nuovo gruppo di lavoro in Microsoft Teams',
+          inhalt: `
+<div style="font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:#ffffff;padding:20px 0;">
+  <div style="max-width:600px;margin:0 auto;background-color:#edf0f4;border-top:4px solid #5753b1;padding:22px 16px 76px;box-sizing:border-box;text-align:center;color:#19253b;">
+    <h2 data-h="d" style="display:inline-block;color:#5753b1;margin:0 0 22px;font-size:1.6em;line-height:1.3;font-weight:400;">Microsoft Teams</h2>
+    <h3 style="color:#19253b;font-size:1.333em;line-height:1.2;font-weight:700;margin:0 auto 24px;max-width:520px;">È stato aggiunto a un nuovo gruppo di lavoro<br>«<mark data-h="c">Festa d’estate – Foto &amp; ricordi</mark>» in Microsoft Teams.</h3>
+    <div style="width:100%;max-width:292px;margin:0 auto;background-color:#ffffff;">
+      <div style="padding:48px 10px 0;">
+        <h4 style="color:#19253b;font-size:1.333em;line-height:1.3;margin:0 0 16px;font-weight:700;">Gruppo di lavoro</h4>
+        <p style="color:#19253b;font-size:1.2em;line-height:1.4;font-weight:700;margin:0 0 14px;">«Festa d’estate – Foto &amp; ricordi»</p>
+        <p style="color:#536078;font-size:.933em;line-height:1.5;margin:0 0 12px;">38 membri</p>
+        <div style="border-top:1px solid #dfe3eb;padding:13px 0;"><p style="color:#536078;font-size:.933em;line-height:1.5;margin:0;">Le foto più belle della festa d’estate – da guardare subito e da condividere.</p></div>
+      </div>
+      <a data-ziel="https://microsoft-teams.{{fake_tausch}}/join/festa-estate" data-h="b" style="display:block;background-color:#5753b1;color:#ffffff;text-decoration:none;padding:13px 10px;font-size:.933em;line-height:1.3;font-weight:600;text-align:center;">Apri Microsoft Teams</a>
+    </div>
+  </div>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              bei: 'absender',
+              art: 'warn',
+              titel: 'Dominio aziendale diverso',
+              klartext: '{{fake_tausch_m}}',
+              text: 'Il dominio {{fake_tausch}} assomiglia al vero dominio aziendale {{domain}}, ma è un altro indirizzo. Controlla quindi l’indirizzo completo del mittente e non solo il nome familiare «Microsoft Teams».'
+            },
+            {
+              id: 'b',
+              art: 'warn',
+              titel: 'Destinazione del link sospetta',
+              text: '«Microsoft Teams» compare sì nel link, ma il dominio reale non appartiene a Microsoft. Il link porta a una falsa pagina di accesso Microsoft che vuole rubare le tue credenziali.'
+            },
+            {
+              id: 'c',
+              art: 'tipp',
+              titel: 'L’invito è coerente con il contesto?',
+              text: 'C’è stata davvero una festa d’estate? Da voi le foto vengono condivise tramite un nuovo gruppo Teams? Un motivo che sembra plausibile non dimostra ancora che l’invito sia autentico.'
+            },
+            {
+              id: 'd',
+              art: 'tipp',
+              titel: 'Un design familiare non è una garanzia',
+              text: 'Logo, colori e grafica sono facili da imitare. Non fidarti quindi solo del fatto che un messaggio assomigli a uno strumento conosciuto.'
+            }
+          ],
+          kernTitel: 'Anche strumenti familiari possono servire da esca.',
+          kern: 'Diamo un’occhiata più da vicino.'
+        },
+        {
+          id: 'l4-msg-3',
+          art: 'email',
+          phishing: true,
+          joker: 'Che cosa dovrebbe cambiare esattamente? Pensa a come confermeresti di solito una modifica del genere.',
+          titel: 'Il fornitore ha improvvisamente un nuovo IBAN.',
+          lage: 'All’ufficio acquisti arriva una comunicazione relativa a dati di pagamento modificati.',
+          von: {
+            name: 'Materiali Valdora SA',
+            adresse: 'contabilita@valdora-materiali.ch'
+          },
+          an: 'acquisti@{{domain}}',
+          zeit: 'Oggi, 10:45',
+          betreff: 'Importante: coordinate bancarie modificate per le fatture future',
+          inhalt: `
+<div style="background:#f5f8fb;color:#334155;border-left:4px solid #6487a5;padding:12px 16px;margin-bottom:24px;"><strong>Nota:</strong> <mark data-h="a">Mittente esterno – prestare attenzione.</mark></div>
+<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.55;color:#1f2937;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #eadfc9;">
+    <svg width="36" height="30" viewBox="0 0 34 30" style="display:block;"><path d="M2 25 10 8l6 9 5-13 11 21H2z" fill="#A87623"></path><path d="m10 8 6 9 2.2-4.9" fill="none" stroke="#fff" stroke-width="2"></path></svg>
+    <div><div style="font-size:1.2em;font-weight:700;color:#6b4a17;">Materiali Valdora</div><div style="font-size:.733em;color:#8a7350;">Materiali edili · Commercio · Logistica</div></div>
+  </div>
+  <div>Gentili Signore e Signori,</div>
+  <div style="margin-top:16px;">a seguito di un cambio di banca, <mark data-h="b">i nostri dati di pagamento sono cambiati</mark>. Per tutti i futuri bonifici Vi preghiamo di utilizzare d’ora in poi le seguenti coordinate bancarie:</div>
+  <div style="margin-top:18px;background:#fbf8f2;border:1px solid #eadfc9;border-radius:8px;padding:14px 16px;">
+    <div style="font-size:.733em;color:#8a7350;text-transform:uppercase;">Nuove coordinate bancarie</div>
+    <div style="margin-top:5px;font-weight:700;color:#2f2a24;word-break:break-word;"><mark data-h="c">ES59 9999 9999 99 1234 5678 90 (Spagna)</mark></div>
+  </div>
+  <div style="margin-top:18px;">Cordiali saluti,<br>Materiali Valdora SA</div>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              art: 'tipp',
+              titel: 'Mittente esterno',
+              text: 'Alcuni programmi di posta elettronica contrassegnano i messaggi provenienti dall’esterno dell’azienda. Per un fornitore è normale e, di per sé, non è un segnale di phishing.'
+            },
+            {
+              id: 'b',
+              art: 'warn',
+              titel: 'Dati di pagamento modificati via e-mail',
+              text: 'Non modificare mai i dati di pagamento solo sulla base di un’e-mail. Falli confermare tramite i recapiti del fornitore che già conosci.'
+            },
+            {
+              id: 'c',
+              art: 'warn',
+              titel: 'Conto bancario estero inatteso',
+              text: 'Un IBAN estero non è automaticamente sospetto. Qui però il passaggio inatteso a un conto in un altro Paese è un motivo in più per confermare in modo indipendente i nuovi dati di pagamento.'
+            }
+          ],
+          kernTitel: 'In caso di modifica delle coordinate bancarie serve particolare prudenza.',
+          kern: 'Conferma sempre le coordinate bancarie modificate tramite un canale di contatto che già conosci – mai tramite i recapiti indicati nel messaggio stesso.'
+        }
+      ]
+    },
+    {
+      kicker: 'Modalità esperto',
+      titel: 'Social engineering e verifica',
+      badge: 'Pro della sicurezza',
+      nachrichten: [
+        {
+          id: 'l5-msg-1',
+          art: 'email',
+          phishing: true,
+          joker: 'Come si configura di solito da voi? La procedura proposta dall’e-mail corrisponde?',
+          titel: 'Devo davvero configurare di nuovo l’autenticazione a due fattori?',
+          lage: 'Al mattino arriva un messaggio, presentato come obbligatorio, per configurare una nuova app di autenticazione.',
+          von: {
+            name: 'IT Infrastructure Security',
+            adresse: 'mfa-security@{{domain}}'
+          },
+          an: '{{email}}',
+          zeit: 'Oggi, 08:00',
+          betreff: 'Obbligatorio: configurare la nuova app di autenticazione',
+          inhalt: `
+<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.55;color:#1f2937;">
+  <div style="font-size:.733em;font-weight:700;letter-spacing:.08em;color:#2563eb;margin-bottom:18px;">AVVISO DI SICUREZZA</div>
+  <div>Gentili collaboratrici e collaboratori,</div>
+  <div style="margin-top:16px;">per proteggere i nostri sistemi dagli attacchi informatici, oggi passiamo alla nuova app di autenticazione.</div>
+  <div style="margin-top:16px;background:#f3f7ff;border-left:4px solid #2563eb;border-radius:8px;padding:14px 16px;">Vi preghiamo di scansionare il codice QR qui sotto con il vostro smartphone per configurare l’app di autenticazione.</div>
+  <div class="m-qr" data-ziel="https://m365-login-proxy.auth-setup.app/qr-auth" data-h="b" style="margin:18px auto 0;width:max-content;max-width:100%;text-align:center;">
+    <img src="assets/m-qr.webp" alt="Codice QR" style="display:block;margin:0 auto;max-height:240px;width:auto;object-fit:contain;">
+    <div style="margin-top:8px;font-size:.8em;color:#6b7280;">Scansionare il codice QR con la fotocamera</div>
+  </div>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              bei: 'absender',
+              art: 'tipp',
+              titel: 'Indirizzo del mittente plausibile',
+              text: 'L’indirizzo usa il dominio aziendale e sembra quindi plausibile. Questo, però, non basta a rendere il messaggio affidabile.'
+            },
+            {
+              id: 'b',
+              art: 'warn',
+              titel: 'Codice QR inatteso per la 2FA',
+              text: 'Una richiesta inattesa di configurare di nuovo l’autenticazione a due fattori tramite un codice QR ricevuto per e-mail è un segnale d’allarme. Avvia invece la configurazione tramite il portale che conosci o chiarisci la cosa con l’IT.'
+            }
+          ],
+          kernTitel: 'Attenzione alle richieste inattese di configurare l’autenticazione a due fattori.',
+          kern: 'Configura l’autenticazione a due fattori solo tramite canali noti e affidabili. Verifica le richieste inattese tramite il portale che conosci o direttamente con l’IT.'
+        },
+        {
+          id: 'l4-msg-1',
+          art: 'email',
+          phishing: true,
+          joker: 'Controlla bene il dominio del mittente e passa il mouse sull’indirizzo: a chi andrebbe la tua risposta?',
+          titel: 'Un messaggio dalla direzione.',
+          lage: 'Poco dopo l’inizio della giornata lavorativa ricevi un’e-mail dalla direzione con la richiesta di effettuare un bonifico.',
+          von: {
+            name: 'Paolo Galli | Direzione generale',
+            adresse: 'ceo.office@{{fake_glyph}}',
+            hover: 'extern.finance@protonmail.com'
+          },
+          an: 'finanza@{{domain}}',
+          zeit: 'Oggi, 08:05',
+          betreff: 'Disposizione di pagamento urgente per acquisizione aziendale',
+          inhalt: `
+<div style="line-height:1.55;font-family:Arial,Helvetica,sans-serif;color:#1f2937;">
+  <div style="color:#b42318;font-size:.733em;display:inline-block;background:#fff1f2;border:1px solid #fecdd3;border-radius:999px;padding:4px 9px;font-weight:700;letter-spacing:.06em;margin-bottom:18px;">STRETTAMENTE RISERVATO</div>
+  <div>Buongiorno {{vorname}},</div>
+  <div style="margin-top:16px;">sono attualmente impegnato in trattative riservate per una possibile acquisizione aziendale. La prego di disporre a tal fine un bonifico di&nbsp;<strong><mark data-h="c">CHF 45’000</mark></strong> sul seguente conto fiduciario.<br><br></div>
+  <div>IBAN: CH93 0076 2011 6238 5295 7</div>
+  <div>Beneficiario: Apex M&amp;A Advisory Ltd.<br><br></div>
+  <div><b>Poiché le trattative non sono ancora pubbliche, La prego di trattare la questione in modo <mark data-h="b">strettamente riservato</mark> e di non parlarne per ora con altri colleghi.</b></div>
+  <div style="margin-top:18px;">Cordiali saluti,<br>Paolo Galli (CEO)</div>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              bei: 'absender',
+              art: 'warn',
+              titel: 'Dominio aziendale ingannevolmente simile',
+              klartext: '{{fake_glyph_m}}',
+              text: 'Il dominio del mittente è stato leggermente modificato rispetto a {{domain}}. Piccole differenze come questa passano facilmente inosservate.'
+            },
+            {
+              id: 'b',
+              art: 'warn',
+              titel: 'La segretezza come strumento di pressione',
+              text: 'La richiesta di segretezza serve a impedirti di verificare internamente l’insolito ordine di pagamento. Conferma istruzioni di questo tipo tramite un canale di contatto noto e indipendente.'
+            },
+            {
+              id: 'c',
+              art: 'warn',
+              titel: 'Disposizione di pagamento insolita',
+              text: 'Non eseguire un pagamento insolitamente elevato a nome della direzione solo sulla base di un’e-mail. Conferma l’ordine tramite un canale di contatto noto e indipendente.'
+            }
+          ],
+          kernTitel: 'Qui diversi segnali d’allarme indicano una truffa.',
+          kern: 'Disposizione di pagamento insolita, autorità e segretezza: una combinazione rischiosa.'
+        },
+        {
+          id: 'l4-msg-9',
+          art: 'teams',
+          phishing: true,
+          joker: 'Chiediti: che cosa ti si chiede esattamente di consegnare – e a che cosa serve davvero?',
+          titel: 'L’IT ha bisogno del mio codice di accesso',
+          lage: 'In una chat interna, un presunto amministratore ti chiede un codice monouso.',
+          von: {
+            name: 'Amministratore IT',
+            info: 'Servizio IT',
+            initialen: 'IT'
+          },
+          zeit: '15:45',
+          nachrichten: [
+            `Ciao {{vorname}}, stiamo testando il nuovo login SSO. <mark data-h="a">Potresti mandarmi un attimo il codice di accesso</mark> che hai appena ricevuto? Mi serve per il test. Grazie!`
+          ],
+          hinweise: [
+            {
+              id: 'a',
+              art: 'warn',
+              titel: 'Richiesta del codice di accesso',
+              text: 'I codici monouso confermano il tuo accesso. Nemmeno un amministratore ha bisogno che tu gli dia questo codice.'
+            }
+          ],
+          kernTitel: 'I codici di accesso sono solo tuoi.',
+          kern: 'I codici monouso confermano il tuo accesso. Non comunicarli mai a nessuno – nemmeno a presunti amministratori.'
+        },
+        {
+          id: 'l3-msg-6',
+          art: 'email',
+          phishing: false,
+          joker: 'Ti aspetti questo documento, vista la situazione? Controlla il dominio del mittente e dove porta il pulsante.',
+          titel: 'Manca ancora la mia firma.',
+          lage: 'Sta per iniziare un nuovo progetto. Tra le tue e-mail c’è la richiesta di firmare un accordo di riservatezza.',
+          von: {
+            name: 'Servizio di firma Docusign',
+            adresse: 'dse@docusign.net'
+          },
+          an: '{{email}}',
+          zeit: 'Oggi, 14:00',
+          betreff: 'Richiesta di firma: Accordo_di_riservatezza_NDA_2026.pdf',
+          inhalt: `
+<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.55;color:#1f2937;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px;"><svg width="38" height="30" viewBox="0 0 34 28" style="display:block;"><path d="M2 2h15v7H9v8H2z" fill="#4C01FC"/><path d="M17 2h8c4 0 7 3 7 7v7h-8V9h-7z" fill="#FF5A67"/><path d="M9 17h8v9H9z" fill="#4C01FC"/></svg><div style="font-size:1.267em;font-weight:700;color:#27214f;">Docusign</div></div>
+  <div>Luca Moretti Le ha inviato un documento da firmare elettronicamente.</div>
+  <div style="margin-top:18px;background:#faf9ff;border:1px solid #ded9ff;border-radius:9px;padding:14px 16px;">
+    <div style="font-size:.733em;color:#716a9a;text-transform:uppercase;">Documento</div>
+    <div style="font-weight:700;color:#172033;margin-top:4px;word-break:break-word;">Accordo_di_riservatezza_NDA_2026.pdf</div>
+  </div>
+  <div style="margin-top:20px;"><a data-ziel="https://na3.docusign.net/Signing/StartInSequence.aspx?g=88123-998" style="display:inline-block;background:#4C01FC;color:#fff;text-decoration:none;font-weight:700;padding:11px 17px;border-radius:6px;">Verifica e firma il documento</a></div>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              bei: 'absender',
+              art: 'ok',
+              titel: 'Dominio Docusign ufficiale',
+              text: 'Il messaggio usa il dominio ufficiale di Docusign. Inoltre, la richiesta di firma è coerente con il contesto di progetto previsto.'
+            }
+          ],
+          kernTitel: '',
+          kern: 'Anche le richieste di firma esterne possono essere autentiche. Ciò che conta è che mittente, destinazione del link e contesto aziendale previsto siano coerenti.'
+        },
+        {
+          id: 'l3-hotel-payment-phishing',
+          art: 'email',
+          phishing: true,
+          joker: 'Ricorda: quando e come volevi pagare? Controlla anche dove porta il link.',
+          titel: 'C’è un problema con la mia prenotazione in hotel?',
+          lage: 'Hai prenotato all’Hotel Vista Lago e ti ricordi: si paga solo sul posto. Ora arriva questa e-mail.',
+          von: {
+            name: 'Hotel Vista Lago · Prenotazioni',
+            adresse: 'prenotazioni@hotel-vistalago.host'
+          },
+          an: '{{email}}',
+          zeit: 'Oggi, 16:20',
+          betreff: 'Azione richiesta per la Sua prenotazione HB-72941',
+          inhalt: `
+<div style="background:#ffffff;color:#323130;font-family:Arial,Helvetica,sans-serif;line-height:1.6;">
+  <div style="color:#345c65;border-bottom:2px solid #dce7e9;padding-bottom:16px;margin-bottom:22px;"><strong style="font-size:1.533em;">Hotel Vista Lago</strong><br><span style="font-size:.8em;">La Sua prenotazione</span></div>
+  <p>Gentile {{name}},</p>
+  <p>La aspettiamo con piacere. Per la Sua prenotazione disponiamo dei seguenti dati:</p>
+  <div style="background:#f3f7f8;border:1px solid #dce7e9;border-radius:6px;padding:14px;"><mark data-h="a">HB-72941 · 16–19 ottobre · Camera doppia · CHF 420</mark></div>
+  <p>Durante la verifica della Sua prenotazione non è stato possibile confermare la garanzia di pagamento registrata. La preghiamo pertanto di <mark data-h="b">confermare nuovamente i Suoi dati di pagamento</mark> affinché la prenotazione resti valida.</p>
+  <p>La preghiamo di completare la conferma <mark data-h="c">entro 24 ore</mark>. In caso contrario, la prenotazione verrà annullata automaticamente.</p>
+  <p style="margin:24px 0;"><a data-ziel="https://pagamento-ospiti.host/prenotazione/HB-72941" data-h="d" style="display:inline-block;background:#345c65;color:#ffffff;padding:12px 20px;border-radius:4px;text-decoration:none;font-weight:700;">Conferma dati di pagamento</a></p>
+  <p>Grazie per la collaborazione.<br>Il Suo team prenotazioni<br>Hotel Vista Lago</p>
+</div>`,
+          hinweise: [
+            {
+              id: 'a',
+              art: 'warn',
+              titel: 'I dati della prenotazione non provano nulla',
+              text: 'Anche i truffatori possono conoscere dati di prenotazione reali, ad esempio dopo aver violato un account dell’hotel. Dati corretti non rendono automaticamente autentica la richiesta.'
+            },
+            {
+              id: 'b',
+              art: 'warn',
+              titel: 'Confermare all’improvviso i dati di pagamento?',
+              text: 'Il pagamento era previsto solo sul posto. Perché ora ti vengono chiesti i dati di pagamento? Chiedi informazioni tramite i recapiti indicati nella conferma di prenotazione.'
+            },
+            {
+              id: 'c',
+              art: 'warn',
+              titel: 'Pressione con la minaccia di annullamento',
+              text: 'La scadenza di 24 ore ti mette sotto pressione. Verifica la richiesta con calma prima di agire.'
+            },
+            {
+              id: 'd',
+              art: 'warn',
+              titel: 'Destinazione del link diversa',
+              text: 'Il link porta a pagamento-ospiti.host, un dominio diverso da hotel-vistalago.ch. Verifica la richiesta tramite la tua prenotazione originale.'
+            }
+          ],
+          kernTitel: 'Dati di prenotazione reali non sono una prova di autenticità.',
+          kern: 'La richiesta di pagamento non corrisponde alla tua prenotazione. Non lasciarti mettere sotto pressione e chiedi informazioni tramite i recapiti indicati nella conferma di prenotazione.'
+        }
+      ]
+    }
+  ],
+  nuggets: [
+    {
+      nachLevel: 1,
+      titel: 'Riconoscere i link falsi',
+      untertitel: 'Non farti ingannare.',
+      folien: [
+        {
+          bild: 'assets/nugget-hover.it.webp',
+          titel: 'Controlla dove porta davvero il link',
+          text: 'Il testo visibile del link e l’indirizzo di destinazione reale possono essere diversi. Ecco come vedere l’indirizzo di destinazione:',
+          punkte: [
+            'Al computer: passa con il mouse sul link senza cliccare.',
+            'Sullo smartphone: tieni premuto il link.'
+          ]
+        },
+        {
+          bild: 'assets/nugget-domain.it.webp',
+          titel: 'Trova il dominio nell’URL',
+          text: 'Guarda il dominio nell’indirizzo di destinazione. Ti mostra a quale sito porta davvero il link.',
+          punkte: [
+            'In order.website.com, per esempio, il dominio è website.com. order è solo il sottodominio.'
+          ]
+        },
+        {
+          bild: 'assets/nugget-zeichen.webp',
+          titel: 'Controlla bene il dominio',
+          text: 'Anche una sola lettera può fare la differenza:',
+          punkte: [
+            '❌ mlcrosoft.com → ✅ microsoft.com',
+            '❌ migr0s.ch → ✅ migros.ch',
+            '❌ swiscom.ch → ✅ swisscom.ch'
+          ]
+        }
+      ],
+      merke: 'Conta il dominio reale, non il nome dell’azienda da qualche parte nel link.',
+      knopf: 'Vai al livello 2'
+    },
+    {
+      nachLevel: 2,
+      titel: 'L’IA rende il phishing più credibile',
+      untertitel: 'Non fidarti solo delle apparenze.',
+      folien: [
+        {
+          bild: 'assets/nugget-sprache.webp',
+          titel: 'Un testo ben scritto non è una prova di autenticità',
+          text: 'L’IA può creare in pochi secondi messaggi credibili e senza errori. Così anche i messaggi di phishing possono sembrare professionali e autentici.',
+          schutz: 'Controlla mittente, dominio e contesto – anche se il messaggio sembra professionale.'
+        },
+        {
+          bild: 'assets/nugget-stimme.webp',
+          titel: 'Voci e video non sono una prova',
+          text: 'L’IA può imitare alla perfezione le voci e i volti di colleghi, clienti o partner commerciali.',
+          schutz: 'Conferma le richieste insolite o delicate tramite un secondo canale conosciuto.'
+        },
+        {
+          bild: 'assets/nugget-daten.webp',
+          titel: 'I dettagli personali non provano nulla',
+          text: 'L’IA può inserire nei messaggi informazioni pubbliche su di te, sulla tua azienda o sui tuoi progetti attuali.',
+          schutz: 'I dettagli personali non provano che un messaggio sia autentico. Diffida delle richieste insolite o inattese.'
+        }
+      ],
+      merke: 'Più un messaggio sembra convincente, più è importante verificare le richieste insolite.',
+      knopf: 'Vai al livello 3'
+    }
+  ]
+};

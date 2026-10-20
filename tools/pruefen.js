@@ -4,6 +4,7 @@
      node tools/pruefen.js js/inhalt.en.js [js/inhalt.de.js]
    Mit zweiter Datei wird eine Übersetzung gegen das Original geprüft:
    gleiche ids, gleiche Hinweise, gleiche Markierungen, keine fehlenden Texte.
+   Link-Ziele und Bilder (assets/name.<sprache>.webp) dürfen lokalisiert sein.
    ------------------------------------------------------------------ */
 (function (wurzel) {
   'use strict';
@@ -158,7 +159,9 @@
         const n = (I.nuggets || [])[i];
         if (!n) { F(`Sicherheitstipp ${i + 1}`, 'fehlt in der Übersetzung'); return; }
         if ((n.folien || []).length !== (rn.folien || []).length) F(`Sicherheitstipp ${i + 1}`, 'andere Anzahl Folien als im Original');
-        (rn.folien || []).forEach((rf, j) => { const fo = (n.folien || [])[j]; if (fo && fo.bild !== rf.bild) W(`Sicherheitstipp ${i + 1} Folie ${j + 1}`, 'anderes Bild als im Original'); });
+        // Bilder mit Text gibt es je Sprache (assets/name.en.webp)
+        const ohneSprache = b => (b || '').replace(new RegExp('\\.' + I.sprache + '(\\.\\w+)$'), '$1');
+        (rn.folien || []).forEach((rf, j) => { const fo = (n.folien || [])[j]; if (fo && ohneSprache(fo.bild) !== rf.bild) W(`Sicherheitstipp ${i + 1} Folie ${j + 1}`, 'anderes Bild als im Original'); });
       });
       (referenz.levels || []).forEach((rl, li) => (rl.nachrichten || []).forEach((rm, mi) => {
         const m = ((I.levels || [])[li] || {}).nachrichten && I.levels[li].nachrichten[mi];
@@ -168,8 +171,12 @@
         ['art', 'phishing', 'extern'].forEach(k => { if (m[k] !== rm[k]) F(O, k + ' weicht vom Original ab'); });
         const sig = x => (x.hinweise || []).map(h => h.id + ':' + h.art + ':' + (h.bei || '')).join(',');
         if (sig(m) !== sig(rm)) F(O, 'Hinweise (id/art/bei) weichen vom Original ab');
-        const zh = x => ((x.inhalt || (x.nachrichten || []).join(' ')).match(/data-(h|ziel)="[^"]+"/g) || []).sort().join(' ');
-        if (zh(m) !== zh(rm)) F(O, 'Markierungen oder Link-Ziele weichen vom Original ab');
+        // Markierungen müssen gleich sein; Link-Ziele dürfen lokalisiert sein (Pfadnamen), aber nicht fehlen
+        const html = x => x.inhalt || (x.nachrichten || []).join(' ');
+        const zh = x => (html(x).match(/data-h="[^"]+"/g) || []).sort().join(' ');
+        const zz = x => (html(x).match(/data-ziel="/g) || []).length;
+        if (zh(m) !== zh(rm)) F(O, 'Markierungen weichen vom Original ab');
+        if (zz(m) !== zz(rm)) F(O, `${zz(m)} statt ${zz(rm)} Link-Ziele`);
       }));
     }
 

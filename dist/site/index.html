@@ -488,7 +488,7 @@ mark { background: none; color: inherit; }
 .ml-mehr { margin-left: auto; display: inline-flex; padding: .35em .5em; color: #6B7280; }
 .ml-mehr svg { fill: currentColor; stroke: none; }
 .mail-kopf { padding: 1.05em 1.5em .9em; border-bottom: 1px solid #ECEEF2; }
-.g-betreff { font-family: var(--font); font-size: 1.24em; font-weight: 650; line-height: 1.32; letter-spacing: -.005em; color: #111827; }
+.g-betreff { font-family: var(--font); font-size: 1.24em; font-weight: 650; line-height: 1.32; letter-spacing: -.005em; color: #111827; overflow-wrap: anywhere; }
 .mail-meta { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .8em; align-items: center; margin-top: .85em; }
 .m-av { position: relative; width: 2.5em; height: 2.5em; border-radius: 50%; display: grid; place-items: center; flex: none;
   font-weight: 700; font-size: .86em; color: #fff; background: var(--c, #6B7280); letter-spacing: .02em; }
@@ -998,7 +998,7 @@ mark { background: none; color: inherit; }
   .b-karte, .b-karte:nth-child(2) { margin-top: 0; }
   .b-innen { padding: 22px 22px 22px 112px; text-align: left; }
   .b-icon { left: 56px; top: 50%; width: 84px; }
-  .n-folie { grid-template-columns: minmax(0, 1fr); }
+  .n-folie { grid-template-columns: minmax(0, 1fr); align-content: start; }
   .n-rechts { display: contents; }
   .n-bild { order: -1; min-height: 0; }
   .n-rechts .n-merke { order: 2; }
@@ -1081,6 +1081,14 @@ mark { background: none; color: inherit; }
   .breit .fb-kern { margin: 10px 0 12px; padding: 8px 12px; font-size: .88rem; }
   .breit .fb-aktionen .btn-gross { min-height: 48px; }
   .mail { font-size: 15px; }
+}
+
+/* kleine Telefone: Bild der Sicherheitstipps kleiner, damit die Erklärung früher sichtbar ist */
+@media (max-width: 520px) and (max-height: 760px) {
+  .n-kopf { margin-bottom: 10px; }
+  .n-folie { gap: 14px; padding: 14px 16px; }
+  .n-bild { padding: 8px; border-radius: 16px; }
+  .n-bild img { max-height: 19vh; border-radius: 10px; }
 }
 
 /* ================= Weniger Bewegung ================= */
@@ -1424,7 +1432,8 @@ window.PC_INHALT = {
           von: { name: 'HR Personalabteilung', adresse: 'hr-abteilung@{{fake_doppel}}' },
           an: '{{email}}', zeit: 'Heute, 11:00',
           betreff: 'WICHTIG: Neue Gehaltstabelle & Inflationsprämie 2027',
-          anhang: [{ name: 'Gehaltstabelle_2026.docx.exe', groesse: '2,4 MB' }],
+          // Korrektur: Anhang hieß „…_2026“, Betreff und Text sprechen von 2027.
+          anhang: [{ name: 'Gehaltstabelle_2027.docx.exe', groesse: '2,4 MB' }],
           inhalt: `
 <div style="color:#0f766e;font-family:Arial,Helvetica,sans-serif;font-size:.733em;font-weight:700;letter-spacing:.08em;margin:0 0 18px;">INTERNE MITTEILUNG</div>
 <div style="border-left:4px solid #16c7a5;padding-left:14px;font-family:Arial,Helvetica,sans-serif;color:#1f2937;">
