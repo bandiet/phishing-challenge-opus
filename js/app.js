@@ -801,8 +801,7 @@
     } else {
       aktion = `<button class="btn btn-gross btn-mint btn-winkt" id="s-los" type="button">${esc(st.los)} ${ICO.pfeil}</button>`;
     }
-    const el = bau(`<section class="s-start zentriert"><div class="inhalt start">
-      ${sternenflug()}
+    const el = bau(`<section class="s-start zentriert">${sternenflug()}<div class="inhalt start">
       <div class="held-schild">${BILD.schild}</div>
       <h1 class="mega">${st.titel.split(' ').map(w => `<span>${esc(w)}</span>`).join(' ')}</h1>
       <p class="lead">${esc(st.text)}</p>
@@ -1564,6 +1563,30 @@
       if (FB && FB.stufe === 2 && FB.i >= 0) zoomZu(FB, FB.liste[FB.i].el);
     }, 160);
   });
+
+  // iOS-Safari im LMS (Kurs im iframe, z. B. SCORM Cloud): Das iframe ist dort höher als der sichtbare Bereich.
+  // Ein Wisch über eine Fläche, die selbst nicht scrollt (Kopfleiste, Antwortleiste), schob sonst das ganze
+  // Kursfenster samt Kopfleiste nach oben. Bewegen darf sich nur, was in diese Richtung noch scrollen kann.
+  let wischStart = null;
+  const kannScrollen = (el, dx, dy) => {
+    const senkrecht = Math.abs(dy) >= Math.abs(dx);
+    for (; el && el !== document.body; el = el.parentElement) {
+      const cs = getComputedStyle(el);
+      if (senkrecht && /auto|scroll/.test(cs.overflowY) && el.scrollHeight > el.clientHeight + 1)
+        return dy > 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1;
+      if (!senkrecht && /auto|scroll/.test(cs.overflowX) && el.scrollWidth > el.clientWidth + 1)
+        return dx > 0 ? el.scrollLeft > 0 : el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
+    }
+    return false;
+  };
+  document.addEventListener('touchstart', e => {
+    wischStart = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+  }, { passive: true });
+  document.addEventListener('touchmove', e => {
+    if (!wischStart || e.touches.length !== 1 || !e.cancelable || e.target.closest('input, textarea, select')) return;
+    const dx = e.touches[0].clientX - wischStart.x, dy = e.touches[0].clientY - wischStart.y;
+    if (!kannScrollen(e.target, dx, dy)) e.preventDefault();
+  }, { passive: false });
 
   /* ================= Test-Sprünge (#l2n3 …) ================= */
   function route(h) {
