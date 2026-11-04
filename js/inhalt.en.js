@@ -1,4 +1,4 @@
-// Erzeugt mit tools/texte.py aus Phishing_Challenge_Texte.xlsx – nicht von Hand ändern.
+// Erzeugt mit tools/texte.py aus lokalisierung/Phishing_Challenge_Texte.xlsx – nicht von Hand ändern.
 // Texte ändern: Excel bearbeiten und mit „python3 tools/texte.py import …“ einlesen.
 window.PC_INHALT = {
   sprache: 'en',
@@ -216,7 +216,7 @@ window.PC_INHALT = {
     serie: {
       label: 'Streak',
       titel: '{{n}} correct answers in a row',
-      erklaerung: 'Great, {{n}} correct in a row! That’s your streak – every further correct answer makes the flame grow.',
+      erklaerung: 'Great, {{n}} correct in a row! That’s your streak – every additional correct answer makes the flame grow.',
       lob: [
         '{{n}} correct in a row – your streak is growing!',
         'Streak {{n}}! The flame is blazing.',
@@ -295,7 +295,7 @@ window.PC_INHALT = {
             }
           ],
           kernTitel: 'Disguised attachment from an unfamiliar domain.',
-          kern: 'Check unexpected attachments and their full file extension carefully.'
+          kern: 'Check unexpected attachments and their full file extensions carefully.'
         },
         {
           id: 'l1-amazon-delivery-sms',
@@ -629,7 +629,7 @@ window.PC_INHALT = {
               id: 'c',
               art: 'tipp',
               titel: 'Does the invitation fit the context?',
-              text: 'Was there really a summer party? Does your company share photos through a new Teams group? A plausible-sounding reason is no proof that the invitation is genuine.'
+              text: 'Was there really a summer party? Does your company share photos through a new Teams group? A plausible-sounding reason is not proof that the invitation is genuine.'
             },
             {
               id: 'd',
@@ -798,7 +798,7 @@ window.PC_INHALT = {
           art: 'teams',
           phishing: true,
           joker: 'Ask yourself: what exactly are you being asked to hand over – and what is it actually for?',
-          titel: 'IT needs my login code',
+          titel: 'IT needs my login code.',
           lage: 'In an internal chat, a supposed administrator asks you for a one-time code.',
           von: {
             name: 'IT Administrator',
@@ -907,7 +907,7 @@ window.PC_INHALT = {
               text: 'The link leads to guest-payment.host. That’s a different domain from lakeview-hotel.co.uk. Check the request via your original booking.'
             }
           ],
-          kernTitel: 'Real booking details are no proof of authenticity.',
+          kernTitel: 'Real booking details are not proof of authenticity.',
           kern: 'The payment request doesn\'t fit your booking. Don\'t let yourself be pressured – check with the hotel using the contact details from your booking confirmation.'
         }
       ]
@@ -957,13 +957,13 @@ window.PC_INHALT = {
       folien: [
         {
           bild: 'assets/nugget-sprache.webp',
-          titel: 'Good language is no proof of authenticity',
+          titel: 'Good language is not proof of authenticity',
           text: 'AI can create convincing, flawless messages in seconds. This means phishing messages can also look professional and genuine.',
           schutz: 'Check the sender, domain and context – even if the message looks professional.'
         },
         {
           bild: 'assets/nugget-stimme.webp',
-          titel: 'Voices and videos are no proof',
+          titel: 'Voices and videos are not proof',
           text: 'AI can convincingly fake the voices and faces of colleagues, customers or business partners.',
           schutz: 'Confirm unusual or sensitive requests through a second, known channel.'
         },

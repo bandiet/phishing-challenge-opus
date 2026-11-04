@@ -1196,7 +1196,7 @@ mark { background: none; color: inherit; }
 </div>
 
 <script>
-// Erzeugt mit tools/texte.py aus Phishing_Challenge_Texte.xlsx – nicht von Hand ändern.
+// Erzeugt mit tools/texte.py aus lokalisierung/Phishing_Challenge_Texte.xlsx – nicht von Hand ändern.
 // Texte ändern: Excel bearbeiten und mit „python3 tools/texte.py import …“ einlesen.
 window.PC_INHALT = {
   sprache: 'it',
@@ -1228,8 +1228,8 @@ window.PC_INHALT = {
     levelKurz: 'Livello {{n}}',
     frageVon: 'Domanda {{n}} di {{gesamt}}',
     start: {
-      titel: 'Sai riconoscere il phishing?',
-      text: 'Metti alla prova il tuo fiuto per i messaggi autentici e falsi.',
+      titel: 'Sai riconoscere un attacco di phishing?',
+      text: 'Metti alla prova il tuo fiuto: sai distinguere un messaggio autentico da uno falso?',
       los: 'Inizia il test',
       fakten: [
         '15 messaggi',
@@ -1250,34 +1250,34 @@ window.PC_INHALT = {
         {
           icon: 'postfach',
           titel: 'La tua casella di posta',
-          text: 'Riceverai diversi messaggi, uno dopo l’altro.'
+          text: 'Riceverai una serie di messaggi diversi, uno dopo l’altro.'
         },
         {
           icon: 'lupe',
-          titel: 'Guarda con attenzione',
+          titel: 'Osservali attentamente',
           text: 'Non tutti i messaggi sono ciò che sembrano.'
         },
         {
           icon: 'entscheid',
-          titel: 'Phishing o autentico?',
-          text: 'Per ogni messaggio, prendi la tua decisione.'
+          titel: 'Phishing o messaggio autentico?',
+          text: 'Per ogni messaggio, decidi se si tratta di un tentativo di phishing o di un messaggio autentico.'
         }
       ],
       los: 'Iniziamo!'
     },
     profil: {
-      titel: 'Rendi il quiz più personale.',
-      text: 'Inserisci un nome, la tua azienda e un indirizzo e-mail – veri o inventati. Li usiamo per rendere più realistici i messaggi del quiz.',
+      titel: 'Rendiamo il quiz più personale!',
+      text: 'Inserisci un nome, il nome della tua azienda e un indirizzo e-mail, reali o inventati. Li utilizzeremo per rendere più realistici i messaggi del quiz.',
       name: 'Nome',
       namePlatzhalter: 'Mario Rossi',
       firma: 'Azienda',
       firmaPlatzhalter: 'azienda.ch',
       email: 'Indirizzo e-mail',
       emailPlatzhalter: 'mario.rossi@azienda.ch',
-      emailHinweis: 'Creato da nome e azienda – puoi modificarlo.',
+      emailHinweis: 'Generato in base al nome e all’azienda inseriti, ma puoi modificarlo.',
       emailFehler: 'Inserisci un indirizzo e-mail valido.',
       weiter: 'Avanti',
-      datenschutz: 'I tuoi dati vengono usati solo in questo quiz.'
+      datenschutz: 'I dati inseriti saranno utilizzati esclusivamente per questo quiz.'
     },
     hallo: {
       titel: 'Ciao {{name}}.',
@@ -1299,10 +1299,10 @@ window.PC_INHALT = {
     linkZiel: 'Destinazione del link',
     echteDomain: 'dominio reale',
     klartext: 'In chiaro',
-    antwortAn: 'La risposta va a',
+    antwortAn: 'La risposta è indirizzata a',
     anhangGesperrt: 'In questo quiz non si aprono file.',
     qrGesperrt: 'Un codice QR non si può verificare in anticipo.',
-    extern: 'ESTERNO: questo messaggio proviene dall’esterno della Sua organizzazione.',
+    extern: 'ESTERNO: questo messaggio proviene da un mittente esterno alla Sua azienda.',
     an: 'A',
     heute: 'Oggi',
     nichtKontakt: 'Non nei tuoi contatti',
@@ -1326,7 +1326,7 @@ window.PC_INHALT = {
     },
     ergebnis: {
       richtig: 'Corretto!',
-      falschPhishing: 'Peccato',
+      falschPhishing: 'Peccato, risposta errata!',
       falschEcht: 'Falso allarme',
       istPhishing: 'Era phishing.',
       istEcht: 'Il messaggio è autentico.'
@@ -1350,7 +1350,7 @@ window.PC_INHALT = {
       kicker: 'Livello {{n}} di {{gesamt}}',
       perfekt: 'Risolto alla perfezione, non ti è sfuggito nessun dettaglio!',
       bestanden: 'Hai superato il livello {{n}}.',
-      knapp: 'Non mollare e affina lo sguardo per i segnali d’allarme!',
+      knapp: 'Continua ad allenarti per riconoscere sempre meglio i segnali d’allarme!',
       bestandenAb: 'Superato dal',
       richtig: '{{richtig}} su {{gesamt}} corrette',
       abzeichen: 'Badge sbloccato',
@@ -1364,7 +1364,7 @@ window.PC_INHALT = {
     },
     nugget: {
       kicker: 'Consiglio di sicurezza',
-      merke: 'Da ricordare',
+      merke: 'Ricorda',
       zurueck: 'Indietro',
       weiter: 'Avanti'
     },
@@ -1394,7 +1394,7 @@ window.PC_INHALT = {
         'I love to phish 🎣',
         'Dritto nella rete! 🎯',
         'Un clic di troppo... 😈',
-        'Ha abboccato! 🐟',
+        'Hai abboccato! 🐟',
         'Grazie per il clic! 🙃',
         'È filato tutto liscio! 😏',
         'Troppo facile… 🤭'
@@ -1421,7 +1421,7 @@ window.PC_INHALT = {
         '{{n}} di fila – che serie!',
         'Continua così: {{n}} risposte corrette di fila!'
       ],
-      verloren: 'Serie finita – la prossima risposta corretta ne inizia una nuova.',
+      verloren: 'Serie terminata! Alla prossima risposta corretta ne inizierà una nuova.',
       bisJokerEins: 'Ancora una risposta corretta – poi ricevi un jolly!',
       bisJoker: 'Ancora {{n}} risposte corrette fino al prossimo jolly.',
       jokerVoll: 'Hai già {{n}} jolly – usane prima uno.'
@@ -1436,16 +1436,16 @@ window.PC_INHALT = {
         'Jolly numero {{n}} – tienilo da parte!'
       ],
       erinnerung: 'Hai {{n}} jolly. Cliccami quando ti serve un suggerimento su un messaggio.',
-      spaeter: 'Tienimi per il prossimo messaggio – lì ti darò un suggerimento.',
+      spaeter: 'Tienimi da parte per il prossimo messaggio: lì ti darò un suggerimento.',
       schon: 'Il suggerimento per questo messaggio è già visibile.',
       leer: 'Nessun jolly rimasto. Con una nuova serie ne guadagni altri.',
-      titel: 'Jolly: ancora {{n}} – clicca per un suggerimento'
+      titel: 'Jolly: {{n}} disponibili. Clicca per ricevere un suggerimento.'
     }
   },
   levels: [
     {
       kicker: 'Riscaldamento',
-      titel: 'Basi e segnali d’allarme tipici',
+      titel: 'Principi di base e segnali d’allarme tipici',
       badge: 'Principiante anti-phishing',
       nachrichten: [
         {
@@ -1453,18 +1453,18 @@ window.PC_INHALT = {
           art: 'email',
           phishing: true,
           joker: 'Leggi con molta attenzione il mittente e il nome dell’allegato – fino all’ultimo carattere.',
-          titel: 'Mi aumentano lo stipendio?',
-          lage: 'Un’e-mail delle risorse umane annuncia una nuova tabella degli stipendi in allegato.',
+          titel: 'Riceverò un aumento di stipendio?',
+          lage: 'Un’e-mail dell’ufficio Risorse Umane comunica l’aggiornamento delle tabelle retributive, disponibili in allegato.',
           von: {
             name: 'Risorse umane',
             adresse: 'risorse-umane@{{fake_doppel}}'
           },
           an: '{{email}}',
           zeit: 'Oggi, 11:00',
-          betreff: 'IMPORTANTE: nuova tabella degli stipendi e bonus inflazione 2027',
+          betreff: 'IMPORTANTE: nuova tabella retributiva e bonus inflazione 2027',
           anhang: [
             {
-              name: 'Tabella_stipendi_2027.docx.exe',
+              name: 'Tabella_retributiva_2027.docx.exe',
               groesse: '2,4 MB'
             }
           ],
@@ -1482,18 +1482,18 @@ window.PC_INHALT = {
               art: 'warn',
               titel: 'Dominio aziendale sospetto',
               klartext: '{{fake_doppel_m}}',
-              text: 'Il dominio differisce da {{domain}} solo per una lettera in più. Anche se il mittente ti sembra familiare, fai attenzione alle piccole differenze nel dominio.'
+              text: 'Il dominio differisce da {{domain}} solo per una lettera in più. Anche se il mittente ti sembra familiare, presta attenzione alle più piccole variazioni nel dominio.'
             },
             {
               id: 'b',
               bei: 'anhang',
               art: 'warn',
               titel: 'Verifica l’estensione reale del file',
-              text: 'Nonostante «.docx» nel nome, si tratta di un file eseguibile .exe e non di un documento Word. Ciò che conta è l’estensione reale, alla fine del nome del file.'
+              text: 'Nonostante nel nome compaia «.docx», si tratta di un file eseguibile .exe e non di un documento Word. Per riconoscere il vero tipo di file, è fondamentale controllare l’estensione effettiva alla fine del nome.'
             }
           ],
-          kernTitel: 'Allegato camuffato da un dominio sconosciuto.',
-          kern: 'Controlla con attenzione gli allegati inattesi e la loro estensione completa.'
+          kernTitel: 'Allegato camuffato proveniente da un dominio sconosciuto.',
+          kern: 'Verifica attentamente gli allegati inattesi, prestando particolare attenzione all’estensione completa dei file.'
         },
         {
           id: 'l1-amazon-delivery-sms',
@@ -1519,12 +1519,12 @@ window.PC_INHALT = {
             {
               id: 'b',
               art: 'ok',
-              titel: 'Link breve di Amazon',
-              text: 'Questo link breve è utilizzato da Amazon. Un link abbreviato non è quindi automaticamente sospetto. Se hai dubbi, apri direttamente l’app di Amazon e controlla lì la tua consegna.'
+              titel: 'Link abbreviato di Amazon',
+              text: 'Questo link abbreviato viene utilizzato da Amazon. Un link abbreviato, quindi, non è necessariamente sospetto. In caso di dubbi, apri direttamente l’app di Amazon e verifica lo stato della tua consegna.'
             }
           ],
           kernTitel: '',
-          kern: 'Il phishing arriva anche via SMS – ad esempio con presunti problemi di consegna, spese doganali o dati dell’indirizzo mancanti. Questo messaggio, però, è una vera notifica di Amazon.'
+          kern: 'Un tentativo di phishing può essere effettuato anche tramite SMS, ad esempio simulando problemi di consegna, richieste di pagamento di spese doganali o la necessità di integrare i dati dell’indirizzo. In questo caso, però, si tratta di una notifica autentica di Amazon.'
         },
         {
           id: 'l2-msg-9',
@@ -1559,7 +1559,7 @@ window.PC_INHALT = {
               bei: 'absender',
               art: 'ok',
               titel: 'Il dominio del mittente corrisponde',
-              text: 'L’indirizzo del mittente usa il dominio ufficiale linkedin.com. È un segnale positivo – verifica comunque se la richiesta è plausibile per te.'
+              text: 'L’indirizzo del mittente usa il dominio ufficiale linkedin.com. Questo è un elemento rassicurante, tuttavia verifica comunque che la richiesta sia plausibile nel tuo caso.'
             }
           ],
           kernTitel: '',
@@ -1571,14 +1571,14 @@ window.PC_INHALT = {
           phishing: true,
           joker: 'Passa il mouse sul link: il dominio subito prima dell’estensione appartiene davvero alla tua banca?',
           titel: 'Questo non è un mio bonifico!',
-          lage: 'Alla cassa del supermercato il tuo telefono vibra. Un SMS segnala un pagamento in sospeso di CHF 1’250.',
+          lage: 'Mentre sei alla cassa del supermercato, il tuo cellulare vibra. Un SMS ti segnala un bonifico in uscita di CHF 1’250.',
           von: {
             name: 'UBS Security',
             info: '+41 77 488 12 93'
           },
           zeit: '10:20',
           nachrichten: [
-            `UBS Info: un bonifico insolito di CHF 1’250.00 a iBanking Ltd è stato registrato. <mark data-h="b">Annullamento immediato</mark> su: <a data-ziel="https://ubs-servizio-sicurezza.com/annullamento" data-h="a">https://ubs-servizio-sicurezza.com/annullamento</a>`
+            `UBS Info: è stato disposto un bonifico insolito di CHF 1’250.00 a favore di iBanking Ltd. <mark data-h="b">Annulla immediatamente</mark> al seguente link: <a data-ziel="https://ubs-servizio-sicurezza.com/annullamento" data-h="a">https://ubs-servizio-sicurezza.com/annullamento</a>`
           ],
           hinweise: [
             {
@@ -1652,7 +1652,7 @@ window.PC_INHALT = {
           phishing: true,
           joker: 'Leggi l’indirizzo del mittente carattere per carattere e controlla dove porta davvero il pulsante.',
           titel: '489 franchi? Ma non ho ordinato niente!',
-          lage: 'Controllando la tua casella di posta, scopri una conferma di pagamento per un acquisto che non conosci.',
+          lage: 'Controllando la tua casella di posta, scopri una conferma di pagamento per un acquisto che non hai effettuato.',
           von: {
             name: 'Servizio clienti PayPal',
             adresse: 'service@paypaI.com'
@@ -1669,7 +1669,7 @@ window.PC_INHALT = {
     <div style="font-size:.8em;color:#64748b;">TechStore SA</div>
     <div style="font-size:1.8em;font-weight:700;color:#172033;margin-top:3px;">CHF 489.00</div>
   </div>
-  <div style="margin-top:16px;">Se non riconosce questa transazione, verifichi i dettagli nel Suo centro sicurezza.</div>
+  <div style="margin-top:16px;">Se non riconosce questa transazione, verifichi i dettagli nella sezione Sicurezza del Suo account.</div>
   <div style="margin-top:20px;text-align:center;"><a data-ziel="https://www.paypal.com.security-dispute-resolution.com/login" data-h="b" style="display:inline-block;background:#0070E0;color:#fff;padding:11px 18px;text-decoration:none;border-radius:20px;font-weight:700;">Annulla transazione</a></div>
 </div>`,
           hinweise: [
@@ -1679,7 +1679,7 @@ window.PC_INHALT = {
               art: 'warn',
               titel: 'Dominio ingannevolmente simile',
               klartext: 'service@paypa[I].com',
-              text: 'La presunta «l» minuscola in paypal.com è in realtà una «I» maiuscola. Caratteri così simili possono far sembrare autentico un dominio falso a prima vista.'
+              text: 'La presunta «l» minuscola in paypal.com è in realtà una «I» maiuscola. Caratteri così simili tra loro possono far apparire autentico, a prima vista, un dominio fraudolento.'
             },
             {
               id: 'b',
@@ -1704,7 +1704,7 @@ window.PC_INHALT = {
           },
           an: '{{email}}',
           zeit: 'Oggi, 07:08',
-          betreff: 'Chiusura_mensile_Q2_Riservato.pdf è stato condiviso con Lei',
+          betreff: 'Il file «Chiusura_mensile_Q2_Riservato.pdf» è stato condiviso con Lei',
           inhalt: `
 <div style="background-color:#f3f3f3;color:#323130;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;padding:30px 20px;border-radius:8px;">
   <div style="max-width:550px;margin:0 auto;background-color:#ffffff;border:1px solid #d2d0ce;border-radius:8px;overflow:hidden;">
@@ -1735,7 +1735,7 @@ window.PC_INHALT = {
               bei: 'absender',
               art: 'ok',
               titel: 'Dominio aziendale noto',
-              text: 'L’indirizzo del mittente usa il dominio aziendale noto. Anche la mittente indicata, Anna Bernasconi del reparto Finanza, è coerente con il motivo della condivisione.'
+              text: 'L’indirizzo del mittente presenta il dominio ufficiale dell’azienda. Anche la condivisione del file da parte di Anna Bernasconi, del reparto Finanza, appare coerente con il motivo della condivisione.'
             },
             {
               id: 'b',
@@ -1753,7 +1753,7 @@ window.PC_INHALT = {
           phishing: false,
           joker: 'Ti aspetti questo messaggio, vista la situazione? Controlla verso quale dominio punta il link.',
           titel: 'C’era ancora qualcosa da fare…',
-          lage: 'La nota spese della tua ultima trasferta è ancora in sospeso. Ora arriva un promemoria via e-mail.',
+          lage: 'Dopo il tuo ultimo viaggio di lavoro, devi ancora presentare la nota spese. Ora ricevi un’e-mail di promemoria.',
           von: {
             name: 'Risorse umane',
             adresse: 'hr-benefits@{{domain}}'
@@ -1776,7 +1776,7 @@ window.PC_INHALT = {
             }
           ],
           kernTitel: '',
-          kern: 'Il motivo corrisponde alla tua situazione. Anche mittente e destinazione del link sono plausibili e appartengono all’azienda.'
+          kern: 'Il motivo del messaggio è coerente con la tua situazione. Anche il mittente e il sito a cui rimanda il link sembrano attendibili e appartengono all’azienda.'
         },
         {
           id: 'ai-img-1790160787284',
@@ -1832,7 +1832,7 @@ window.PC_INHALT = {
             {
               id: 'd',
               art: 'tipp',
-              titel: 'Un design familiare non è una garanzia',
+              titel: 'Un aspetto familiare non è garanzia di autenticità',
               text: 'Logo, colori e grafica sono facili da imitare. Non fidarti quindi solo del fatto che un messaggio assomigli a uno strumento conosciuto.'
             }
           ],
@@ -1885,7 +1885,7 @@ window.PC_INHALT = {
               id: 'c',
               art: 'warn',
               titel: 'Conto bancario estero inatteso',
-              text: 'Un IBAN estero non è automaticamente sospetto. Qui però il passaggio inatteso a un conto in un altro Paese è un motivo in più per confermare in modo indipendente i nuovi dati di pagamento.'
+              text: 'Un IBAN estero non è necessariamente sospetto. Tuttavia, il passaggio improvviso a un conto bancario di un altro Paese è un ulteriore motivo per verificare le nuove coordinate bancarie attraverso un canale indipendente.'
             }
           ],
           kernTitel: 'In caso di modifica delle coordinate bancarie serve particolare prudenza.',
@@ -1934,7 +1934,7 @@ window.PC_INHALT = {
             {
               id: 'b',
               art: 'warn',
-              titel: 'Codice QR inatteso per la 2FA',
+              titel: 'Codice QR inatteso per l’autenticazione a due fattori',
               text: 'Una richiesta inattesa di configurare di nuovo l’autenticazione a due fattori tramite un codice QR ricevuto per e-mail è un segnale d’allarme. Avvia invece la configurazione tramite il portale che conosci o chiarisci la cosa con l’IT.'
             }
           ],
