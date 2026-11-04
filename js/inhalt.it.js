@@ -153,10 +153,10 @@ window.PC_INHALT = {
       perfekt: 'Risolto alla perfezione, non ti è sfuggito nessun dettaglio!',
       bestanden: 'Hai superato il livello {{n}}.',
       knapp: 'Continua ad allenarti per riconoscere sempre meglio i segnali d’allarme!',
-      bestandenAb: 'Superato dal',
+      bestandenAb: 'Soglia minima',
       richtig: '{{richtig}} su {{gesamt}} corrette',
       abzeichen: 'Badge sbloccato',
-      zumNugget: 'Vai al consiglio di sicurezza',
+      zumNugget: 'Scopri il consiglio di sicurezza',
       naechstesLevel: 'Vai al livello {{n}}',
       zumErgebnis: 'Quiz completato',
       wiederholen: 'Ripeti il livello {{n}}',
@@ -194,7 +194,7 @@ window.PC_INHALT = {
     hacker: {
       erwischt: [
         'I love to phish 🎣',
-        'Dritto nella rete! 🎯',
+        'Dritto nella trappola! 🎯',
         'Un clic di troppo... 😈',
         'Hai abboccato! 🐟',
         'Grazie per il clic! 🙃',
@@ -326,7 +326,7 @@ window.PC_INHALT = {
             }
           ],
           kernTitel: '',
-          kern: 'Un tentativo di phishing può essere effettuato anche tramite SMS, ad esempio simulando problemi di consegna, richieste di pagamento di spese doganali o la necessità di integrare i dati dell’indirizzo. In questo caso, però, si tratta di una notifica autentica di Amazon.'
+          kern: 'Il phishing arriva anche via SMS, ad esempio con finti problemi di consegna, spese doganali o dati dell’indirizzo mancanti. Questa, però, è una notifica autentica di Amazon.'
         },
         {
           id: 'l2-msg-9',
@@ -392,7 +392,7 @@ window.PC_INHALT = {
             {
               id: 'b',
               art: 'warn',
-              titel: 'Pressione tramite un presunto bonifico',
+              titel: 'Pressione psicologica tramite un presunto bonifico',
               text: 'Un importo elevato e l’invito ad agire subito servono a metterti sotto pressione. Non lasciarti spingere a cliccare in fretta e verifica la segnalazione nella tua app bancaria.'
             }
           ],
@@ -904,7 +904,7 @@ window.PC_INHALT = {
               id: 'd',
               art: 'warn',
               titel: 'Destinazione del link diversa',
-              text: 'Il link porta a pagamento-ospiti.host, un dominio diverso da hotel-vistalago.ch. Verifica la richiesta tramite la tua prenotazione originale.'
+              text: 'Il link porta a pagamento-ospiti.host – non al dominio dell’hotel. Verifica la richiesta tramite la tua prenotazione originale.'
             }
           ],
           kernTitel: 'Dati di prenotazione reali non sono una prova di autenticità.',

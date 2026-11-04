@@ -904,7 +904,7 @@ window.PC_INHALT = {
               id: 'd',
               art: 'warn',
               titel: 'Different link target',
-              text: 'The link leads to guest-payment.host. That’s a different domain from lakeview-hotel.co.uk. Check the request via your original booking.'
+              text: 'The link leads to guest-payment.host – not to the hotel’s domain. Check the request via your original booking.'
             }
           ],
           kernTitel: 'Real booking details are not proof of authenticity.',
