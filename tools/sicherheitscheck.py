@@ -382,11 +382,11 @@ GROESSEN = [('Telefon', 375, 812, True), ('Tablet', 768, 1024, True), ('Desktop'
 
 def fotos(browser, paket, ordner):
     """Bildschirmfotos aller Seiten in drei Größen; misst dabei Überlauf. Gibt (Befunde, Kontaktbögen) zurück."""
-    from PIL import Image, ImageDraw
+    from PIL import Image, ImageDraw, ImageFont
     sprache = paket['sprache'].upper()
     befunde, boegen, gesperrt = [], [], []
     for gname, w, h, mobil in GROESSEN:
-        kontext = browser.new_context(viewport={'width': w, 'height': h}, is_mobile=mobil, has_touch=mobil, device_scale_factor=1)
+        kontext = browser.new_context(viewport={'width': w, 'height': h}, is_mobile=mobil, has_touch=mobil, device_scale_factor=2)
         kontext.route('**/*', lambda r: r.continue_() if r.request.url.startswith(BASIS) else (gesperrt.append(r.request.url), r.abort()))
         # Zeitgeber zehnmal schneller, damit Chat-Nachrichten und Zähler auf dem Foto schon fertig sind
         kontext.add_init_script('(() => { const st = window.setTimeout; window.setTimeout = (f, d, ...a) => st(f, (d || 0) / 10, ...a); })();')
@@ -410,18 +410,25 @@ def fotos(browser, paket, ordner):
             seite.screenshot(path=datei)
             bilder.append((s, datei))
         kontext.close()
-        # Kontaktbogen: alle Seiten einer Größe auf einem Blatt
-        spalten = 5 if w < 900 else 4
-        breite = 260 if w < 900 else 340
+        # Kontaktbogen: alle Seiten einer Größe auf einem Blatt. Fotos mit doppelter Pixeldichte,
+        # Kacheln groß genug, dass man Texte beim Hineinzoomen lesen kann (Telefon 1:1, Tablet/Desktop 75 %).
+        spalten, breite = {'Telefon': (5, 750), 'Tablet': (4, 1152), 'Desktop': (3, 1920)}[gname]
         hoehe = int(breite * h / w)
-        bogen = Image.new('RGB', (spalten * (breite + 12) + 12, ((len(bilder) + spalten - 1) // spalten) * (hoehe + 34) + 12), '#101018')
+        rand, kopf, titel = 24, 56, 110
+        try:
+            schrift, gross = ImageFont.truetype('/System/Library/Fonts/Helvetica.ttc', 34), ImageFont.truetype('/System/Library/Fonts/Helvetica.ttc', 52)
+        except OSError:
+            schrift, gross = ImageFont.load_default(34), ImageFont.load_default(52)
+        zeilen = (len(bilder) + spalten - 1) // spalten
+        bogen = Image.new('RGB', (spalten * (breite + rand) + rand, titel + zeilen * (hoehe + kopf + rand) + rand), '#101018')
         zeichnen = ImageDraw.Draw(bogen)
+        zeichnen.text((rand, 30), f'{sprache} · {gname} ({w} × {h}) · {paket["format"]}', fill='#ffffff', font=gross)
         for i, (s, datei) in enumerate(bilder):
-            x, y = 12 + (i % spalten) * (breite + 12), 12 + (i // spalten) * (hoehe + 34)
-            bogen.paste(Image.open(datei).convert('RGB').resize((breite, hoehe)), (x, y + 20))
-            zeichnen.text((x, y + 4), f'#{s}', fill='#c9c4ec')
+            x, y = rand + (i % spalten) * (breite + rand), titel + (i // spalten) * (hoehe + kopf + rand)
+            zeichnen.text((x, y + 8), f'{i + 1}  #{s}', fill='#c9c4ec', font=schrift)
+            bogen.paste(Image.open(datei).convert('RGB').resize((breite, hoehe), Image.LANCZOS), (x, y + kopf))
         name = f'Kontaktbogen_{sprache}_{gname}.jpg'
-        bogen.save(os.path.join(ZIEL, name), quality=82)
+        bogen.save(os.path.join(ZIEL, name), quality=86, optimize=True)
         boegen.append(name)
     if gesperrt:
         befunde.append(f'{sprache}: {len(gesperrt)} Verbindungsversuche nach außen gesperrt: ' + ', '.join(f'<code>{e(u[:80])}</code>' for u in gesperrt[:5]))
