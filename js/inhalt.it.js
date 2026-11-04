@@ -76,10 +76,10 @@ window.PC_INHALT = {
       firmaPlatzhalter: 'azienda.ch',
       email: 'Indirizzo e-mail',
       emailPlatzhalter: 'mario.rossi@azienda.ch',
-      emailHinweis: 'Creato da nome e azienda – puoi modificarlo.',
+      emailHinweis: 'Generato dal nome e dall’azienda inseriti. Puoi modificarlo.',
       emailFehler: 'Inserisci un indirizzo e-mail valido.',
       weiter: 'Avanti',
-      datenschutz: 'I tuoi dati servono solo per questo quiz.'
+      datenschutz: 'I tuoi dati vengono usati solo per questo quiz.'
     },
     hallo: {
       titel: 'Ciao {{name}}.',
@@ -291,7 +291,7 @@ window.PC_INHALT = {
               bei: 'anhang',
               art: 'warn',
               titel: 'Verifica l’estensione reale del file',
-              text: 'Nonostante nel nome compaia «.docx», si tratta di un file eseguibile .exe e non di un documento Word. Conta l’estensione reale, alla fine del nome del file.'
+              text: 'Nonostante nel nome compaia «.docx», si tratta di un file eseguibile .exe e non di un documento Word. Controlla l’estensione effettiva alla fine del nome del file.'
             }
           ],
           kernTitel: 'Allegato camuffato proveniente da un dominio sconosciuto.',
@@ -537,7 +537,7 @@ window.PC_INHALT = {
               bei: 'absender',
               art: 'ok',
               titel: 'Dominio aziendale noto',
-              text: 'L’indirizzo del mittente presenta il dominio ufficiale dell’azienda. Anche la mittente, Anna Bernasconi del reparto Finanza, è coerente con il motivo della condivisione.'
+              text: 'L’indirizzo del mittente presenta il dominio ufficiale dell’azienda. Anche il fatto che il file sia condiviso da Anna Bernasconi del reparto Finanza appare coerente con il motivo indicato.'
             },
             {
               id: 'b',
