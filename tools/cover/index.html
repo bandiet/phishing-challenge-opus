@@ -1,0 +1,93 @@
+<!doctype html>
+<!-- Titelbild für LMS-Plattformen (16:9). Aufruf: tools/cover/index.html?lang=de
+     Rechts läuft der echte Kurs (dist/<lang>/index.html) in einem Fenster: eine Phishing-Mail,
+     im Moment der Entscheidung. Der Hacker kommt als Vektorgrafik aus index.html.
+     Als Bild speichern: python3 tools/titelbild.py -->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Titelbild</title>
+<style>
+  :root { --nacht: #0B0633; --mint: #17FFC0; --pink: #FF2D87; --text: #F4F2FF; --text-2: #C9C4EC;
+    --font: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif; }
+  html, body { margin: 0; width: 1164px; height: 655px; overflow: hidden; }
+  body { font-family: var(--font); color: var(--text); -webkit-font-smoothing: antialiased;
+    background: radial-gradient(40% 55% at 22% 45%, rgba(30, 110, 150, .42), rgba(0, 0, 0, 0) 70%),
+                radial-gradient(45% 60% at 78% 55%, rgba(170, 40, 140, .32), rgba(0, 0, 0, 0) 70%), var(--nacht); }
+  .raster { position: absolute; inset: 0; opacity: .18;
+    background-image: radial-gradient(rgba(255, 255, 255, .55) 1px, transparent 1px); background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(70% 70% at 30% 50%, #000, transparent); mask-image: radial-gradient(70% 70% at 30% 50%, #000, transparent); }
+  .links { position: absolute; left: 64px; top: 0; bottom: 0; width: 470px; display: flex; flex-direction: column; justify-content: center; }
+  .marke { display: inline-flex; align-self: flex-start; align-items: center; gap: 9px; padding: 7px 14px 7px 9px; border-radius: 99px;
+    background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); font-size: 14px; font-weight: 650; color: var(--text-2); }
+  .marke svg { width: 22px; height: 22px; }
+  h1 { margin: 22px 0 0; font-size: 74px; line-height: .98; font-weight: 850; letter-spacing: -.025em; }
+  h1 span { display: block; background: linear-gradient(90deg, #FF5C93, #FF2D87 55%, #C83CFF); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .frage { margin: 22px 0 0; font-size: 27px; font-weight: 700; color: var(--mint); text-shadow: 0 0 26px rgba(23, 255, 192, .35); }
+  .fakten { display: flex; gap: 10px; margin: 30px 0 0; padding: 0; list-style: none; flex-wrap: wrap; }
+  .fakten li { padding: 8px 15px; border-radius: 99px; background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+    font-size: 15px; font-weight: 650; color: var(--text); }
+  .fenster { position: absolute; left: 572px; top: 120px; width: 560px; height: 350px; border-radius: 14px; overflow: hidden;
+    transform: perspective(1400px) rotateY(-13deg) rotateX(4deg) rotate(1.5deg); transform-origin: 30% 50%;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, .16), 0 40px 90px -30px rgba(0, 0, 0, .9), 0 0 80px -10px rgba(255, 45, 135, .35); }
+  .fenster iframe { width: 1280px; height: 800px; border: 0; transform: scale(.4375); transform-origin: 0 0; display: block; }
+  /* Hacker aus dem Kurs (Vektor), zwinkernd, schaut unten links über den Fensterrand */
+  .hacker { position: absolute; left: 548px; top: 392px; width: 118px; transform: rotate(-12deg); filter: drop-shadow(0 24px 40px rgba(0, 0, 0, .7)); }
+  .hacker svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .hacker .hk-auge-l, .hacker .hk-schweiss, .hacker .hk-schweiss2 { display: none; }
+  .blase { position: absolute; left: 672px; top: 494px; padding: 10px 17px; border-radius: 6px 22px 22px 22px; background: #0F0820; color: #fff;
+    font-size: 17px; font-weight: 750; white-space: nowrap; transform: rotate(-3deg);
+    box-shadow: inset 0 0 0 2px rgba(255, 45, 135, .8), 0 12px 30px -5px rgba(0, 0, 0, .8), 0 0 18px rgba(255, 45, 135, .4); }
+</style>
+</head>
+<body>
+<div class="raster"></div>
+<div class="links">
+  <div class="marke"><svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0B003A"/><path d="M16 5 26 9v7c0 6-4 10-10 12C10 26 6 22 6 16V9l10-4Z" fill="#FF4F86"/><path d="m11.5 16 3 3 6-6.5" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="marke"></span></div>
+  <h1 id="titel"></h1>
+  <p class="frage" id="frage"></p>
+  <ul class="fakten" id="fakten"></ul>
+</div>
+<div class="fenster"><iframe id="kurs" title="Kurs"></iframe></div>
+<div class="hacker" id="hacker"></div>
+<div class="blase" id="blase"></div>
+<script>
+  const lang = (new URLSearchParams(location.search).get('lang') || 'de').toLowerCase();
+  const s = document.createElement('script');
+  s.src = `../../js/inhalt.${lang}.js`;
+  s.onload = () => {
+    const U = window.PC_INHALT.ui;
+    document.documentElement.lang = lang;
+    document.getElementById('marke').textContent = U.marke;
+    const [a, b] = U.produkt.split(' ');
+    document.getElementById('titel').innerHTML = `${a}<span>${b}</span>`;
+    document.getElementById('frage').textContent = U.start.titel;
+    document.getElementById('fakten').innerHTML = U.start.fakten.map(x => `<li>${x}</li>`).join('');
+    document.getElementById('blase').textContent = U.hacker.erwischt[0];
+  };
+  fetch('../../index.html').then(r => r.text()).then(t => {
+    const svg = t.match(/<svg class="hacker-svg"[\s\S]*?<\/svg>/);
+    if (svg) document.getElementById('hacker').innerHTML = svg[0];
+  });
+  document.head.appendChild(s);
+
+  // Kurs: Nachricht 1 von Level 2 (PayPal mit großem „I“) im Moment der Entscheidung „Phishing oder echt?“
+  const kurs = document.getElementById('kurs');
+  kurs.src = `../../dist/${lang}/index.html?neu#l2n1`;
+  kurs.addEventListener('load', () => {
+    const w = kurs.contentWindow, d = kurs.contentDocument;
+    // Endzustand sofort zeigen (ohne Ein-Animationen), damit das Bildschirmfoto nicht mitten im Übergang entsteht
+    const st = d.createElement('style');
+    st.textContent = '.hacker, .hud-sprecher { display: none !important; } *, *::before, *::after { animation-duration: 0s !important; animation-delay: 0s !important; transition: none !important; }';
+    d.head.appendChild(st);
+    const fertig = () => d.querySelectorAll('.rein').forEach(e => e.classList.remove('rein'));
+    [100, 400, 900, 1500].forEach(t => setTimeout(fertig, t));
+    const knopf = re => [...d.querySelectorAll('.screen:not(.raus) button')].find(b => re.test(b.className + ' ' + b.id + ' ' + b.textContent));
+    setTimeout(() => {
+
+      document.body.dataset.fertig = '1';
+    }, 1800);
+  });
+</script>
+</body>
+</html>
