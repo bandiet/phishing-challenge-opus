@@ -3,10 +3,12 @@
 
     python3 tools/bouw.py              Deutsch, SCORM 1.2
     python3 tools/bouw.py en           Englisch (braucht js/inhalt.en.js)
-    python3 tools/bouw.py de --2004    zusätzlich ein SCORM-2004-Paket
+    python3 tools/bouw.py de --2004    zusätzlich SCORM 2004 (3rd und 4th Edition als getrennte Pakete)
+    python3 tools/bouw.py de --xapi    zusätzlich ein xAPI-Paket (tincan.xml)
 
 Ergebnis in dist/:
     Phishing_Challenge_Opus_DE_SCORM12.zip   imsmanifest.xml + index.html, direkt im Zip-Wurzelverzeichnis
+    …_SCORM2004_3rd.zip / …_SCORM2004_4th.zip / …_xAPI.zip
     de/index.html                         dieselbe Seite einzeln (zum Testen im Browser)
     artifact/index.html                   Seite ohne <html>/<head>/<body> (für die Claude-Vorschau)
 
@@ -29,6 +31,7 @@ DIST = os.path.join(P, 'dist')
 args = [a for a in sys.argv[1:] if not a.startswith('--')]
 SPRACHE = (args[0] if args else 'de').lower()
 MIT_2004 = '--2004' in sys.argv
+MIT_XAPI = '--xapi' in sys.argv
 
 inhalt_datei = os.path.join(P, 'js', f'inhalt.{SPRACHE}.js')
 if not os.path.exists(inhalt_datei):
@@ -164,7 +167,7 @@ MANIFEST_2004 = f'''<?xml version="1.0" encoding="UTF-8"?>
                               http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd">
   <metadata>
     <schema>ADL SCORM</schema>
-    <schemaversion>2004 4th Edition</schemaversion>
+    <schemaversion>2004 {{EDITION}} Edition</schemaversion>
   </metadata>
   <organizations default="org_1">
     <organization identifier="org_1">
@@ -190,10 +193,24 @@ MANIFEST_2004 = f'''<?xml version="1.0" encoding="UTF-8"?>
 '''
 
 
-def paket(name, manifest):
+# xAPI: dieselbe Aktivitäts-ID wie in js/lms.js (XAPI_ID)
+TINCAN = f'''<?xml version="1.0" encoding="utf-8"?>
+<tincan xmlns="http://projecttincan.com/tincan.xsd">
+  <activities>
+    <activity id="https://phishing-challenge-opus.arnebenoist.workers.dev/xapi/{SPRACHE}" type="http://adlnet.gov/expapi/activities/course">
+      <name lang="{SPRACHE}">{xml(titel)}</name>
+      <description lang="{SPRACHE}">{xml(titel)}</description>
+      <launch lang="{SPRACHE}">index.html</launch>
+    </activity>
+  </activities>
+</tincan>
+'''
+
+
+def paket(name, manifest, datei='imsmanifest.xml'):
     pfad = os.path.join(DIST, name)
     with zipfile.ZipFile(pfad, 'w', zipfile.ZIP_DEFLATED) as z:
-        z.writestr('imsmanifest.xml', manifest)          # im Wurzelverzeichnis, nicht in einem Unterordner
+        z.writestr(datei, manifest)                      # im Wurzelverzeichnis, nicht in einem Unterordner
         z.write(os.path.join(ziel, 'index.html'), 'index.html')
     print(f'  {name}  ({os.path.getsize(pfad) // 1024} KB)')
 
@@ -201,7 +218,10 @@ def paket(name, manifest):
 print(f'Gebaut: dist/{SPRACHE}/index.html ({os.path.getsize(os.path.join(ziel, "index.html")) // 1024} KB, eigenständig)')
 paket(f'Phishing_Challenge_Opus_{SPRACHE.upper()}_SCORM12.zip', MANIFEST_12)
 if MIT_2004:
-    paket(f'Phishing_Challenge_Opus_{SPRACHE.upper()}_SCORM2004.zip', MANIFEST_2004)
+    for ed in ('3rd', '4th'):
+        paket(f'Phishing_Challenge_Opus_{SPRACHE.upper()}_SCORM2004_{ed}.zip', MANIFEST_2004.replace('{EDITION}', ed))
+if MIT_XAPI:
+    paket(f'Phishing_Challenge_Opus_{SPRACHE.upper()}_xAPI.zip', TINCAN, 'tincan.xml')
 
 # Vorschau für die Claude-Artifact-Plattform: ohne Dokument-Gerüst
 kopf = re.search(r'<head>(.*?)</head>', html, re.S).group(1)

@@ -2447,7 +2447,7 @@ window.Feier = (function () {
 </script>
 <script>
 /* ------------------------------------------------------------------
-   LMS – SCORM 1.2 und SCORM 2004 in einem, mit lokalem Ersatz.
+   LMS – SCORM 1.2, SCORM 2004 und xAPI in einem, mit lokalem Ersatz.
    Ohne LMS (Vorschau, Browser) wird der Stand im localStorage gemerkt.
    Alle Aufrufe sind abgesichert: Ein zickiges LMS darf die Challenge
    nie zum Absturz bringen.
@@ -2522,11 +2522,120 @@ window.LMS = (function () {
 
   var istFertig = false, interaktionen = 0;
 
-  return {
+  /* ---------- xAPI (Tin Can) ----------
+     Das LMS startet index.html mit endpoint, auth, actor, registration und activity_id in der Adresse
+     (übliche Tin-Can-Startparameter). Aussagen gehen an <endpoint>statements, der Stand liegt in der State API. */
+  var X = null, xWarte = null, xLaeuft = false, xStand = null;
+  var XAPI_ID = 'https://phishing-challenge-opus.arnebenoist.workers.dev/xapi/' + ((window.PC_INHALT && window.PC_INHALT.sprache) || 'de');
+  var XV = 'http://adlnet.gov/expapi/verbs/';
+
+  function xStart() {
+    var q, akteur;
+    try { q = new URLSearchParams(location.search); } catch (e) { return null; }
+    if (!q.get('endpoint') || !q.get('actor')) return null;
+    try { akteur = JSON.parse(q.get('actor')); } catch (e) { return null; }
+    // ältere LMS schicken Listen: {"name":["…"],"mbox":["mailto:…"],"account":[{accountServiceHomePage, accountName}]}
+    ['name', 'mbox', 'mbox_sha1sum', 'openid'].forEach(function (k) { if (Array.isArray(akteur[k])) akteur[k] = akteur[k][0]; });
+    if (Array.isArray(akteur.account)) akteur.account = akteur.account[0];
+    if (akteur.account && akteur.account.accountName) {
+      akteur.account = { homePage: akteur.account.homePage || akteur.account.accountServiceHomePage, name: akteur.account.name || akteur.account.accountName };
+    }
+    akteur.objectType = 'Agent';
+    return { endpoint: q.get('endpoint').replace(/\/?$/, '/'), auth: q.get('auth') || '', akteur: akteur,
+             registration: q.get('registration') || null, aktivitaet: q.get('activity_id') || XAPI_ID };
+  }
+  function xAnfrage(methode, pfad, daten, synchron) {
+    var kopf = { 'X-Experience-API-Version': '1.0.3' };
+    if (X.auth) kopf.Authorization = X.auth;
+    if (daten !== undefined) kopf['Content-Type'] = 'application/json';
+    var body = daten === undefined ? null : JSON.stringify(daten);
+    if (synchron) {
+      try {
+        var r = new XMLHttpRequest();
+        r.open(methode, X.endpoint + pfad, false);
+        for (var k in kopf) r.setRequestHeader(k, kopf[k]);
+        r.send(body);
+        return r;
+      } catch (e) { return null; }
+    }
+    // keepalive: die letzte Aussage kommt auch an, wenn das Fenster gerade geschlossen wird
+    try { return fetch(X.endpoint + pfad, { method: methode, headers: kopf, body: body, keepalive: true, mode: 'cors' }).catch(function () {}); }
+    catch (e) { return Promise.resolve(); }
+  }
+  function xStatePfad() {
+    return 'activities/state?activityId=' + encodeURIComponent(X.aktivitaet) + '&agent=' + encodeURIComponent(JSON.stringify(X.akteur)) +
+      '&stateId=pc-stand' + (X.registration ? '&registration=' + encodeURIComponent(X.registration) : '');
+  }
+  // Stand speichern: immer nur eine Anfrage gleichzeitig, die neueste gewinnt
+  function xSpeichern() {
+    if (xLaeuft || !xWarte) return;
+    var d = xWarte; xWarte = null; xLaeuft = true;
+    var p = xAnfrage('PUT', xStatePfad(), d);
+    (p && p.then ? p : Promise.resolve()).then(function () { xLaeuft = false; xSpeichern(); });
+  }
+  function xKurs() {
+    return { objectType: 'Activity', id: X.aktivitaet, definition: { type: 'http://adlnet.gov/expapi/activities/course',
+      name: { 'de-DE': 'Phishing Challenge' } } };
+  }
+  function xAussage(verb, ergebnis, objekt) {
+    var a = { actor: X.akteur, verb: { id: XV + verb, display: { 'en-US': verb } }, object: objekt || xKurs(), timestamp: new Date().toISOString() };
+    if (ergebnis) a.result = ergebnis;
+    a.context = { contextActivities: objekt ? { parent: [{ id: X.aktivitaet }] } : {} };
+    if (X.registration) a.context.registration = X.registration;
+    log.push(['xapi', verb, JSON.stringify(ergebnis || {}).slice(0, 80)]);
+    xAnfrage('POST', 'statements', a);
+  }
+  var xApi = {
+    init: function () {
+      var r = xAnfrage('GET', xStatePfad(), undefined, true);
+      if (r && r.status === 200 && r.responseText) {
+        try { var d = JSON.parse(r.responseText); xStand = d.s || null; istFertig = !!d.b; } catch (e) {}
+      }
+      xAussage('initialized');
+      return true;
+    },
+    name: function () { return String(X.akteur.name || ''); },
+    laden: function () { return xStand; },
+    speichern: function (stand) { xStand = stand; xWarte = { s: stand, b: istFertig }; xSpeichern(); },
+    loeschen: function () { xStand = null; xAnfrage('DELETE', xStatePfad()); },
+    interaktion: function (id, antwort, richtigeAntwort, korrekt) {
+      xAussage('answered', { response: antwort, success: !!korrekt }, {
+        objectType: 'Activity', id: X.aktivitaet + '/nachricht/' + encodeURIComponent(id),
+        definition: { type: 'http://adlnet.gov/expapi/activities/cmi.interaction', interactionType: 'choice',
+          name: { 'de-DE': id }, correctResponsesPattern: [richtigeAntwort],
+          choices: [{ id: 'phishing', description: { 'de-DE': 'Phishing' } }, { id: 'echt', description: { 'de-DE': 'Echt' } }] }
+      });
+    },
+    fortschritt: function (anteil) {
+      xAussage('progressed', { extensions: { 'https://w3id.org/xapi/cmi5/result/extensions/progress': Math.round(Math.max(0, Math.min(1, anteil)) * 100) } });
+    },
+    abschliessen: function (prozent, bestanden) {
+      var p = Math.round(prozent), wert = { scaled: p / 100, raw: p, min: 0, max: 100 };
+      if (!(istFertig && !bestanden)) {
+        xAussage('completed', { completion: true, score: wert });
+        xAussage(bestanden ? 'passed' : 'failed', { success: !!bestanden, completion: true, score: wert });
+      }
+      if (bestanden) istFertig = true;
+      xWarte = { s: xStand, b: istFertig }; xSpeichern();
+      return true;
+    },
+    beenden: function () {
+      if (beendet) return;
+      beendet = true;
+      var s = Math.floor((Date.now() - start) / 1000);
+      xAussage('terminated', { duration: 'PT' + Math.floor(s / 3600) + 'H' + Math.floor(s % 3600 / 60) + 'M' + (s % 60) + 'S' });
+    }
+  };
+  // Jede öffentliche Funktion: bei xAPI an xApi weiterreichen, sonst SCORM
+  function weiter(name, scorm) {
+    return function () { return X ? xApi[name].apply(null, arguments) : scorm.apply(null, arguments); };
+  }
+
+  var lms = {
     log: log,
     init: function () {
       api = finde();
-      if (!api) return false;
+      if (!api) { X = xStart(); return X ? xApi.init() : false; }
       try {
         var r = ver === '2004' ? api.Initialize('') : api.LMSInitialize('');
         offen = r === true || r === 'true';
@@ -2544,8 +2653,8 @@ window.LMS = (function () {
       commit();
       return true;
     },
-    aktiv: function () { return !!api; },
-    version: function () { return ver; },
+    aktiv: function () { return !!api || !!X; },
+    version: function () { return X ? 'xapi' : ver; },
 
     // "Nachname, Vorname" → "Vorname Nachname"
     name: function () {
@@ -2636,6 +2745,8 @@ window.LMS = (function () {
       try { if (ver === '2004') api.Terminate(''); else api.LMSFinish(''); } catch (e) {}
     }
   };
+  ['name', 'laden', 'speichern', 'loeschen', 'interaktion', 'fortschritt', 'abschliessen', 'beenden'].forEach(function (n) { lms[n] = weiter(n, lms[n]); });
+  return lms;
 })();
 
 </script>
