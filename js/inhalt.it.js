@@ -62,7 +62,7 @@ window.PC_INHALT = {
         {
           icon: 'entscheid',
           titel: 'Phishing o messaggio autentico?',
-          text: 'Per ogni messaggio, decidi se si tratta di un tentativo di phishing o di un messaggio autentico.'
+          text: 'Per ogni messaggio, decidi tu: phishing o autentico?'
         }
       ],
       los: 'Iniziamo!'
@@ -76,10 +76,10 @@ window.PC_INHALT = {
       firmaPlatzhalter: 'azienda.ch',
       email: 'Indirizzo e-mail',
       emailPlatzhalter: 'mario.rossi@azienda.ch',
-      emailHinweis: 'Generato in base al nome e all’azienda inseriti, ma puoi modificarlo.',
+      emailHinweis: 'Creato da nome e azienda – puoi modificarlo.',
       emailFehler: 'Inserisci un indirizzo e-mail valido.',
       weiter: 'Avanti',
-      datenschutz: 'I dati inseriti saranno utilizzati esclusivamente per questo quiz.'
+      datenschutz: 'I tuoi dati servono solo per questo quiz.'
     },
     hallo: {
       titel: 'Ciao {{name}}.',
@@ -256,7 +256,7 @@ window.PC_INHALT = {
           phishing: true,
           joker: 'Leggi con molta attenzione il mittente e il nome dell’allegato – fino all’ultimo carattere.',
           titel: 'Riceverò un aumento di stipendio?',
-          lage: 'Un’e-mail dell’ufficio Risorse Umane comunica l’aggiornamento delle tabelle retributive, disponibili in allegato.',
+          lage: 'Un’e-mail delle Risorse Umane annuncia nuove tabelle retributive in allegato.',
           von: {
             name: 'Risorse umane',
             adresse: 'risorse-umane@{{fake_doppel}}'
@@ -291,11 +291,11 @@ window.PC_INHALT = {
               bei: 'anhang',
               art: 'warn',
               titel: 'Verifica l’estensione reale del file',
-              text: 'Nonostante nel nome compaia «.docx», si tratta di un file eseguibile .exe e non di un documento Word. Per riconoscere il vero tipo di file, è fondamentale controllare l’estensione effettiva alla fine del nome.'
+              text: 'Nonostante nel nome compaia «.docx», si tratta di un file eseguibile .exe e non di un documento Word. Conta l’estensione reale, alla fine del nome del file.'
             }
           ],
           kernTitel: 'Allegato camuffato proveniente da un dominio sconosciuto.',
-          kern: 'Verifica attentamente gli allegati inattesi, prestando particolare attenzione all’estensione completa dei file.'
+          kern: 'Controlla bene gli allegati inattesi e la loro estensione completa.'
         },
         {
           id: 'l1-amazon-delivery-sms',
@@ -361,7 +361,7 @@ window.PC_INHALT = {
               bei: 'absender',
               art: 'ok',
               titel: 'Il dominio del mittente corrisponde',
-              text: 'L’indirizzo del mittente usa il dominio ufficiale linkedin.com. Questo è un elemento rassicurante, tuttavia verifica comunque che la richiesta sia plausibile nel tuo caso.'
+              text: 'L’indirizzo del mittente usa il dominio ufficiale linkedin.com. È un buon segno, ma verifica comunque se la richiesta ha senso per te.'
             }
           ],
           kernTitel: '',
@@ -537,7 +537,7 @@ window.PC_INHALT = {
               bei: 'absender',
               art: 'ok',
               titel: 'Dominio aziendale noto',
-              text: 'L’indirizzo del mittente presenta il dominio ufficiale dell’azienda. Anche la condivisione del file da parte di Anna Bernasconi, del reparto Finanza, appare coerente con il motivo della condivisione.'
+              text: 'L’indirizzo del mittente presenta il dominio ufficiale dell’azienda. Anche la mittente, Anna Bernasconi del reparto Finanza, è coerente con il motivo della condivisione.'
             },
             {
               id: 'b',
@@ -736,7 +736,7 @@ window.PC_INHALT = {
             {
               id: 'b',
               art: 'warn',
-              titel: 'Codice QR inatteso per l’autenticazione a due fattori',
+              titel: 'Codice QR inatteso per la 2FA',
               text: 'Una richiesta inattesa di configurare di nuovo l’autenticazione a due fattori tramite un codice QR ricevuto per e-mail è un segnale d’allarme. Avvia invece la configurazione tramite il portale che conosci o chiarisci la cosa con l’IT.'
             }
           ],

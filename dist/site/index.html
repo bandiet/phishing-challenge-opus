@@ -1857,7 +1857,8 @@ window.PC_INHALT = {
             { id: 'c', art: 'warn', titel: 'Druck durch Stornierung',
               text: 'Die 24-Stunden-Frist setzt dich unter Druck. Prüfe die Anfrage in Ruhe, bevor du handelst.' },
             { id: 'd', art: 'warn', titel: 'Anderes Link-Ziel',
-              text: 'Der Link führt zu gast-zahlung.host. Das ist eine andere Domain als hotel-seeblick.ch. Prüfe die Anfrage über deine ursprüngliche Buchung.' }
+              // Korrektur: Hinweis nannte hotel-seeblick.ch, der Absender ist aber hotel-seeblick.host.
+              text: 'Der Link führt zu gast-zahlung.host – nicht zur Domain des Hotels. Prüfe die Anfrage über deine ursprüngliche Buchung.' }
           ],
           kernTitel: 'Echte Buchungsdaten sind kein Echtheitsbeweis.',
           kern: 'Die Zahlungsaufforderung passt nicht zu deiner Buchung. Lass dich nicht unter Druck setzen und frage über die Kontaktdaten aus deiner Buchungsbestätigung nach.'
