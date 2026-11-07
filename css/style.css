@@ -135,7 +135,7 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 @keyframes blinzeln { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
 @keyframes umschauen { 0%, 30%, 100% { transform: none; } 40%, 55% { transform: translateX(-1.4px); } 65%, 80% { transform: translateX(1.2px) translateY(-.6px); } }
 .joker-zahl { position: absolute; right: -4px; top: -4px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 99px; display: grid; place-items: center;
-  background: #9B6BFF; color: #fff; font-size: .72rem; font-weight: 900; box-shadow: 0 0 0 2.5px #120A45; }
+  background: #7C4DFF; color: #fff; font-size: .72rem; font-weight: 900; box-shadow: 0 0 0 2.5px #120A45; }
 .joker.leer { filter: grayscale(.85) brightness(.75); opacity: .65; }
 .joker.leer .joker-zahl { background: #4B4870; }
 .joker.kommt { animation: jokerKommt .9s var(--sprung); }
@@ -499,13 +499,13 @@ mark { background: none; color: inherit; }
 .g-anhang-ico { width: 2.4em; height: 2.6em; border-radius: 5px; display: grid; place-items: center; background: #2B579A; color: #fff; font-weight: 800; font-size: .62em; letter-spacing: .03em; flex: none; }
 .g-anhang-text { min-width: 0; }
 .g-anhang b { display: block; font-weight: 600; overflow-wrap: anywhere; }
-.g-anhang small { color: #6B7280; }
+.g-anhang small { color: #4B5563; }
 .mail-body { padding: 1.35em 1.5em 1.7em; background: #fff; color: #1D2230; overflow-wrap: anywhere; }
 .mail-body span, .mail-body a { min-width: 0; }   /* Text darf schrumpfen und umbrechen, sonst läuft ein langer Dateiname hinaus */
 .mail-body p { margin: 0 0 .85em; }
 .mail-body p:last-child { margin-bottom: 0; }
 .li-msg .g-anhang { background: #F3F2EF; color: #242424; box-shadow: none; }
-.li-msg .g-anhang small { color: #666; }
+.li-msg .g-anhang small { color: #555; }
 
 /* Markenstile in den Mails (nur Andeutungen, keine Logos) */
 .m-label { font-size: .7em; font-weight: 850; letter-spacing: .15em; text-transform: uppercase; color: #0F766E; }

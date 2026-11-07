@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------
-   Phishing Challenge (intern: „Opus“) – Inhalt DEUTSCH
+   Phishing Challenge – Inhalt DEUTSCH
    ------------------------------------------------------------------
    Nachrichten, Situationen, Warnsignale, Feedback und Sicherheitstipps
    stammen 1:1 aus der ursprünglichen Phishing Challenge (CCT Phishing

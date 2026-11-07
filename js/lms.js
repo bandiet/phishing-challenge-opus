@@ -74,10 +74,13 @@ window.LMS = (function () {
 
   var istFertig = false, interaktionen = 0;
 
+  var X = null;   // xAPI-Verbindung (nur im xAPI-Paket gesetzt)
+  /*XAPI*/
   /* ---------- xAPI (Tin Can) ----------
      Das LMS startet index.html mit endpoint, auth, actor, registration und activity_id in der Adresse
-     (übliche Tin-Can-Startparameter). Aussagen gehen an <endpoint>statements, der Stand liegt in der State API. */
-  var X = null, xWarte = null, xLaeuft = false, xStand = null;
+     (übliche Tin-Can-Startparameter). Aussagen gehen an <endpoint>statements, der Stand liegt in der State API.
+     Nur im xAPI-Paket: bouw.py entfernt alles zwischen den XAPI-Markierungen aus den SCORM-Paketen. */
+  var xWarte = null, xLaeuft = false, xStand = null;
   var XAPI_ID = 'https://phishing-challenge-opus.arnebenoist.workers.dev/xapi/' + ((window.PC_INHALT && window.PC_INHALT.sprache) || 'de');
   var XV = 'http://adlnet.gov/expapi/verbs/';
 
@@ -182,12 +185,16 @@ window.LMS = (function () {
   function weiter(name, scorm) {
     return function () { return X ? xApi[name].apply(null, arguments) : scorm.apply(null, arguments); };
   }
+  /*/XAPI*/
 
   var lms = {
     log: log,
     init: function () {
       api = finde();
-      if (!api) { X = xStart(); return X ? xApi.init() : false; }
+      if (!api) {
+        /*XAPI*/ X = xStart(); if (X) return xApi.init(); /*/XAPI*/
+        return false;
+      }
       try {
         var r = ver === '2004' ? api.Initialize('') : api.LMSInitialize('');
         offen = r === true || r === 'true';
@@ -247,13 +254,15 @@ window.LMS = (function () {
       var n = interaktionen++, p = 'cmi.interactions.' + n + '.';
       setze(p + 'id', id);
       setze(p + 'type', 'choice');
-      setze(p + 'correct_responses.0.pattern', richtigeAntwort);
+      // SCORM 1.2 erlaubt bei choice nur einzelne Zeichen (0–9, a–z): p = Phishing, e = echt
+      var kurz = function (w) { return ver === '2004' ? w : (w === 'phishing' ? 'p' : 'e'); };
+      setze(p + 'correct_responses.0.pattern', kurz(richtigeAntwort));
       if (ver === '2004') {
         setze(p + 'learner_response', antwort);
         setze(p + 'result', korrekt ? 'correct' : 'incorrect');
         setze(p + 'timestamp', new Date().toISOString().slice(0, 19));
       } else {
-        setze(p + 'student_response', antwort);
+        setze(p + 'student_response', kurz(antwort));
         setze(p + 'result', korrekt ? 'correct' : 'wrong');
         setze(p + 'time', new Date().toTimeString().slice(0, 8));
       }
@@ -297,6 +306,6 @@ window.LMS = (function () {
       try { if (ver === '2004') api.Terminate(''); else api.LMSFinish(''); } catch (e) {}
     }
   };
-  ['name', 'laden', 'speichern', 'loeschen', 'interaktion', 'fortschritt', 'abschliessen', 'beenden'].forEach(function (n) { lms[n] = weiter(n, lms[n]); });
+  /*XAPI*/ ['name', 'laden', 'speichern', 'loeschen', 'interaktion', 'fortschritt', 'abschliessen', 'beenden'].forEach(function (n) { lms[n] = weiter(n, lms[n]); }); /*/XAPI*/
   return lms;
 })();

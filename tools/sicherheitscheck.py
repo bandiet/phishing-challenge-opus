@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Sicherheits- und Funktionsprüfung aller Pakete vor einer Lieferung.
 
-    python3 tools/sicherheitscheck.py                 prüft dist/*.zip, Bericht in dist/pruefung/
+    python3 tools/sicherheitscheck.py                 prüft dist/pakete/*.zip, Bericht in dist/pruefung/
     python3 tools/sicherheitscheck.py ORDNER_MIT_ZIPS [BERICHTORDNER]
     … --schnell                                       ohne Bildschirmfotos (nur Paket- und LMS-Prüfung)
 
 Was geprüft wird (Punkte der Security-Checkliste):
-  1  Dateien im Paket nur aus der erlaubten Liste; alle Formate einer Sprache enthalten dieselbe index.html
+  1  Dateien im Paket nur aus der erlaubten Liste; alle Formate einer Sprache enthalten denselben Kurs
+     (SCORM-Pakete gleich, xAPI = derselbe Kurs plus xAPI-Schnittstelle)
   2  Keine ladenden Verweise ins Internet (Schriften, Skripte, Bilder, CSS); Netzwerk-Aufrufe im Code aufgelistet
   3  Keine Schlüssel/Passwörter (gitleaks + eigene Muster)
   4  Alle Adressen, Links und QR-Codes aufgelistet (QR-Codes werden lokal ausgelesen, nichts wird geöffnet)
@@ -16,8 +17,15 @@ Was geprüft wird (Punkte der Security-Checkliste):
      Je Format ein kompletter Durchlauf mit nachgebautem LMS (SCORM 1.2, 2004 3rd/4th, xAPI) und Prüfung von
      Status, Punktzahl, Antworten und Zwischenstand; je Sprache Bildschirmfotos aller Seiten in drei Größen.
   8  SHA-256-Prüfsummen der Pakete
+  9  Lieferstand: keine Test-Sprünge, xAPI-Code nur im xAPI-Paket, Content-Security-Policy, Manifest mit Metadaten;
+     im Browser: Adress-Sprünge (#l3n5, #ende, ?neu) ändern im LMS nichts; SCORM-1.2-Antwortwerte nur einzelne Zeichen
+  10 Barrierefreiheit (WCAG 2.2 AA, automatisch): axe-core auf allen Seiten, Link-Ziele per Tastatur, 200 % Zoom (640 × 400)
 
-Braucht: Google Chrome, Python-Paket playwright, gitleaks, clamav, exiftool, zbar (brew install gitleaks clamav exiftool zbar).
+Bildschirmfotos und Barrierefreiheit laufen auf der Entwicklerversion (dist/<sprache>/index.html, mit Test-Sprüngen),
+aber nur, wenn sie nachweislich denselben Kurs enthält wie das Paket (Vergleich ohne Test- und xAPI-Teile).
+
+Braucht: Google Chrome, Python-Pakete playwright und axe-playwright-python (enthält axe-core, wird lokal eingespielt),
+gitleaks, clamav, exiftool, zbar (brew install gitleaks clamav exiftool zbar).
 Fehlt ein Werkzeug, wird der Punkt übersprungen und im Bericht als „nicht geprüft“ markiert.
 """
 import base64
@@ -39,7 +47,7 @@ import zipfile
 HIER = os.path.dirname(os.path.abspath(__file__))
 P = os.path.dirname(HIER)
 args = [a for a in sys.argv[1:] if not a.startswith('--')]
-QUELLE = os.path.abspath(args[0]) if args else os.path.join(P, 'dist')
+QUELLE = os.path.abspath(args[0]) if args else os.path.join(P, 'dist', 'pakete')
 ZIEL = os.path.abspath(args[1]) if len(args) > 1 else os.path.join(P, 'dist', 'pruefung')
 SCHNELL = '--schnell' in sys.argv
 CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
@@ -51,6 +59,18 @@ ERLAUBT_ENDUNG = ('.html', '.js', '.css', '.json', '.xml', '.xsd', '.png', '.jpg
 NUR_KENNUNG = ('http://www.w3.org/', 'http://www.imsproject.org/', 'http://www.imsglobal.org/', 'http://www.adlnet.org/',
                'http://adlnet.gov/expapi/', 'https://w3id.org/xapi/', 'http://projecttincan.com/',
                'https://phishing-challenge-opus.arnebenoist.workers.dev/xapi/')
+
+FORMAT = {'SCORM-1.2': 'SCORM12', 'SCORM-2004-3rd': 'SCORM2004_3rd', 'SCORM-2004-4th': 'SCORM2004_4th'}
+CSP_META = r'<meta http-equiv="Content-Security-Policy"[^>]*>\n?'
+
+
+def kern(text):
+    """Kursinhalt ohne Test-Sprünge, xAPI-Schnittstelle und CSP: muss in allen Formaten einer Sprache gleich sein."""
+    text = re.sub(CSP_META, '', text)
+    for block in ('TEST', 'XAPI'):
+        text = re.sub(r'/\*' + block + r'\*/.*?/\*/' + block + r'\*/', '', text, flags=re.S)
+    return hashlib.sha256(text.encode()).hexdigest()[:12]
+
 
 ergebnisse = []        # (punkt, titel, status ok|warn|fehler|aus, details-html)
 def melde(punkt, titel, status, details=''):
@@ -76,7 +96,8 @@ os.makedirs(ZIEL, exist_ok=True)
 arbeit = tempfile.mkdtemp(prefix='pruefung-')
 pakete = {}           # name → {pfad, sprache, format, ordner, dateien}
 for z in zips:
-    m = re.search(r'_([A-Z]{2})_(SCORM12|SCORM2004_3rd|SCORM2004_4th|SCORM2004|xAPI)\.zip$', z)
+    m = (re.search(r'_([A-Z]{2})_(SCORM12|SCORM2004_3rd|SCORM2004_4th|SCORM2004|xAPI)\.zip$', z) or
+         re.search(r'_([A-Z]{2})_(SCORM-1\.2|SCORM-2004-3rd|SCORM-2004-4th|xAPI)_', z))
     ordner = os.path.join(arbeit, z[:-4])
     with zipfile.ZipFile(os.path.join(QUELLE, z)) as zf:
         namen = zf.namelist()
@@ -84,7 +105,7 @@ for z in zips:
             if n.startswith('/') or '..' in n.split('/'):
                 sys.exit(f'{z}: verdächtiger Pfad {n}')
         zf.extractall(ordner)
-    pakete[z] = {'pfad': os.path.join(QUELLE, z), 'sprache': m[1].lower() if m else '?', 'format': m[2] if m else '?',
+    pakete[z] = {'pfad': os.path.join(QUELLE, z), 'sprache': m[1].lower() if m else '?', 'format': FORMAT.get(m[2], m[2]) if m else '?',
                  'ordner': ordner, 'dateien': namen}
 print(f'{len(pakete)} Pakete aus {QUELLE}')
 
@@ -104,14 +125,14 @@ for sprache in sorted({p['sprache'] for p in pakete.values()}):
     hashes = {}
     for z, p in pakete.items():
         if p['sprache'] == sprache:
-            hashes[p['format']] = hashlib.sha256(open(os.path.join(p['ordner'], 'index.html'), 'rb').read()).hexdigest()[:12]
+            hashes[p['format']] = kern(open(os.path.join(p['ordner'], 'index.html'), encoding='utf-8').read())
     (gleich if len(set(hashes.values())) == 1 else ungleich).append(f'{sprache.upper()}: ' + ', '.join(f'{k} {v}' for k, v in hashes.items()))
 melde('1', 'Alle Formate einer Sprache haben denselben Kursinhalt', 'warn' if ungleich else 'ok',
-      liste(ungleich or gleich) + '<p class="info">Gleicher Inhalt heißt: Inhalt und Darstellung müssen nur je Sprache geprüft werden, das LMS-Verhalten nur je Format.</p>')
+      liste(ungleich or gleich) + '<p class="info">Verglichen ohne xAPI-Schnittstelle (steht nur im xAPI-Paket) und ohne CSP-Zeile. Gleicher Inhalt heißt: Inhalt und Darstellung müssen nur je Sprache geprüft werden, das LMS-Verhalten nur je Format.</p>')
 
 # ---------- 2.–5. Inhalt der index.html (je Sprache einmal) ----------
 je_sprache = {}
-for z, p in pakete.items():
+for z, p in sorted(pakete.items(), key=lambda x: x[1]['format'] != 'xAPI'):
     je_sprache.setdefault(p['sprache'], p)
 LADEND = [
     (r'''<(?:script|img|link|iframe|audio|video|source|embed|object|track|image|use)\b[^>]*?\s(?:src|href|srcset|poster|data|xlink:href)\s*=\s*["']\s*(?:https?:)?//[^"']+''', 'Element lädt externe Datei'),
@@ -135,11 +156,15 @@ for sprache, p in sorted(je_sprache.items()):
     for muster, art in LADEND:
         for t in re.finditer(muster, ohne_daten, re.I):
             ladend.append(f'{sprache.upper()} – {art}: <code>{e(t.group(0)[:140])}</code>')
-    if sprache == sorted(je_sprache)[0]:          # Code ist in allen Sprachen gleich: einmal auflisten
-        for t in re.finditer(NETZ, ohne_daten):
-            umfeld = ohne_daten[max(0, t.start() - 160):t.end() + 60]
-            erwartet = 'X.endpoint' in umfeld or 'xAnfrage' in umfeld
-            netz.append(('erwartet' if erwartet else 'PRÜFEN') + f': <code>{e(t.group(0))}</code> … <small>{e(" ".join(umfeld.split())[-160:])}</small>')
+    if sprache == sorted(je_sprache)[0]:          # Code ist in allen Sprachen gleich: einmal auflisten, je Format
+        for z2, p2 in sorted(pakete.items()):
+            if p2['sprache'] != sprache:
+                continue
+            code = open(os.path.join(p2['ordner'], 'index.html'), encoding='utf-8', errors='replace').read()
+            for t in re.finditer(NETZ, code):
+                umfeld = code[max(0, t.start() - 160):t.end() + 60]
+                erwartet = p2['format'] == 'xAPI' and ('X.endpoint' in umfeld or 'xAnfrage' in umfeld)
+                netz.append(('erwartet' if erwartet else 'PRÜFEN') + f' ({p2["format"]}): <code>{e(t.group(0))}</code> … <small>{e(" ".join(umfeld.split())[-160:])}</small>')
         for name, muster in RISKANT.items():
             n = len(re.findall(muster, ohne_daten))
             if n:
@@ -185,7 +210,8 @@ for sprache, p in sorted(je_sprache.items()):
 melde('2', 'Keine ladenden Verweise ins Internet', 'fehler' if ladend else 'ok',
       liste(ladend, 'Keine Schriften, Skripte, Bilder oder Stile von fremden Servern.'))
 melde('2', 'Netzwerk-Aufrufe im Code', 'warn' if any(n.startswith('PRÜFEN') for n in netz) else 'ok',
-      liste(netz, 'Keine.') + '<p class="info">„erwartet“ = xAPI-Schnittstelle: sendet nur, wenn das LMS beim Start eine LRS-Adresse mitgibt.</p>')
+      liste(netz, 'Keine.') + '<p class="info">„erwartet“ = xAPI-Schnittstelle im xAPI-Paket: sendet nur, wenn das LMS beim Start eine LRS-Adresse mitgibt. '
+      'In den SCORM-Paketen darf hier nichts stehen.</p>')
 gitleaks_funde, gitleaks_ignoriert = [], []
 if werkzeug('gitleaks'):
     for sprache, p in sorted(je_sprache.items()):
@@ -217,6 +243,34 @@ r_text = [f'<code>{e(k)}</code>: {v}×' for k, v in riskant.items()]
 melde('5', 'Riskanter Code (für den Entwickler)', 'warn' if any(k != 'innerHTML (Info)' for k in riskant) else 'ok',
       liste(r_text) + '<p class="info">innerHTML ist im Kurs üblich (Texte werden vorher maskiert) und nur zur Info gezählt. '
       'Alles andere bitte von einem Entwickler ansehen lassen.</p>')
+
+# ---------- 9. Lieferstand (statisch) ----------
+liefer = []
+for z, p in sorted(pakete.items()):
+    code = open(os.path.join(p['ordner'], 'index.html'), encoding='utf-8', errors='replace').read()
+    probleme = [w for w in ('/*TEST*/', 'function route(', '?neu') if w in code]
+    if p['format'] != 'xAPI':
+        probleme += [w for w in ('xStart', 'XMLHttpRequest', 'fetch(', 'endpoint') if w in code]
+    csp = re.search(r'<meta http-equiv="Content-Security-Policy" content="([^"]+)"', code)
+    soll = "connect-src https:" if p['format'] == 'xAPI' else "connect-src 'none'"
+    if not csp:
+        probleme.append('keine Content-Security-Policy')
+    elif soll not in csp.group(1) or "default-src 'none'" not in csp.group(1):
+        probleme.append('CSP zu offen: ' + csp.group(1))
+    manifest = next((n for n in p['dateien'] if n in ('imsmanifest.xml', 'tincan.xml')), None)
+    if manifest:
+        mx = open(os.path.join(p['ordner'], manifest), encoding='utf-8').read()
+        if manifest == 'imsmanifest.xml':
+            if 'schemaLocation' in mx:
+                probleme.append('schemaLocation ohne mitgelieferte XSD')
+            if not re.search(r'<(?:imsmd|lom):description>', mx) or not re.search(r'<(?:imsmd|lom):language>', mx):
+                probleme.append('Manifest ohne Beschreibung/Sprache')
+    else:
+        probleme.append('kein Manifest')
+    liefer.append(('✗ ' if probleme else '✓ ') + f'{e(z)}' + (': ' + ', '.join(f'<code>{e(x)}</code>' for x in probleme) if probleme else ''))
+melde('9', 'Lieferstand: keine Test-Sprünge, xAPI nur im xAPI-Paket, CSP, Manifest', 'fehler' if any(x.startswith('✗') for x in liefer) else 'ok',
+      liste(liefer) + '<p class="info">Test-Sprünge (#l2n3, ?neu) gibt es nur in der Entwicklerversion. Die CSP verbietet jedes Nachladen; '
+      'SCORM-Pakete dürfen nichts senden, das xAPI-Paket nur per https an das LRS, das das LMS beim Start nennt.</p>')
 
 # ---------- 6. Virenscan ----------
 if werkzeug('clamscan'):
@@ -297,7 +351,7 @@ def durchlauf(browser, paket):
         url = route.request.url
         if url.startswith(BASIS):
             return route.continue_()
-        if url.startswith('http://lrs.invalid/'):            # nachgebautes LRS für xAPI, verlässt den Rechner nicht
+        if url.startswith('https://lrs.invalid/'):            # nachgebautes LRS für xAPI, verlässt den Rechner nicht
             if '/statements' in url and route.request.method == 'POST':
                 aussagen.append(json.loads(route.request.post_data or '{}'))
                 return route.fulfill(status=200, body='["ok"]', headers={'Access-Control-Allow-Origin': '*'})
@@ -317,10 +371,11 @@ def durchlauf(browser, paket):
     seite = kontext.new_page()
     fehler = []
     seite.on('pageerror', lambda x: fehler.append(str(x)))
+    seite.on('console', lambda m: fehler.append('CSP: ' + m.text) if m.type == 'error' and 'Content Security Policy' in m.text else None)
     url = f'{BASIS}/{os.path.basename(paket["ordner"])}/index.html'
     if fmt == 'xAPI':
         akteur = json.dumps({'name': 'Anna Test', 'mbox': 'mailto:anna.test@beispiel.de'})
-        url += ('?endpoint=http%3A%2F%2Flrs.invalid%2Fxapi%2F&auth=Basic%20dGVzdA%3D%3D&registration=00000000-0000-4000-8000-000000000001'
+        url += ('?endpoint=https%3A%2F%2Flrs.invalid%2Fxapi%2F&auth=Basic%20dGVzdA%3D%3D&registration=00000000-0000-4000-8000-000000000001'
                 '&actor=' + __import__('urllib.parse').parse.quote(akteur))
     seite.goto(url)
     seite.add_style_tag(content=STILL)
@@ -351,6 +406,12 @@ def durchlauf(browser, paket):
             gut = d.get(k) == v
             ok &= gut
             befunde.append(f'{"✓" if gut else "✗"} <code>{k}</code> = {e(d.get(k, "–"))} (soll {v})')
+        werte = [v for k, v in d.items() if k.startswith('cmi.interactions.') and (k.endswith('.student_response') or k.endswith('.learner_response') or k.endswith('.pattern'))]
+        erlaubt = (lambda v: re.fullmatch(r'[0-9a-z]', v)) if lms['ver'] == '1.2' else (lambda v: v in ('phishing', 'echt'))
+        falsch = sorted({v for v in werte if not erlaubt(v)})
+        ok &= not falsch and bool(werte)
+        befunde.append(('✗ ' if falsch else '✓ ') + f'Antwortwerte {"1.2-konform (einzelne Zeichen)" if lms["ver"] == "1.2" else "gültige Kennungen"}: ' +
+                       ', '.join(sorted(set(werte))) + (f' – unzulässig: {", ".join(falsch)}' if falsch else ''))
         anzahl = len({k.split('.')[2] for k in d if k.startswith('cmi.interactions.') and k.endswith('.id')})
         ok &= anzahl == 15
         befunde.append(f'{"✓" if anzahl == 15 else "✗"} {anzahl} Antworten als Interaktion gemeldet (soll 15)')
@@ -376,11 +437,119 @@ def durchlauf(browser, paket):
     return ok, befunde
 
 
+def spruenge(browser, paket):
+    """Adress-Sprünge im Lieferpaket mit LMS: dürfen weder springen noch etwas melden oder löschen."""
+    befunde, ok = [], True
+    ver = '"2004"' if paket['format'].startswith('SCORM2004') else '"1.2"'
+    for zusatz in ('#l3n5', '#ende', '#e3', '?neu#l3n5'):
+        kontext = browser.new_context(viewport={'width': 1280, 'height': 800})
+        kontext.add_init_script(STUB % ver)
+        kontext.route('**/*', lambda r: r.continue_() if r.request.url.startswith(BASIS) else r.abort())
+        seite = kontext.new_page()
+        seite.goto(f'{BASIS}/{os.path.basename(paket["ordner"])}/index.html{zusatz}')
+        seite.wait_for_timeout(1800)
+        r = seite.evaluate("""() => ({ screen: (([...document.querySelectorAll('.screen:not(.raus)')].pop() || {}).className || ''),
+            daten: window.__lms.daten })""")
+        kontext.close()
+        status = r['daten'].get('cmi.core.lesson_status') or r['daten'].get('cmi.success_status') or ''
+        gut = 's-start' in r['screen'] and status not in ('passed', 'failed') and not r['daten'].get('cmi.core.score.raw') and not r['daten'].get('cmi.score.raw')
+        ok &= gut
+        befunde.append(f'{"✓" if gut else "✗"} <code>index.html{e(zusatz)}</code>: Startseite = {"ja" if "s-start" in r["screen"] else "nein (" + e(r["screen"]) + ")"}, '
+                       f'Status {e(status or "–")}, keine Punktzahl gemeldet' if gut else f'✗ <code>index.html{e(zusatz)}</code>: {e(r["screen"])}, Status {e(status)}')
+    return ok, befunde
+
+
+def entwickler(paket):
+    """Entwicklerversion dist/<sprache>/index.html für Fotos und Barrierefreiheit – nur wenn derselbe Kurs wie im Paket."""
+    dev = os.path.join(P, 'dist', paket['sprache'], 'index.html')
+    if not os.path.exists(dev):
+        return None, 'Entwicklerversion fehlt (erst tools/bouw.py bauen)'
+    if kern(open(dev, encoding='utf-8').read()) != kern(open(os.path.join(paket['ordner'], 'index.html'), encoding='utf-8').read()):
+        return None, 'Entwicklerversion weicht vom Paket ab (neu bauen)'
+    ordner = os.path.join(arbeit, 'dev-' + paket['sprache'])
+    os.makedirs(ordner, exist_ok=True)
+    shutil.copy(dev, os.path.join(ordner, 'index.html'))
+    return {**paket, 'ordner': ordner}, ''
+
+
+AXE = None
+try:
+    import axe_playwright_python
+    AXE = os.path.join(os.path.dirname(axe_playwright_python.__file__), 'axe.min.js')
+except ImportError:
+    pass
+
+
+def barrierefrei(browser, paket):
+    """axe-core (WCAG 2.2 A/AA) auf allen Seiten, Link-Ziele per Tastatur, 200 % Zoom."""
+    sprache = paket['sprache'].upper()
+    url = f'{BASIS}/{os.path.basename(paket["ordner"])}/index.html?neu#'
+    axe, tastatur, zoom = {}, [], []
+    kontext = browser.new_context(viewport={'width': 1280, 'height': 800})
+    kontext.route('**/*', lambda r: r.continue_() if r.request.url.startswith(BASIS) else r.abort())
+    # Zeitgeber zehnmal schneller: Chat-Blasen sind fertig getippt, bevor geprüft wird
+    kontext.add_init_script('(() => { const st = window.setTimeout; window.setTimeout = (f, d, ...a) => st(f, (d || 0) / 10, ...a); })();')
+    seite = kontext.new_page()
+    for s in SEITEN:
+        seite.goto(url + s)
+        seite.add_style_tag(content=STILL)
+        seite.wait_for_timeout(1200 if s == 'ende' else 700)
+        if AXE:
+            seite.add_script_tag(path=AXE)
+            r = seite.evaluate("""async () => (await axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] } }))
+                .violations.flatMap(v => v.nodes.map(n => { const el = document.querySelector(n.target.join(' '));
+                  return { id: v.id, fremd: !!(el && el.closest('.m-rahmen')), ziel: n.target.join(' '), info: ((n.any[0] || {}).message || '').split('(')[0] }; }))""")
+            for v in r:
+                axe.setdefault((v['id'], 'nachgebildete Mail/App' if v['fremd'] else 'Kurs-Oberfläche'), []).append(f'#{s} {v["ziel"][:70]}: {v["info"][:90]}')
+        # Tastatur: jedes Link-Ziel und jeder Absender ist fokussierbar und zeigt beim Tab-Fokus das Ziel; Esc schließt
+        if s.startswith('l') and 'n' in s:
+            r = seite.evaluate("""() => [...document.querySelectorAll('.screen:not(.raus) .m-spalte [data-ziel], .screen:not(.raus) .m-spalte [data-antwort]')]
+                .map(a => ({ tab: a.tabIndex, beschr: !!a.getAttribute('aria-describedby') && !!document.getElementById(a.getAttribute('aria-describedby')) }))""")
+            schlecht = [x for x in r if x['tab'] < 0 or not x['beschr']]
+            if schlecht:
+                tastatur.append(f'{sprache} #{s}: {len(schlecht)} von {len(r)} Link-Zielen nicht per Tastatur erreichbar')
+            if r:
+                gefunden = False
+                for _ in range(40):
+                    seite.keyboard.press('Tab')
+                    a = seite.evaluate("""() => { const a = document.activeElement; return !!(a && a.closest && a.closest('.m-spalte') && a.matches('[data-ziel], [data-antwort]')); }""")
+                    if a:
+                        gefunden = True
+                        break
+                if not gefunden:
+                    tastatur.append(f'{sprache} #{s}: Link-Ziel mit Tab nicht erreicht')
+                else:
+                    an = seite.evaluate("document.getElementById('tooltip').classList.contains('an')")
+                    seite.keyboard.press('Escape')
+                    zu = not seite.evaluate("document.getElementById('tooltip').classList.contains('an')")
+                    if not an or not zu:
+                        tastatur.append(f'{sprache} #{s}: Ziel erscheint beim Fokus {"nicht" if not an else ""}{"" if zu else " / Esc schließt es nicht"}')
+    kontext.close()
+    # 200 % Zoom auf 1280 × 800 = 640 × 400; dazu 320 px Breite (WCAG 1.4.10)
+    for w, h in ((640, 400), (320, 568)):
+        kontext = browser.new_context(viewport={'width': w, 'height': h})
+        kontext.route('**/*', lambda r: r.continue_() if r.request.url.startswith(BASIS) else r.abort())
+        seite = kontext.new_page()
+        for s in [x for x in SEITEN if x.startswith('l')]:
+            seite.goto(url + s)
+            seite.add_style_tag(content=STILL)
+            seite.wait_for_timeout(500)
+            r = seite.evaluate("""() => { const w = innerWidth, h = innerHeight, f = [];
+                if (document.documentElement.scrollWidth > w + 1) f.push('Seite breiter als das Fenster');
+                document.querySelectorAll('.screen:not(.raus) .antwort').forEach(b => { const r = b.getBoundingClientRect();
+                  if (r.right > w + 1 || r.left < -1 || r.bottom > h + 1) f.push(b.textContent.trim() + ' ragt ' + Math.round(Math.max(r.right - w, r.bottom - h, -r.left)) + ' px hinaus'); });
+                return f; }""")
+            for x in r:
+                zoom.append(f'{sprache} {w}×{h} #{s}: {e(x)}')
+        kontext.close()
+    return axe, tastatur, zoom
+
+
 SEITEN = ['start', 'profil'] + [f'l{l}n{m}' for l in (1, 2, 3) for m in range(1, 6)] + ['k1', 'k2', 'ende']
 GROESSEN = [('Telefon', 375, 812, True), ('Tablet', 768, 1024, True), ('Desktop', 1280, 800, False)]
 
 
-def fotos(browser, paket, ordner):
+def fotos(browser, paket, ordner):   # paket = Entwicklerversion (Test-Sprünge nötig)
     """Bildschirmfotos aller Seiten in drei Größen; misst dabei Überlauf. Gibt (Befunde, Kontaktbögen) zurück."""
     from PIL import Image, ImageDraw, ImageFont
     sprache = paket['sprache'].upper()
@@ -446,17 +615,53 @@ try:
                 continue
             ok, befunde = durchlauf(browser, p)
             melde('7', f'Kompletter Durchlauf {p["format"]} ({p["sprache"].upper()}) im abgeschotteten Browser', 'ok' if ok else 'fehler', liste(befunde))
+        sb = []
+        for z, p in sorted(pakete.items()):
+            if p['sprache'] == sprache1 and p['format'].startswith('SCORM'):
+                ok, befunde = spruenge(browser, p)
+                sb.append((ok, f'<b>{e(p["format"])}</b>' + liste(befunde)))
+        melde('9', f'Adress-Sprünge im LMS ({sprache1.upper()}): keine Abkürzung zum Bestehen', 'ok' if all(x[0] for x in sb) else 'fehler',
+              ''.join(x[1] for x in sb) + '<p class="info">Nachgestellt wie im Prüfbericht: Wer #l3n5 oder #ende an die Adresse hängt, landet auf der Startseite; '
+              'das LMS bekommt weder Status noch Punktzahl. Ans LMS geht ein Abschluss außerdem nur, wenn alle 15 Nachrichten beantwortet sind.</p>')
+        devs, dev_hinweise = {}, []
+        for sprache, p in sorted(je_sprache.items()):
+            d, warum = entwickler(p)
+            if d:
+                devs[sprache] = d
+            else:
+                dev_hinweise.append(f'{sprache.upper()}: {warum}')
         if not SCHNELL:
             fotoordner = os.path.join(ZIEL, 'fotos')
             os.makedirs(fotoordner, exist_ok=True)
             alle = []
-            for sprache, p in sorted(je_sprache.items()):
-                b, bo = fotos(browser, p, fotoordner)
+            for sprache, d in sorted(devs.items()):
+                b, bo = fotos(browser, d, fotoordner)
                 alle += b
                 boegen += bo
-            melde('7', f'Darstellung: {len(SEITEN)} Seiten × 3 Größen × {len(je_sprache)} Sprachen', 'warn' if alle else 'ok',
-                  liste(alle, 'Nichts abgeschnitten, keine Seite breiter als das Fenster, keine Verbindung nach außen.') +
-                  '<p class="info">Kontaktbögen unten bitte kurz ansehen: stimmt die Darstellung in jeder Sprache?</p>')
+            melde('7', f'Darstellung: {len(SEITEN)} Seiten × 3 Größen × {len(devs)} Sprachen', 'warn' if alle or dev_hinweise else 'ok',
+                  liste(alle + dev_hinweise, 'Nichts abgeschnitten, keine Seite breiter als das Fenster, keine Verbindung nach außen.') +
+                  '<p class="info">Aufgenommen mit der Entwicklerversion, die nachweislich denselben Kurs enthält wie die Pakete. '
+                  'Kontaktbögen unten bitte kurz ansehen: stimmt die Darstellung in jeder Sprache?</p>')
+            axe_alle, tast_alle, zoom_alle = {}, [], []
+            for sprache, d in sorted(devs.items()):
+                a, ta, zo = barrierefrei(browser, d)
+                for k, v in a.items():
+                    axe_alle.setdefault(k, []).extend(f'{sprache.upper()} {x}' for x in v)
+                tast_alle += ta
+                zoom_alle += zo
+            axe_text = [f'<code>{e(k[0])}</code> ({e(k[1] or "")}): ' + '; '.join(e(x) for x in v[:4]) + (f' … ({len(v)} Seiten)' if len(v) > 4 else '')
+                        for k, v in sorted(axe_alle.items())]
+            eigen = any(k[1] == 'Kurs-Oberfläche' for k in axe_alle)
+            melde('10', 'Barrierefreiheit: axe-core (WCAG 2.2 A/AA)', ('fehler' if eigen else 'warn' if axe_alle else 'ok') if AXE else 'aus',
+                  (liste(axe_text, f'0 Verstöße auf {len(SEITEN)} Seiten × {len(devs)} Sprachen.') +
+                   '<p class="info">„nachgebildete Mail/App“ = Inhalt der Übungs-Nachricht (wirkt bewusst wie das Original, z. B. graue Kleintexte). '
+                   '„Kurs-Oberfläche“ = eigene Bedienung des Kurses, muss 0 sein.</p>') if AXE else
+                  '<p>axe-core fehlt: <code>python3 -m pip install --user axe-playwright-python</code></p>')
+            melde('10', 'Barrierefreiheit: Link-Ziele per Tastatur (2.1.1, 1.4.13)', 'fehler' if tast_alle else 'ok',
+                  liste(tast_alle, 'Jedes Link-Ziel und jeder Absender ist per Tab erreichbar, zeigt beim Fokus das Ziel, Esc schließt es; '
+                        'Bildschirmleser bekommen das Ziel über aria-describedby.'))
+            melde('10', 'Barrierefreiheit: 200 % Zoom und 320 px Breite (1.4.4, 1.4.10)', 'fehler' if zoom_alle else 'ok',
+                  liste(zoom_alle, 'Bei 640 × 400 und 320 × 568 passen Phishing/Echt auf jeder Nachricht ins Fenster, kein Querscrollen.'))
         browser.close()
 except ImportError:
     melde('7', 'Abgeschotteter Browser', 'aus', '<p>playwright nicht installiert: <code>python3 -m pip install --user playwright</code></p>')

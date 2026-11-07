@@ -1,14 +1,16 @@
 /* ------------------------------------------------------------------
-   Phishing Challenge (intern: Opus) – Ablauf
+   Phishing Challenge – Ablauf
    Start → Briefing → Profil → Hallo →
    (Level-Start → 5 Nachrichten → Auswertung → Sicherheitstipp) ×3 → Ergebnis
    Eine Nachricht: Situation lesen → Phishing/Echt → Ergebnis (Stempel,
    Serie, Hacker nacheinander) → „Details anzeigen“ → Hinweise der Reihe
    nach; die aktive Stelle bekommt einen Rahmen, der Rest wird dunkler.
    Joker (für eine Serie verdient) zeigen vor der Antwort einen Tipp.
-   Test-Sprünge: #start #profil #l2 (Level-Start) #l2n3 (Nachricht)
-   #e1 (Auswertung) #k1 (Sicherheitstipp) #ende – ?neu löscht den Stand.
    ------------------------------------------------------------------ */
+/*TEST*/
+/* Test-Sprünge (nur Entwicklerversion): #start #profil #l2 (Level-Start) #l2n3 (Nachricht)
+   #e1 (Auswertung) #k1 (Sicherheitstipp) #ende – ?neu löscht den Stand. */
+/*/TEST*/
 (function () {
   'use strict';
 
@@ -142,7 +144,9 @@
   const zielFuer = l => Math.ceil(LV[l].nachrichten.length * (E.zielProzent || 70) / 100 - 1e-9);
 
   /* ================= Layout: breit (Panel rechts) oder schmal (Leiste unten) ================= */
-  const MQ = window.matchMedia('(min-width: 960px), (min-width: 640px) and (max-height: 560px) and (orientation: landscape)');
+  // breites Layout (Nachricht links, Antworten rechts): ab 960 px oder auf Telefonen quer ab 740 px. Darunter das schmale
+  // Layout, auch bei 200 % Zoom (1280 × 800 → 640 × 400), sonst passt das Antwortfeld nicht (WCAG 1.4.10)
+  const MQ = window.matchMedia('(min-width: 960px), (min-width: 740px) and (max-height: 560px) and (orientation: landscape)');
   function layout() {
     app.classList.toggle('breit', MQ.matches);
     app.classList.toggle('schmal', !MQ.matches);
@@ -335,6 +339,7 @@
   function tonAnzeigen() {
     app.classList.toggle('stumm', !K.an());
     $('#ton').setAttribute('aria-label', K.an() ? U.tonAn : U.tonAus);
+    $('#ton').setAttribute('aria-pressed', K.an() ? 'false' : 'true');   // gedrückt = stumm
     $('#ton').title = K.an() ? U.tonAn : U.tonAus;
   }
 
@@ -925,11 +930,11 @@
     const el = bau(`<section class="s-hallo zentriert"><div class="inhalt">
       <h1 class="hallo-titel">${f(h.titel)}</h1>
       <p class="hallo-text">${f(h.text)}</p>
-      <p class="hallo-mail" aria-label="${V.email}"></p>
+      <p class="hallo-mail" data-text="${V.email}"></p>
       <div class="hallo-weiter" aria-hidden="true"><i></i><i></i><i></i></div>
     </div></section>`);
     wechsel(el, 'hallo');
-    const mail = $('.hallo-mail', el), text = mail.getAttribute('aria-label').replace(/&amp;/g, '&');
+    const mail = $('.hallo-mail', el), text = mail.dataset.text;
     let weg = false;
     const weiter = () => { if (weg || !el.isConnected) return; weg = true; K.klick(); zeigeLevelIntro(); };
     (async () => {
@@ -1004,6 +1009,7 @@
     const lv = LV[S.level], m = lv.nachrichten[S.nr];
     const lage = `<span class="pille-kicker">${esc(U.situation)}</span><h2 class="lage-titel">${f(m.titel)}</h2><p class="lage-text">${f(m.lage)}</p>`;
     const el = bau(`<section class="s-nachricht" data-phase="antwort" data-art="${m.art}">
+      <h1 class="sr">${esc(f(U.levelKurz, { n: S.level + 1 }))} · ${esc(f(U.frageVon, { n: S.nr + 1, gesamt: lv.nachrichten.length }))}: ${f(m.titel)}</h1>
       <div class="m-bereich">
         <div class="m-spalte">
           <div class="lage lage-oben">${lage}</div>
@@ -1057,7 +1063,37 @@
       else if (a.classList.contains('g-anhang')) tooltip.zeige(a, esc(U.anhangGesperrt));
       else tooltip.zeige(a, zielHtml(a));
     });
-    spalte.addEventListener('scroll', () => tooltip.aus(), { passive: true });
+    // Beim Scrollen das Ziel ausblenden – außer es gehört zum Tastatur-Fokus (der Fokus scrollt selbst): dann mitwandern
+    spalte.addEventListener('scroll', () => {
+      const a = document.activeElement;
+      if (a && spalte.contains(a) && a.matches('[data-ziel], [data-antwort]') && a.matches(':focus-visible')) tooltip.zeige(a, tippText(a), true);
+      else tooltip.aus();
+    }, { passive: true });
+    // Tastatur (WCAG 2.1.1): Links und Absender per Tab erreichbar; beim Fokus erscheint dasselbe Ziel wie beim Überfahren,
+    // Esc schließt es; Bildschirmleser bekommen das Ziel über aria-describedby
+    const tippText = a => a.matches('[data-antwort]') ? `<small>${esc(U.antwortAn)}</small>${esc(a.dataset.antwort)}`
+      : a.classList.contains('m-qr') ? esc(U.qrGesperrt) : zielHtml(a);
+    const beschreibungen = document.createElement('div');
+    beschreibungen.className = 'sr';
+    $$('[data-ziel], [data-antwort]', g).forEach((a, i) => {
+      a.tabIndex = 0;
+      if (a.tagName !== 'A' && a.tagName !== 'BUTTON') a.setAttribute('role', 'link');
+      const b = document.createElement('span');
+      b.id = 'ziel-' + S.level + '-' + S.nr + '-' + i;
+      b.textContent = tippText(a).replace(/<small>(.*?)<\/small>/, '$1 ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&');
+      beschreibungen.appendChild(b);
+      a.setAttribute('aria-describedby', b.id);
+    });
+    g.appendChild(beschreibungen);
+    spalte.addEventListener('focusin', e => {
+      const a = e.target.closest('[data-ziel], [data-antwort]');
+      if (a && a.matches(':focus-visible')) tooltip.zeige(a, tippText(a), true);
+    });
+    spalte.addEventListener('focusout', e => { if (e.target.closest('[data-ziel], [data-antwort]')) tooltip.aus(); });
+    spalte.addEventListener('keydown', e => {
+      const a = e.target.closest('[data-ziel], [data-antwort]');
+      if (a && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); tooltip.zeige(a, tippText(a), true); }
+    });
     $$('.antwort', el).forEach(b => b.addEventListener('click', () => antworte(b.dataset.antwort === 'phishing')));
 
     // Ankunft: Nachricht springt herein, Chats tippen Blase für Blase
@@ -1495,7 +1531,9 @@
     const prozent = n ? (r / n) * 100 : 0;
     const bestanden = prozent >= E.bestehensgrenze;
     let lmsOk = false;
-    if (!nurAnsehen) { S.fertig = true; speichere(); lmsOk = LMS.abschliessen(prozent, bestanden); }
+    // ans LMS nur nach einem echten Durchgang: kein Testmodus, jede Nachricht jedes Levels beantwortet
+    const echt = !testModus && LV.every((l, i) => S.erg[i].length === l.nachrichten.length);
+    if (!nurAnsehen && echt) { S.fertig = true; speichere(); lmsOk = LMS.abschliessen(prozent, bestanden); }
     else lmsOk = LMS.aktiv();
     const titel = prozent >= 90 ? fi.titelTop : prozent >= 75 ? fi.titelGut : prozent >= 50 ? fi.titelMittel : fi.titel;
     const mitte = `<span class="m-prozent">0 %</span>`;
@@ -1539,6 +1577,7 @@
   /* ================= Tastatur ================= */
   document.addEventListener('keydown', e => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'Escape') tooltip.aus();   // WCAG 1.4.13: eingeblendetes Ziel lässt sich immer schließen
     if (e.target.closest && e.target.closest('input, textarea')) return;
     const k = e.key.toLowerCase();
     if (app.dataset.screen !== 'nachricht') return;
@@ -1588,7 +1627,9 @@
     if (!kannScrollen(e.target, dx, dy)) e.preventDefault();
   }, { passive: false });
 
-  /* ================= Test-Sprünge (#l2n3 …) ================= */
+  /* ================= Test-Sprünge (#l2n3 …) =================
+     Nur in der Entwicklerversion: bouw.py entfernt alles zwischen den TEST-Markierungen aus den LMS-Paketen. */
+  /*TEST*/
   function route(h) {
     if (!/^(start|profil|l\dn?\d?|e\d|k\d|ende)$/.test(h)) return false;   // fremde Hashes (z. B. vom LMS) ignorieren
     if (h !== 'start' && h !== 'profil') testModus = true;
@@ -1610,6 +1651,7 @@
     if (h === 'ende') { S.erg = LV.map((l, i) => probe(i)); zeigeFinale(true); return true; }
     return false;
   }
+  /*/TEST*/
 
   /* ================= Start ================= */
   function init() {
@@ -1621,7 +1663,7 @@
     $('#ton').addEventListener('click', () => { K.setzeAn(!K.an()); tonAnzeigen(); K.klick(); });
 
     LMS.init();
-    if (/[?&]neu\b/.test(location.search)) LMS.loeschen();
+    /*TEST*/ if (/[?&]neu\b/.test(location.search)) LMS.loeschen(); /*/TEST*/
     const d = LMS.laden();
     const hat = ladeStand(d);
     setzeProfil(S.profil || { name: LMS.aktiv() ? LMS.name() : '' });
@@ -1633,9 +1675,11 @@
     window.addEventListener('pagehide', () => LMS.beenden());
     window.addEventListener('beforeunload', () => LMS.beenden());
 
+    /*TEST*/
     window.addEventListener('hashchange', () => route(decodeURIComponent(location.hash.slice(1))));
     const h = decodeURIComponent(location.hash.slice(1));
     if (h && route(h)) return;
+    /*/TEST*/
     zeigeStart(hat ? d : null);
   }
   init();

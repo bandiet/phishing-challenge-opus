@@ -6,17 +6,24 @@
     python3 tools/bouw.py de --2004    zusätzlich SCORM 2004 (3rd und 4th Edition als getrennte Pakete)
     python3 tools/bouw.py de --xapi    zusätzlich ein xAPI-Paket (tincan.xml)
 
-Ergebnis in dist/:
-    Phishing_Challenge_Opus_DE_SCORM12.zip   imsmanifest.xml + index.html, direkt im Zip-Wurzelverzeichnis
-    …_SCORM2004_3rd.zip / …_SCORM2004_4th.zip / …_xAPI.zip
-    de/index.html                         dieselbe Seite einzeln (zum Testen im Browser)
+    … --version=v3                        Versionskürzel im Dateinamen (Standard: v2)
+
+Ergebnis in dist/pakete/ (Namensschema Datum_Produkt_Sprache_Format_Firma_Version):
+    2026-11-07_Phishing-Challenge_DE_SCORM-1.2_Scheer-imc_v2.zip        imsmanifest.xml + index.html im Zip-Wurzelverzeichnis
+    …_SCORM-2004-3rd_… / …_SCORM-2004-4th_… / …_xAPI_…
+und in dist/:
+    de/index.html                         Entwicklerversion mit Test-Sprüngen (#l2n3, ?neu) – nicht ausliefern
     artifact/index.html                   Seite ohne <html>/<head>/<body> (für die Claude-Vorschau)
+
+Ausgeliefert wird nur, was ein Paket braucht: Test-Sprünge (/*TEST*/…/*/TEST*/) fehlen in allen Paketen,
+die xAPI-Schnittstelle (/*XAPI*/…/*/XAPI*/) steht nur im xAPI-Paket. Jedes Paket hat eine Content-Security-Policy.
 
 Die index.html ist komplett eigenständig: CSS, JavaScript und Bilder sind eingebettet,
 es gibt keine einzige externe Adresse. Genau das macht das Paket in jedem LMS gleich.
 Vor dem Bauen wird der Inhalt geprüft (tools/pruefen.js); bei Fehlern bricht der Bau ab.
 """
 import base64
+import datetime
 import os
 import re
 import shutil
@@ -32,6 +39,8 @@ args = [a for a in sys.argv[1:] if not a.startswith('--')]
 SPRACHE = (args[0] if args else 'de').lower()
 MIT_2004 = '--2004' in sys.argv
 MIT_XAPI = '--xapi' in sys.argv
+VERSION = next((a.split('=', 1)[1] for a in sys.argv if a.startswith('--version=')), 'v2')
+DATUM = datetime.date.today().isoformat()
 
 inhalt_datei = os.path.join(P, 'js', f'inhalt.{SPRACHE}.js')
 if not os.path.exists(inhalt_datei):
@@ -108,6 +117,7 @@ if probleme:
     sys.exit('Abbruch: Die Seite ist nicht eigenständig.')
 
 # ---------- 4. Ausgabe ----------
+# Entwicklerversion (alles drin) für Tests im Browser, Titelbilder und Bildschirmfotos der Prüfung
 os.makedirs(DIST, exist_ok=True)
 ziel = os.path.join(DIST, SPRACHE)
 shutil.rmtree(ziel, ignore_errors=True)
@@ -115,10 +125,39 @@ os.makedirs(ziel)
 with open(os.path.join(ziel, 'index.html'), 'w', encoding='utf-8') as f:
     f.write(html)
 
-# Titel und Bestehensgrenze aus dem Inhalt lesen
+# Lieferversionen
+def ohne(block, text, markierung_behalten=False):
+    if markierung_behalten:
+        return text
+    return re.sub(r'/\*' + block + r'\*/.*?/\*/' + block + r'\*/', '', text, flags=re.S)
+
+
+def mit_csp(text, verbinden):
+    # Content-Security-Policy: nichts nachladen, nichts senden (xAPI: nur an das LRS, das das LMS beim Start nennt, per https)
+    csp = (f"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; media-src data:; "
+           f"font-src data:; connect-src {verbinden}; base-uri 'none'; form-action 'none'")
+    return text.replace('<meta charset="utf-8">', f'<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="{csp}">', 1)
+
+
+ohne_test = ohne('TEST', html)
+LIEFERUNG = {
+    'scorm': mit_csp(ohne('XAPI', ohne_test), "'none'"),
+    'xapi': mit_csp(ohne_test, 'https:'),          # XAPI-Markierungen bleiben als Kommentar stehen (Prüfskript vergleicht damit)
+}
+for art, text in LIEFERUNG.items():
+    rest = [w for w in ('route(', '?neu', '[?&]neu', '/*TEST*/') if w in text]
+    if art == 'scorm':
+        rest += [w for w in ('xStart', 'XMLHttpRequest', 'fetch(', 'endpoint') if w in text]
+    if 'Content-Security-Policy' not in text:
+        rest.append('CSP fehlt')
+    if rest:
+        sys.exit(f'Abbruch: Lieferversion {art} enthält noch {rest}')
+
+# Titel, Beschreibung und Bestehensgrenze aus dem Inhalt lesen
 inhalt = lies(f'js/inhalt.{SPRACHE}.js')
 produkt = re.search(r"produkt:\s*'([^']+)'", inhalt).group(1)
 grenze = int(re.search(r'bestehensgrenze:\s*(\d+)', inhalt).group(1))
+beschreibung = re.search(r"start:\s*\{[\s\S]*?\btext:\s*'((?:[^'\\]|\\.)*)'", inhalt).group(1).replace("\\'", "'")
 titel = produkt                                              # wie im LMS angezeigt: „Phishing Challenge“
 kennung = f'CCT_PHISHING_CHALLENGE_2026_{SPRACHE.upper()}'     # neue Kurs-ID (nicht die des alten Pakets)
 
@@ -127,16 +166,21 @@ def xml(s):
     return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 
-MANIFEST_12 = f'''<?xml version="1.0" encoding="UTF-8"?>
+MANIFEST_12 = f"""<?xml version="1.0" encoding="UTF-8"?>
 <manifest identifier="{kennung}" version="2.0"
           xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
           xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
-                              http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+          xmlns:imsmd="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1">
   <metadata>
     <schema>ADL SCORM</schema>
     <schemaversion>1.2</schemaversion>
+    <imsmd:lom>
+      <imsmd:general>
+        <imsmd:title><imsmd:langstring xml:lang="{SPRACHE}">{xml(titel)}</imsmd:langstring></imsmd:title>
+        <imsmd:language>{SPRACHE}</imsmd:language>
+        <imsmd:description><imsmd:langstring xml:lang="{SPRACHE}">{xml(beschreibung)}</imsmd:langstring></imsmd:description>
+      </imsmd:general>
+    </imsmd:lom>
   </metadata>
   <organizations default="org_1">
     <organization identifier="org_1">
@@ -153,21 +197,25 @@ MANIFEST_12 = f'''<?xml version="1.0" encoding="UTF-8"?>
     </resource>
   </resources>
 </manifest>
-'''
+"""
 
-MANIFEST_2004 = f'''<?xml version="1.0" encoding="UTF-8"?>
+MANIFEST_2004 = f"""<?xml version="1.0" encoding="UTF-8"?>
 <manifest identifier="{kennung}" version="2.0"
           xmlns="http://www.imsglobal.org/xsd/imscp_v1p1"
           xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_v1p3"
           xmlns:adlseq="http://www.adlnet.org/xsd/adlseq_v1p3"
           xmlns:imsss="http://www.imsglobal.org/xsd/imsss"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd
-                              http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd
-                              http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd">
+          xmlns:lom="http://ltsc.ieee.org/xsd/LOM">
   <metadata>
     <schema>ADL SCORM</schema>
     <schemaversion>2004 {{EDITION}} Edition</schemaversion>
+    <lom:lom>
+      <lom:general>
+        <lom:title><lom:string language="{SPRACHE}">{xml(titel)}</lom:string></lom:title>
+        <lom:language>{SPRACHE}</lom:language>
+        <lom:description><lom:string language="{SPRACHE}">{xml(beschreibung)}</lom:string></lom:description>
+      </lom:general>
+    </lom:lom>
   </metadata>
   <organizations default="org_1">
     <organization identifier="org_1">
@@ -190,38 +238,45 @@ MANIFEST_2004 = f'''<?xml version="1.0" encoding="UTF-8"?>
     </resource>
   </resources>
 </manifest>
-'''
+"""
 
 
 # xAPI: dieselbe Aktivitäts-ID wie in js/lms.js (XAPI_ID)
-TINCAN = f'''<?xml version="1.0" encoding="utf-8"?>
+TINCAN = f"""<?xml version="1.0" encoding="utf-8"?>
 <tincan xmlns="http://projecttincan.com/tincan.xsd">
   <activities>
     <activity id="https://phishing-challenge-opus.arnebenoist.workers.dev/xapi/{SPRACHE}" type="http://adlnet.gov/expapi/activities/course">
       <name lang="{SPRACHE}">{xml(titel)}</name>
-      <description lang="{SPRACHE}">{xml(titel)}</description>
+      <description lang="{SPRACHE}">{xml(beschreibung)}</description>
       <launch lang="{SPRACHE}">index.html</launch>
     </activity>
   </activities>
 </tincan>
-'''
+"""
+
+PAKETE = os.path.join(DIST, 'pakete')
+os.makedirs(PAKETE, exist_ok=True)
+for alt in os.listdir(PAKETE):                      # ältere Pakete dieser Sprache ersetzen
+    if alt.endswith('.zip') and f'_Phishing-Challenge_{SPRACHE.upper()}_' in alt:
+        os.remove(os.path.join(PAKETE, alt))
 
 
-def paket(name, manifest, datei='imsmanifest.xml'):
-    pfad = os.path.join(DIST, name)
+def paket(fmt, manifest, art, datei='imsmanifest.xml'):
+    name = f'{DATUM}_Phishing-Challenge_{SPRACHE.upper()}_{fmt}_Scheer-imc_{VERSION}.zip'
+    pfad = os.path.join(PAKETE, name)
     with zipfile.ZipFile(pfad, 'w', zipfile.ZIP_DEFLATED) as z:
         z.writestr(datei, manifest)                      # im Wurzelverzeichnis, nicht in einem Unterordner
-        z.write(os.path.join(ziel, 'index.html'), 'index.html')
-    print(f'  {name}  ({os.path.getsize(pfad) // 1024} KB)')
+        z.writestr('index.html', LIEFERUNG[art])
+    print(f'  pakete/{name}  ({os.path.getsize(pfad) // 1024} KB)')
 
 
-print(f'Gebaut: dist/{SPRACHE}/index.html ({os.path.getsize(os.path.join(ziel, "index.html")) // 1024} KB, eigenständig)')
-paket(f'Phishing_Challenge_Opus_{SPRACHE.upper()}_SCORM12.zip', MANIFEST_12)
+print(f'Gebaut: dist/{SPRACHE}/index.html ({os.path.getsize(os.path.join(ziel, "index.html")) // 1024} KB, Entwicklerversion)')
+paket('SCORM-1.2', MANIFEST_12, 'scorm')
 if MIT_2004:
     for ed in ('3rd', '4th'):
-        paket(f'Phishing_Challenge_Opus_{SPRACHE.upper()}_SCORM2004_{ed}.zip', MANIFEST_2004.replace('{EDITION}', ed))
+        paket(f'SCORM-2004-{ed}', MANIFEST_2004.replace('{EDITION}', ed), 'scorm')
 if MIT_XAPI:
-    paket(f'Phishing_Challenge_Opus_{SPRACHE.upper()}_xAPI.zip', TINCAN, 'tincan.xml')
+    paket('xAPI', TINCAN, 'xapi', 'tincan.xml')
 
 # Vorschau für die Claude-Artifact-Plattform: ohne Dokument-Gerüst
 kopf = re.search(r'<head>(.*?)</head>', html, re.S).group(1)
