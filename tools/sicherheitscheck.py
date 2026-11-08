@@ -58,7 +58,7 @@ ERLAUBT_ENDUNG = ('.html', '.js', '.css', '.json', '.xml', '.xsd', '.png', '.jpg
 # Kennungen, die nur als Name dienen und nie geladen werden
 NUR_KENNUNG = ('http://www.w3.org/', 'http://www.imsproject.org/', 'http://www.imsglobal.org/', 'http://www.adlnet.org/',
                'http://adlnet.gov/expapi/', 'https://w3id.org/xapi/', 'http://projecttincan.com/',
-               'https://phishing-challenge-opus.arnebenoist.workers.dev/xapi/')
+               'https://scheer-imc.com/xapi/phishing-challenge/')
 
 FORMAT = {'SCORM-1.2': 'SCORM12', 'SCORM-2004-3rd': 'SCORM2004_3rd', 'SCORM-2004-4th': 'SCORM2004_4th'}
 CSP_META = r'<meta http-equiv="Content-Security-Policy"[^>]*>\n?'

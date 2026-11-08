@@ -245,7 +245,7 @@ MANIFEST_2004 = f"""<?xml version="1.0" encoding="UTF-8"?>
 TINCAN = f"""<?xml version="1.0" encoding="utf-8"?>
 <tincan xmlns="http://projecttincan.com/tincan.xsd">
   <activities>
-    <activity id="https://phishing-challenge-opus.arnebenoist.workers.dev/xapi/{SPRACHE}" type="http://adlnet.gov/expapi/activities/course">
+    <activity id="https://scheer-imc.com/xapi/phishing-challenge/{SPRACHE}" type="http://adlnet.gov/expapi/activities/course">
       <name lang="{SPRACHE}">{xml(titel)}</name>
       <description lang="{SPRACHE}">{xml(beschreibung)}</description>
       <launch lang="{SPRACHE}">index.html</launch>

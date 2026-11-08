@@ -1281,7 +1281,7 @@ window.PC_INHALT = {
       emailHinweis: 'Entsteht aus Name und Firma – du kannst sie ändern.',
       emailFehler: 'Bitte gib eine gültige E-Mail-Adresse an.',
       weiter: 'Weiter',
-      datenschutz: 'Deine Angaben werden nur in diesem Quiz verwendet.'
+      datenschutz: 'Deine Angaben werden im Lernstand deines LMS gespeichert, damit du später weitermachen kannst. Erfundene Angaben funktionieren genauso.'
     },
 
     hallo: {
@@ -2529,7 +2529,7 @@ window.LMS = (function () {
      (übliche Tin-Can-Startparameter). Aussagen gehen an <endpoint>statements, der Stand liegt in der State API.
      Nur im xAPI-Paket: bouw.py entfernt alles zwischen den XAPI-Markierungen aus den SCORM-Paketen. */
   var xWarte = null, xLaeuft = false, xStand = null;
-  var XAPI_ID = 'https://phishing-challenge-opus.arnebenoist.workers.dev/xapi/' + ((window.PC_INHALT && window.PC_INHALT.sprache) || 'de');
+  var XAPI_ID = 'https://scheer-imc.com/xapi/phishing-challenge/' + ((window.PC_INHALT && window.PC_INHALT.sprache) || 'de');
   var XV = 'http://adlnet.gov/expapi/verbs/';
 
   function xStart() {

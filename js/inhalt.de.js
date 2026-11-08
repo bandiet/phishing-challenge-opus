@@ -83,7 +83,7 @@ window.PC_INHALT = {
       emailHinweis: 'Entsteht aus Name und Firma – du kannst sie ändern.',
       emailFehler: 'Bitte gib eine gültige E-Mail-Adresse an.',
       weiter: 'Weiter',
-      datenschutz: 'Deine Angaben werden nur in diesem Quiz verwendet.'
+      datenschutz: 'Deine Angaben werden im Lernstand deines LMS gespeichert, damit du später weitermachen kannst. Erfundene Angaben funktionieren genauso.'
     },
 
     hallo: {

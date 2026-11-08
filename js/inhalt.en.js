@@ -79,7 +79,7 @@ window.PC_INHALT = {
       emailHinweis: 'Created from your name and company – you can change it.',
       emailFehler: 'Please enter a valid email address.',
       weiter: 'Continue',
-      datenschutz: 'Your details are only used in this quiz.'
+      datenschutz: 'Your details are saved in your learning record in your LMS so you can continue later. Made-up details work just as well.'
     },
     hallo: {
       titel: 'Hello {{name}}.',

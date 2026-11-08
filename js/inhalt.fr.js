@@ -79,7 +79,7 @@ window.PC_INHALT = {
       emailHinweis: 'Créée à partir du nom et de l’entreprise – tu peux la modifier.',
       emailFehler: 'Merci d’indiquer une adresse e-mail valide.',
       weiter: 'Continuer',
-      datenschutz: 'Tes données ne sont utilisées que dans ce quiz.'
+      datenschutz: 'Tes données sont enregistrées dans ta progression sur ton LMS pour que tu puisses reprendre plus tard. Des données inventées fonctionnent tout aussi bien.'
     },
     hallo: {
       titel: 'Bonjour {{name}}.',

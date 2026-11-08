@@ -81,7 +81,7 @@ window.LMS = (function () {
      (übliche Tin-Can-Startparameter). Aussagen gehen an <endpoint>statements, der Stand liegt in der State API.
      Nur im xAPI-Paket: bouw.py entfernt alles zwischen den XAPI-Markierungen aus den SCORM-Paketen. */
   var xWarte = null, xLaeuft = false, xStand = null;
-  var XAPI_ID = 'https://phishing-challenge-opus.arnebenoist.workers.dev/xapi/' + ((window.PC_INHALT && window.PC_INHALT.sprache) || 'de');
+  var XAPI_ID = 'https://scheer-imc.com/xapi/phishing-challenge/' + ((window.PC_INHALT && window.PC_INHALT.sprache) || 'de');
   var XV = 'http://adlnet.gov/expapi/verbs/';
 
   function xStart() {
